@@ -17,12 +17,15 @@ const SCENES = [{
 	materials: [
 		{name: 'green', color: [0.3, 1., 0.4], ambient: 1., diffuse: 0., specular: 0., shininess: 0., mirror: 0.},
 	],
+	materials: [
+		{name: 'custom', color: [0.7, 1., 0.4], ambient: 1., diffuse: 0., specular: 0., shininess: 0., mirror: 0.},
+	],
 	lights: [
 		{position: [3., 0, -0.5], color: [1.0, 0.4, 0.2]},
 		{position: [-3., -0.8, 3], color: [0.2, 0.4, 0.9]},
 	],
 	spheres: [
-		{center: [0.0, 0.0, 2.0], radius: 1., material: 'green'},
+		{center: [0.0, 0.0, 2.0], radius: 0.5, material: 'custom'},
 	],
 	planes: [],
 	cylinders: [],
