@@ -117,6 +117,13 @@ int solve_quadratic(float a, float b, float c, out vec2 solutions) {
 }
 
 /*
+	Squares a value
+*/
+float square(float x){
+	return x*x;
+}
+
+/*
 	Check for intersection of the ray with a given sphere in the scene.
 */
 bool ray_sphere_intersection(
@@ -195,8 +202,8 @@ bool ray_plane_intersection(
 		normal = normal_dot_direction > 0. ?  -plane_normal : plane_normal;
 		return (t > 0.);
 	}
+	// <- our code
 }
-// <- our code
 
 /*
 	Check for intersection of the ray with a given cylinder in the scene.
@@ -214,10 +221,51 @@ bool ray_cylinder_intersection(
 	- store normal at intersection_point in `normal`.
 	- return whether there is an intersection with t > 0
 	*/
-
 	vec3 intersection_point;
 	t = MAX_RANGE + 10.;
+	// our code ->
 
+	// d-(a.d)a
+	vec3 comp1 = ray_direction-dot(cyl.axis, ray_direction)*cyl.axis;
+
+	// o-c-a(a.(o-c))
+	vec3 comp2 = ray_origin-cyl.center-cyl.axis*dot(cyl.axis, ray_origin-cyl.center);
+	
+	// a=(d-(a.d)a)^2
+	float a = dot(comp1, comp1);
+	// b=2d.(o-c)-2a.(d+o-c)
+	float b = 2.*dot(comp1,comp2);
+	// c=(o-c-a(a.(o-c)))^2-r^2
+	float c = dot(comp2, comp2)-square(cyl.radius);
+
+	vec2 solutions;
+	int num_solutions = solve_quadratic(a, b, c, solutions);
+
+	// if the ray is tangent to the cylinder
+	if(num_solutions >=1 && solutions[0] > 0.){
+		t = solutions[0];
+	}
+	// if the ray crosses the cylinder, we want to take the first intersection
+	if(num_solutions>=2 && solutions[1] > 0. && solutions[1] < t){
+		t = solutions[1];
+	}
+
+	// MAX_RANGE indicates there is no collision detected
+	if(t < MAX_RANGE){
+		intersection_point = ray_origin + ray_direction * t;
+		// x-c
+		vec3 cyl_center_to_intersection = intersection_point-cyl.center;
+		// projection of (x-c) along a axis: (a.(x-c))a
+		vec3 x_c_along_a = dot(cyl.axis, cyl_center_to_intersection)*cyl.axis;
+		// component from cylinder axis to intersection point
+		vec3 r = cyl_center_to_intersection - x_c_along_a;
+		normal = normalize(r);
+		return true;
+	} else {
+		return false;
+	}
+
+/*
 	vec3 normalizedA = normalize(cyl.axis);
 
 	vec3 component1 = ray_direction - (dot(ray_direction, normalizedA)* normalizedA);
@@ -261,7 +309,8 @@ bool ray_cylinder_intersection(
 		return false;
 	}
 
-	return t > 0.;
+	return t > 0.;*/
+	// <- our code
 }
 
 
