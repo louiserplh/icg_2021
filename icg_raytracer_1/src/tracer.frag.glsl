@@ -183,19 +183,20 @@ bool ray_plane_intersection(
 	// can use the plane center if you need it
 	vec3 plane_center = plane_normal * plane_offset;
 	t = MAX_RANGE + 10.;
-	//normal = ...;
+	//our code ->
 
-	float dotProduct = dot(plane_normal, ray_direction);
+	float normal_dot_direction = dot(plane_normal, ray_direction);
 
-	if (dotProduct == 0.) {
+	if (normal_dot_direction == 0.) {
+		// The plane and the ray are orthogonal
 		return false;
+	}else{
+		t = dot(plane_normal, plane_center-ray_origin) / normal_dot_direction;
+		normal = normal_dot_direction > 0. ?  -plane_normal : plane_normal;
+		return (t > 0.);
 	}
-
-	t = (plane_offset - dot(plane_normal, ray_origin)) / dotProduct;
-	normal = dotProduct > 0. ?  -plane_normal : plane_normal;
-	
-	return (t > 0.);
 }
+// <- our code
 
 /*
 	Check for intersection of the ray with a given cylinder in the scene.
