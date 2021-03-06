@@ -184,7 +184,17 @@ bool ray_plane_intersection(
 	vec3 plane_center = plane_normal * plane_offset;
 	t = MAX_RANGE + 10.;
 	//normal = ...;
-	return false;
+
+	float dotProduct = dot(plane_normal, ray_direction);
+
+	if (dotProduct == 0.) {
+		return false;
+	}
+
+	t = (plane_offset - dot(plane_normal, ray_origin)) / dotProduct;
+	normal = dotProduct > 0. ?  -plane_normal : plane_normal;
+	
+	return (t > 0.);
 }
 
 /*
