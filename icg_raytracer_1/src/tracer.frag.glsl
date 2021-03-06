@@ -226,13 +226,16 @@ bool ray_cylinder_intersection(
 	float b = 2.*dot(component1, component2);
 	float c = length(component2)*length(component2) - cyl.radius*cyl.radius;
 
-	float delta = b*b - 4.*a*c;
-	if(delta < 0.) {
+	vec2 sol;
+
+	int ts = solve_quadratic(a, b, c, sol);
+
+	if(ts == 0) {
 		return false;
 	}
 	
-	float t1 = (-b + sqrt(delta))/(2.*a);
-	float t2 = (-b - sqrt(delta))/(2.*a);
+	float t1 = sol[0];
+	float t2 = sol[1];
 
 	if(t1 < 0.) {t1 = t2;}
 	if(t2 < 0.) {return false;}
@@ -249,7 +252,7 @@ bool ray_cylinder_intersection(
 	float distanceT2Cap1 = abs(dot((cap1Center - intersectionT2), normalizedA));
 	float distanceT2Cap2 = abs(dot((cap2Center - intersectionT2), normalizedA));
 
-	t = max(t1, t2);
+	t = min(t1, t2);
 	intersection_point = ray_origin + t * ray_direction;
 	normal = cross(normalizedA, intersection_point);
 
