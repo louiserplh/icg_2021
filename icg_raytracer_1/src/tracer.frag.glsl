@@ -124,6 +124,13 @@ float square(float x){
 }
 
 /*
+	Computes the norm of a vec3
+*/
+float norm(vec3 x){
+	return sqrt(dot(x,x));
+}
+
+/*
 	Check for intersection of the ray with a given sphere in the scene.
 */
 bool ray_sphere_intersection(
@@ -211,12 +218,10 @@ bool ray_plane_intersection(
 */
 bool ray_infinite_cylinder_intersection(
 		vec3 ray_origin, vec3 ray_direction, 
-		Cylinder cyl,
-		out float t, out vec3 normal) 
+		Cylinder cyl, out float t) 
 {
 	vec3 intersection_point;
 	t = MAX_RANGE + 10.;
-	// our code ->
 
 	// d-(a.d)a
 	vec3 comp1 = ray_direction-dot(cyl.axis, ray_direction)*cyl.axis;
@@ -240,21 +245,13 @@ bool ray_infinite_cylinder_intersection(
 	if(num_solutions >=1 && solutions[0] > 0.){
 		t = solutions[0];
 	}
-	// if the ray crosses the cylinder, we want to take the first intersection
-	if(num_solutions>=2 && solutions[1] > 0. && solutions[1] < t){
-		t = solutions[1];
+	// if the ray crosses the cylinder, we take the closest one
+	if(num_solutions>=2 && solutions[1] > 0.){
+		t = solutions[0] < solutions[1]?solutions[0]:solutions[1];
 	}
 
 	// MAX_RANGE indicates there is no collision detected
 	if(t < MAX_RANGE){
-		intersection_point = ray_origin + ray_direction * t;
-		// x-c
-		vec3 cyl_center_to_intersection = intersection_point-cyl.center;
-		// projection of (x-c) along a axis: (a.(x-c))a
-		vec3 x_c_along_a = dot(cyl.axis, cyl_center_to_intersection)*cyl.axis;
-		// component from cylinder axis to intersection point
-		vec3 r = cyl_center_to_intersection - x_c_along_a;
-		normal = normalize(r);
 		return true;
 	} else {
 		return false;
@@ -267,33 +264,52 @@ bool ray_infinite_cylinder_intersection(
 */
 bool ray_caps_cylinder_intersection(
 		vec3 ray_origin, vec3 ray_direction, 
-		Cylinder cyl, vec3 intersection_point,
-		float t_i, vec3 r,
+		Cylinder cyl,
+		float t_candidate,
 		out float t, out vec3 normal) 
 {
+	/*
 	float cap1_offset = cyl.height/2.;
 	float cap2_offset = -cyl.height/2.;
 
-	// compute if the ray intersects cap's plane earlier than with cylinder side
-	if((ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap1_offset, t, normal)
-	&& t < t_i)
+	vec3 center_cap_1 = cyl.center+vec3(cap1_offset, cap1_offset, cap1_offset);
+	vec3 center_cap_2 = cyl.center+vec3(cap2_offset, cap2_offset, cap2_offset);
+
+
+	// compute if the ray intersects cap's plane within the cylinder radius
+	if(((ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap1_offset, t, normal)
+	&& norm(ray_origin + ray_direction * t - center_cap_1)<=cyl.radius)
 	|| (ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap2_offset, t, normal)
-	&& t < t_i)){
+	&& norm(ray_origin + ray_direction * t - center_cap_2)<=cyl.radius))
+	&& t > 0.){
+		// if so, this ray must be the first one
+		normal = dot(cyl.axis, ray_direction) > 0. ?  -cyl.axis : cyl.axis;
 		return true;
 	}
+*/
+	vec3 intersection_point = ray_origin + ray_direction * t_candidate;
 
-	vec3 intersection_point_to_cap1 = cyl.center+vec3(cap1_offset, cap1_offset, cap1_offset)-intersection_point+r;
-	vec3 intersection_point_to_cap2 = cyl.center+vec3(cap2_offset, cap2_offset, cap2_offset)-intersection_point+r;
+	// x-c
+	vec3 cyl_center_to_intersection = intersection_point-cyl.center;
+	// projection of (x-c) along a axis: (a.(x-c))a
+	vec3 x_c_along_a = dot(cyl.axis, cyl_center_to_intersection)*cyl.axis;
+	// component from cylinder axis to intersection point
+	vec3 r = cyl_center_to_intersection - x_c_along_a;
+	normal = normalize(r);
+	return true;
+	/*
+	vec3 intersection_to_cap1 = center_cap_1-intersection_point+r;
+	vec3 intersection_to_cap2 = center_cap_2-intersection_point+r;
 
 	// compute if the intersection is at most h far from both caps
-	if(dot(intersection_point_to_cap1, intersection_point_to_cap1)<=cyl.height
-	&&dot(intersection_point_to_cap2, intersection_point_to_cap2)<=cyl.height){
-		t=t_i;
-		normal = r;
+	if(norm(intersection_to_cap1)<=cyl.height
+	&& norm(intersection_to_cap2)<=cyl.height){
+		t=t_candidate;
+		normal = normalize(r);
 		return true;
 	}else{
 		return false;
-	}
+	}*/
 }
 
 /*
@@ -312,9 +328,13 @@ bool ray_cylinder_intersection(
 	- store normal at intersection_point in `normal`.
 	- return whether there is an intersection with t > 0
 	*/
-	
-	return false;
-/*
+	float t_candidate;
+	if(ray_infinite_cylinder_intersection(ray_origin, ray_direction, cyl, t_candidate)){
+		return ray_caps_cylinder_intersection(ray_origin, ray_direction, cyl, t_candidate, t, normal);
+	}else{
+		return false;
+	}
+/* Emmanuelle's code
 	vec3 normalizedA = normalize(cyl.axis);
 
 	vec3 component1 = ray_direction - (dot(ray_direction, normalizedA)* normalizedA);
