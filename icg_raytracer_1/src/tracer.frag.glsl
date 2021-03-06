@@ -217,7 +217,47 @@ bool ray_cylinder_intersection(
 	vec3 intersection_point;
 	t = MAX_RANGE + 10.;
 
-	return false;
+	vec3 normalizedA = normalize(cyl.axis);
+
+	vec3 component1 = ray_direction - (dot(ray_direction, normalizedA)* normalizedA);
+	vec3 component2 = ray_origin - cyl.center - dot((ray_origin - cyl.center), normalizedA)*normalizedA;
+
+	float a = length(component1)*length(component1);
+	float b = 2.*dot(component1, component2);
+	float c = length(component2)*length(component2) - cyl.radius*cyl.radius;
+
+	float delta = b*b - 4.*a*c;
+	if(delta < 0.) {
+		return false;
+	}
+	
+	float t1 = (-b + sqrt(delta))/(2.*a);
+	float t2 = (-b - sqrt(delta))/(2.*a);
+
+	if(t1 < 0.) {t1 = t2;}
+	if(t2 < 0.) {return false;}
+	
+	vec3 cap1Center = cyl.center + (cyl.height/2. * normalizedA);
+	vec3 cap2Center = cyl.center - (cyl.height/2. * normalizedA);
+
+	vec3 intersectionT1 = ray_origin + ray_direction*t1;
+	vec3 intersectionT2 = ray_origin + ray_direction*t2;
+
+	float distanceT1Cap1 = abs(dot((cap1Center - intersectionT1), normalizedA));
+	float distanceT1Cap2 = abs(dot((cap2Center - intersectionT1), normalizedA));
+
+	float distanceT2Cap1 = abs(dot((cap1Center - intersectionT2), normalizedA));
+	float distanceT2Cap2 = abs(dot((cap2Center - intersectionT2), normalizedA));
+
+	t = max(t1, t2);
+	intersection_point = ray_origin + t * ray_direction;
+	normal = cross(normalizedA, intersection_point);
+
+	if(!(distanceT1Cap1 <= length(cap1Center - cap2Center) && distanceT1Cap2 <= length(cap1Center - cap2Center))) {
+		return false;
+	}
+
+	return t > 0.;
 }
 
 
