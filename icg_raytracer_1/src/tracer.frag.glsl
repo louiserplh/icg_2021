@@ -206,21 +206,14 @@ bool ray_plane_intersection(
 }
 
 /*
-	Check for intersection of the ray with a given cylinder in the scene.
+	Computes wether a ray intersects the cylinder 'cyl' imagining
+	it has inifite length.
 */
-bool ray_cylinder_intersection(
+bool ray_infinite_cylinder_intersection(
 		vec3 ray_origin, vec3 ray_direction, 
 		Cylinder cyl,
 		out float t, out vec3 normal) 
 {
-	/** TODO 1.2.2: 
-	- compute the ray's first valid intersection with the cylinder
-		(valid means in front of the viewer: t > 0)
-	- store intersection point in `intersection_point`
-	- store ray parameter in `t`
-	- store normal at intersection_point in `normal`.
-	- return whether there is an intersection with t > 0
-	*/
 	vec3 intersection_point;
 	t = MAX_RANGE + 10.;
 	// our code ->
@@ -240,6 +233,8 @@ bool ray_cylinder_intersection(
 
 	vec2 solutions;
 	int num_solutions = solve_quadratic(a, b, c, solutions);
+
+	/* see implementation in ray_sphere_intersection */
 
 	// if the ray is tangent to the cylinder
 	if(num_solutions >=1 && solutions[0] > 0.){
@@ -264,7 +259,61 @@ bool ray_cylinder_intersection(
 	} else {
 		return false;
 	}
+}
 
+/*
+	Computes the intersection point of a finite cylinder given
+	it intersects an infinite length's one at 'intersection' 
+*/
+bool ray_caps_cylinder_intersection(
+		vec3 ray_origin, vec3 ray_direction, 
+		Cylinder cyl, vec3 intersection_point,
+		float t_i, vec3 r,
+		out float t, out vec3 normal) 
+{
+	float cap1_offset = cyl.height/2.;
+	float cap2_offset = -cyl.height/2.;
+
+	// compute if the ray intersects cap's plane earlier than with cylinder side
+	if((ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap1_offset, t, normal)
+	&& t < t_i)
+	|| (ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap2_offset, t, normal)
+	&& t < t_i)){
+		return true;
+	}
+
+	vec3 intersection_point_to_cap1 = cyl.center+vec3(cap1_offset, cap1_offset, cap1_offset)-intersection_point+r;
+	vec3 intersection_point_to_cap2 = cyl.center+vec3(cap2_offset, cap2_offset, cap2_offset)-intersection_point+r;
+
+	// compute if the intersection is at most h far from both caps
+	if(dot(intersection_point_to_cap1, intersection_point_to_cap1)<=cyl.height
+	&&dot(intersection_point_to_cap2, intersection_point_to_cap2)<=cyl.height){
+		t=t_i;
+		normal = r;
+		return true;
+	}else{
+		return false;
+	}
+}
+
+/*
+	Check for intersection of the ray with a given cylinder in the scene.
+*/
+bool ray_cylinder_intersection(
+		vec3 ray_origin, vec3 ray_direction, 
+		Cylinder cyl,
+		out float t, out vec3 normal) 
+{
+	/** TODO 1.2.2: 
+	- compute the ray's first valid intersection with the cylinder
+		(valid means in front of the viewer: t > 0)
+	- store intersection point in `intersection_point`
+	- store ray parameter in `t`
+	- store normal at intersection_point in `normal`.
+	- return whether there is an intersection with t > 0
+	*/
+	
+	return false;
 /*
 	vec3 normalizedA = normalize(cyl.axis);
 
