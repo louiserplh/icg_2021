@@ -274,8 +274,8 @@ bool ray_caps_cylinder_intersection(
 	float cap1_offset = cyl.height/2.;
 	float cap2_offset = -cyl.height/2.;
 
-	vec3 center_cap_1 = cyl.center+vec3(cap1_offset, cap1_offset, cap1_offset);
-	vec3 center_cap_2 = cyl.center+vec3(cap2_offset, cap2_offset, cap2_offset);
+	vec3 center_cap_1 = cyl.center+cap1_offset*cyl.axis;
+	vec3 center_cap_2 = cyl.center+cap2_offset*cyl.axis;
 
 	for(int i = 0; i < 2; ++i){
 		vec3 intersection_point = ray_origin + ray_direction * t_candidates[i];
