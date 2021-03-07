@@ -277,26 +277,24 @@ bool ray_caps_cylinder_intersection(
 
 
 	// compute if the ray intersects cap's plane within the cylinder radius earlier than 't_candidate'
-	if(((ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap1_offset, t, normal)
-	&& norm(ray_origin + ray_direction * t - center_cap_1)<=cyl.radius)
-	|| (ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap2_offset, t, normal)
-	&& norm(ray_origin + ray_direction * t - center_cap_2)<=cyl.radius))
-	&& t > 0.){
+	if(ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap1_offset, t, normal)
+	&& norm(ray_origin + ray_direction * t - center_cap_1)<=cyl.radius && t < t_candidate){
+		return true;
+	}
+	if(ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap2_offset, t, normal)
+	&& norm(ray_origin + ray_direction * t - center_cap_2)<=cyl.radius && t < t_candidate){
 		return true;
 	}
 
 	// otherwise, compute if the intersection point is crossing in cylinder
 	vec3 intersection_point = ray_origin + ray_direction * t_candidate;
-
 	// x-c
 	vec3 cyl_center_to_intersection = intersection_point-cyl.center;
 	// projection of (x-c) along a axis: (a.(x-c))a
 	vec3 x_c_along_a = dot(cyl.axis, cyl_center_to_intersection)*cyl.axis;
 	// component from cylinder axis to intersection point
 	vec3 r = cyl_center_to_intersection - x_c_along_a;
-	
-	r = normalize(r)*cyl.radius;
-	
+
 	vec3 intersection_to_cap1 = center_cap_1-intersection_point+r;
 	vec3 intersection_to_cap2 = center_cap_2-intersection_point+r;
 
