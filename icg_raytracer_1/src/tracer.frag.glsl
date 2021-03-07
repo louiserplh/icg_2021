@@ -218,10 +218,11 @@ bool ray_plane_intersection(
 */
 bool ray_infinite_cylinder_intersection(
 		vec3 ray_origin, vec3 ray_direction, 
-		Cylinder cyl, out float t) 
+		Cylinder cyl, out vec2 t_candidates) 
 {
 	vec3 intersection_point;
-	t = MAX_RANGE + 10.;
+	t_candidates[0] = MAX_RANGE + 10.;
+	t_candidates[1] = MAX_RANGE + 10.;
 
 	// d-(a.d)a
 	vec3 comp1 = ray_direction-dot(cyl.axis, ray_direction)*cyl.axis;
@@ -243,15 +244,16 @@ bool ray_infinite_cylinder_intersection(
 
 	// if the ray is tangent to the cylinder
 	if(num_solutions >=1 && solutions[0] > 0.){
-		t = solutions[0];
+		t_candidates[0] = solutions[0];
 	}
 	// if the ray crosses the cylinder, we take the closest one
 	if(num_solutions>=2 && solutions[1] > 0.){
-		t = solutions[0] < solutions[1]?solutions[0]:solutions[1];
+		t_candidates[0] = solutions[0] < solutions[1]?solutions[0]:solutions[1];
+		t_candidates[1] = solutions[0] > solutions[1]?solutions[0]:solutions[1];
 	}
 
 	// MAX_RANGE indicates there is no collision detected
-	if(t < MAX_RANGE){
+	if(t_candidates[0] < MAX_RANGE){
 		return true;
 	} else {
 		return false;
@@ -265,7 +267,7 @@ bool ray_infinite_cylinder_intersection(
 bool ray_caps_cylinder_intersection(
 		vec3 ray_origin, vec3 ray_direction, 
 		Cylinder cyl,
-		float t_candidate,
+		vec2 t_candidates,
 		out float t, out vec3 normal) 
 {
 	
@@ -275,38 +277,27 @@ bool ray_caps_cylinder_intersection(
 	vec3 center_cap_1 = cyl.center+vec3(cap1_offset, cap1_offset, cap1_offset);
 	vec3 center_cap_2 = cyl.center+vec3(cap2_offset, cap2_offset, cap2_offset);
 
+	for(int i = 0; i < 2; ++i){
+		vec3 intersection_point = ray_origin + ray_direction * t_candidates[i];
+		// x-c
+		vec3 cyl_center_to_intersection = intersection_point-cyl.center;
+		// projection of (x-c) along a axis: (a.(x-c))a
+		vec3 x_c_along_a = dot(cyl.axis, cyl_center_to_intersection)*cyl.axis;
+		// component from cylinder axis to intersection point
+		vec3 r = cyl_center_to_intersection - x_c_along_a;
 
-	// compute if the ray intersects cap's plane within the cylinder radius earlier than 't_candidate'
-	if(ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap1_offset, t, normal)
-	&& norm(ray_origin + ray_direction * t - center_cap_1)<=cyl.radius && t < t_candidate){
-		return true;
+		vec3 intersection_to_cap1 = center_cap_1-intersection_point+r;
+		vec3 intersection_to_cap2 = center_cap_2-intersection_point+r;
+
+		// compute if the intersection is at most h far from both caps
+		if(norm(intersection_to_cap1)<=cyl.height
+		&& norm(intersection_to_cap2)<=cyl.height){
+			t=t_candidates[i];
+			normal = dot(r, ray_direction) > 0. ?  -normalize(r) : normalize(r);
+			return true;
+		}
 	}
-	if(ray_plane_intersection(ray_origin, ray_direction, cyl.axis, cap2_offset, t, normal)
-	&& norm(ray_origin + ray_direction * t - center_cap_2)<=cyl.radius && t < t_candidate){
-		return true;
-	}
-
-	// otherwise, compute if the intersection point is crossing in cylinder
-	vec3 intersection_point = ray_origin + ray_direction * t_candidate;
-	// x-c
-	vec3 cyl_center_to_intersection = intersection_point-cyl.center;
-	// projection of (x-c) along a axis: (a.(x-c))a
-	vec3 x_c_along_a = dot(cyl.axis, cyl_center_to_intersection)*cyl.axis;
-	// component from cylinder axis to intersection point
-	vec3 r = cyl_center_to_intersection - x_c_along_a;
-
-	vec3 intersection_to_cap1 = center_cap_1-intersection_point+r;
-	vec3 intersection_to_cap2 = center_cap_2-intersection_point+r;
-
-	// compute if the intersection is at most h far from both caps
-	if(norm(intersection_to_cap1)<=cyl.height
-	&& norm(intersection_to_cap2)<=cyl.height){
-		t=t_candidate;
-		normal = normalize(r);
-		return true;
-	}else{
-		return false;
-	}
+	return false;
 }
 
 /*
@@ -325,9 +316,9 @@ bool ray_cylinder_intersection(
 	- store normal at intersection_point in `normal`.
 	- return whether there is an intersection with t > 0
 	*/
-	float t_candidate;
-	if(ray_infinite_cylinder_intersection(ray_origin, ray_direction, cyl, t_candidate)){
-		return ray_caps_cylinder_intersection(ray_origin, ray_direction, cyl, t_candidate, t, normal);
+	vec2 t_candidates;
+	if(ray_infinite_cylinder_intersection(ray_origin, ray_direction, cyl, t_candidates)){
+		return ray_caps_cylinder_intersection(ray_origin, ray_direction, cyl, t_candidates, t, normal);
 	}else{
 		return false;
 	}
