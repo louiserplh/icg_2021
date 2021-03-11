@@ -1,9 +1,0 @@
-[0m2021.03.09 16:43:41 INFO  Started: Metals version 0.10.0 in workspace 'C:\Users\louis\Documents\icg_2021\icg_raytracer_1' for client vscode 1.54.1.[0m
-[0m2021.03.09 16:43:42 INFO  time: initialize in 1.35s[0m
-[0m2021.03.09 16:43:44 WARN  Build server is not auto-connectable.[0m
-[0m2021.03.09 16:43:44 WARN  no build tool detected in workspace 'C:\Users\louis\Documents\icg_2021\icg_raytracer_1'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m
-[0m2021.03.09 18:48:00 INFO  shutting down Metals[0m
-[0m2021.03.11 08:37:04 INFO  Started: Metals version 0.10.0 in workspace 'C:\Users\louis\Documents\icg_2021\icg_raytracer_1' for client vscode 1.54.1.[0m
-[0m2021.03.11 08:37:05 INFO  time: initialize in 1.26s[0m
-[0m2021.03.11 08:37:06 WARN  Build server is not auto-connectable.[0m
-[0m2021.03.11 08:37:06 WARN  no build tool detected in workspace 'C:\Users\louis\Documents\icg_2021\icg_raytracer_1'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m
