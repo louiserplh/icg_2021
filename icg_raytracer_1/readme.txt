@@ -26,5 +26,5 @@ to have the asking result.
 
 - WORKLOAD
 Tom 40%
-Emmanuelle 40%
-Louise 20%
+Emmanuelle 35%
+Louise 25%
