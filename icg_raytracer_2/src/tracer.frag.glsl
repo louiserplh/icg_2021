@@ -447,7 +447,6 @@ bool ray_intersection(
 
 	return col_distance < MAX_RANGE;
 }
-
 /*
 	Return the color at an intersection point given a light and a material, exluding the contribution
 	of potential reflected rays.
@@ -455,7 +454,6 @@ bool ray_intersection(
 vec3 lighting(
 		vec3 object_point, vec3 object_normal, vec3 direction_to_camera, 
 		Light light, Material mat) {
-
 	/** TODO 2.1: 
 	- compute the diffuse component
 	- make sure that the light is located in the correct side of the object
@@ -464,13 +462,37 @@ vec3 lighting(
 	- return the ouput color
 	*/
 
+	vec3 l = normalize(light.position - object_point);
+	vec3 light_color = vec3(0.);
+	vec3 r = normalize(2.*object_normal*(dot(object_normal, l)) - l);
+
+	//diffuse component
+	vec3 md = mat.color * mat.diffuse;
+	if(dot(light.position, object_normal)< 0.) {
+		return vec3(0.);
+	}
+	light_color += md * (dot(object_normal,l) * vec3(1.));
+
+	// specular component
+	vec3 ms = mat.color * mat.specular;
+	vec3 specular = vec3(0.);
+	if(dot(r, direction_to_camera) > 0.){
+		specular = ms * (pow(dot(r, direction_to_camera), mat.shininess) * vec3(1.));
+	}
+	light_color += specular;
+
+
+	return light.color * light_color;
+
+
+
 	/** TODO 2.2: 
 	- shoot a shadow ray from the intersection point to the light
 	- check whether it intersects an object from the scene
 	- update the lighting accordingly
 	*/
 
-	return vec3(0.);
+	
 }
 
 /*
@@ -499,6 +521,23 @@ void main() {
 	- if it does, compute the ambient contribution to the total intensity
 	- compute the intensity contribution from each light in the scene and store the sum in pix_color
 	*/
+	float col_distance;
+	vec3 col_normal;
+	int material_id = 0;
+	
+	if (ray_intersection(ray_origin, ray_direction, col_distance, col_normal, material_id)){
+		Material mat = get_mat2(material_id);
+		vec3 collision = ray_origin + col_distance*ray_direction;
+		vec3 ma = mat.color * mat.ambient;
+		pix_color += light_color_ambient * ma;
+		#if NUM_LIGHTS != 0
+		for(int i = 0; i< NUM_LIGHTS; ++i){
+			pix_color += lighting(collision, col_normal, ray_direction, lights[i], mat);
+		}
+		#endif
+	}
+	
+	
 
 	/** TODO 2.3.2: 
 	- create an outer loop on the number of reflections (see below for a suggested structure)
@@ -526,11 +565,7 @@ void main() {
 	}
 	*/
 
-	float col_distance;
-	vec3 col_normal = vec3(0.);
-	int mat_id      = 0;
-	ray_intersection(ray_origin, ray_direction, col_distance, col_normal, mat_id);
-
-	gl_FragColor = vec4(0.5+0.5*col_normal, 1.);
+	//gl_FragColor = vec4(0.5+0.5*col_normal, 1.);
 	//gl_FragColor *= sin(5.*col_distance);
+	gl_FragColor = vec4(pix_color, 1.);
 }
