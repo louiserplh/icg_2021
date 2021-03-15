@@ -69,6 +69,7 @@ uniform vec3 light_color_ambient;
 varying vec3 v2f_ray_origin;
 varying vec3 v2f_ray_direction;
 
+// our code ->
 /*
 	Squares a value
 */
@@ -81,7 +82,7 @@ float square(float x){
 */
 float norm(vec3 x){
 	return sqrt(dot(x,x));
-}
+}// <- our code
 
 /*
 	Solve the quadratic a*x^2 + b*x + c = 0. The method returns the number of solutions and store them
@@ -212,6 +213,7 @@ bool ray_plane_intersection(
 	// <- our code
 }
 
+// our code ->
 /*
 	Computes wether a ray intersects the cylinder 'cyl' imagining
 	it has inifite length.
@@ -298,7 +300,7 @@ bool ray_caps_cylinder_intersection(
 		}
 	}
 	return false;
-}
+} // <- our code
 
 /*
 	Check for intersection of the ray with a given cylinder in the scene.
@@ -316,12 +318,13 @@ bool ray_cylinder_intersection(
 	- store normal at intersection_point in `normal`.
 	- return whether there is an intersection with t > 0
 	*/
+	// our code ->
 	vec2 t_candidates;
 	if(ray_infinite_cylinder_intersection(ray_origin, ray_direction, cyl, t_candidates)){
 		return ray_caps_cylinder_intersection(ray_origin, ray_direction, cyl, t_candidates, t, normal);
 	}else{
 		return false;
-	}
+	} // <- our code
 }
 
 
@@ -462,6 +465,7 @@ vec3 lighting(
 	- return the ouput color
 	*/
 
+	// our code ->
 	vec3 l = normalize(light.position - object_point);
 	vec3 light_color = vec3(0.);
 	vec3 r = normalize(2.*object_normal*(dot(object_normal, l)) - l);
@@ -492,7 +496,7 @@ vec3 lighting(
 	- update the lighting accordingly
 	*/
 
-	
+	// <- our code
 }
 
 /*
@@ -525,6 +529,7 @@ void main() {
 	vec3 col_normal;
 	int material_id = 0;
 	
+	// our code ->
 	if (ray_intersection(ray_origin, ray_direction, col_distance, col_normal, material_id)){
 		Material mat = get_mat2(material_id);
 		vec3 collision = ray_origin + col_distance*ray_direction;
@@ -568,4 +573,6 @@ void main() {
 	//gl_FragColor = vec4(0.5+0.5*col_normal, 1.);
 	//gl_FragColor *= sin(5.*col_distance);
 	gl_FragColor = vec4(pix_color, 1.);
+
+	// <- our code
 }
