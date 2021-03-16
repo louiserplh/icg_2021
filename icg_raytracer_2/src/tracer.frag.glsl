@@ -468,39 +468,44 @@ vec3 lighting(
 	// our code ->
 	// initializes l (toward light) and r (perfect reflection) vectors
 	vec3 l = normalize(light.position - object_point);
-	vec3 r = normalize(2.*object_normal*(dot(object_normal, l)) - l);
+	vec3 r = normalize(2.*object_normal*dot(object_normal, l) - l);
 	
 	// the total light RGB value at the object_point in space
 	vec3 intersection_color = vec3(0.);
 
 	// no light at that point if light ray doesn't hit it
-	if(dot(light.position, object_normal)< 0.) {
-		return vec3(0.);
-	}
 
 	// diffuse component computation to total color
 	vec3 md = mat.color * mat.diffuse;
-	intersection_color += md * (dot(object_normal,l) * vec3(1.));
-
+	if(dot(light.position, object_normal)>= 0.){
+		intersection_color += md * (dot(object_normal,l) * vec3(1.));
+	}
 	// specular component
 	vec3 ms = mat.color * mat.specular;
 	
 	// adds specular iff ray reflex toward camera
-	if(dot(r, direction_to_camera) > 0.){
-		vec3 specular = ms * (pow(dot(r, direction_to_camera), mat.shininess) * vec3(1.));
+	if(dot(r, direction_to_camera) >= 0. && dot(object_normal, l) >= 0.){
+		vec3 specular = ms * (pow(dot(r, direction_to_camera), mat.shininess));
 		intersection_color += specular;
+	}
+
+	/** TODO 2.2: 
+	- shoot a shadow ray from the intersection point to the light
+	- check whether it intersects an object from the scene	
+	- update the lighting accordingly
+	*/
+	// ray collision's distance and normal
+	float col_distance;
+	vec3 col_normal;
+	// id of hit material
+	int material_id = 0;
+	if (ray_intersection(object_point + l*0.1, l, col_distance, col_normal, material_id)){
+		return vec3(0.);
+		
 	}
 	// return the total ambiant and specular contribution of this light ray in RGB (component-wise product)
 	return light.color * intersection_color;
 
-
-	/** TODO 2.2: 
-	- shoot a shadow ray from the intersection point to the light
-	- check whether it intersects an object from the scene
-	- update the lighting accordingly
-	*/
-
-	// <- our code
 }
 
 /*
@@ -548,7 +553,7 @@ void main() {
 		#if NUM_LIGHTS != 0
 			// computes diffuse, specular and shadow contribution for each light source
 			for(int i = 0; i< NUM_LIGHTS; ++i){
-				pix_color += lighting(collision_point, col_normal, ray_direction, lights[i], mat);
+				pix_color += lighting(collision_point, col_normal, lights[i].position - collision_point, lights[i], mat);
 			}
 		#endif
 	}
