@@ -585,6 +585,24 @@ void main() {
 		reflection_weight = ...;
 	}
 	*/
+	vec3 pix_color          = vec3(0.);
+	float reflection_weight = ...;
+
+	for(int i_reflection = 0; i_reflection < NUM_REFLECTIONS+1; i_reflection++) {
+		float col_distance;
+		vec3 col_normal = vec3(0.);
+		int mat_id      = 0;
+
+		if (ray_intersection(ray_origin, ray_direction, col_distance, col_normal, material_id)){
+			
+		}
+
+		Material m = get_mat2(mat_id); // get material of the intersected object
+
+		ray_origin        = ...;
+		ray_direction     = ...;
+		reflection_weight = ...;
+	}
 
 	//gl_FragColor = vec4(0.5+0.5*col_normal, 1.);
 	//gl_FragColor *= sin(5.*col_distance);
