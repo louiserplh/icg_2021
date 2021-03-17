@@ -466,29 +466,29 @@ vec3 lighting(
 	*/
 
 	// our code ->
-	// initializes l (toward light) and r (perfect reflection) vectors
+	// initializes l (toward light), r (perfect reflection) vectors, v (toward camera) vectors
 	vec3 l = normalize(light.position - object_point);
 	vec3 r = normalize(2.*object_normal*dot(object_normal, l) - l);
+	vec3 v = normalize(direction_to_camera);
 	
 	// the total light RGB value at the object_point in space
 	vec3 intersection_color = vec3(0.);
 
-	// no light at that point if light ray doesn't hit it
-
-	// diffuse component computation to total color
-	vec3 md = mat.color * mat.diffuse;
-	if(dot(light.position, object_normal)>= 0.){
-		intersection_color += md * (dot(object_normal,l) * vec3(1.));
+	// diffuse iff in that case (slide 17)
+	if(dot(object_normal, l)>0.){
+		// diffuse component computation to total color
+		vec3 md = mat.color * mat.diffuse;
+		intersection_color += md * (dot(object_normal,l));
 	}
-	// specular component
-	vec3 ms = mat.color * mat.specular;
-	
-	// adds specular iff ray reflex toward camera
-	if(dot(r, direction_to_camera) >= 0. && dot(object_normal, l) >= 0.){
-		vec3 specular = ms * (pow(dot(r, direction_to_camera), mat.shininess));
+
+	// specular iff in that case (slide 23)
+	if(dot(object_normal, l)>0. && dot(r,v)>0.){
+		// specular component
+		vec3 ms = mat.color * mat.specular;
+		vec3 specular = ms * (pow(dot(r, v), mat.shininess));
 		intersection_color += specular;
 	}
-
+	
 	/** TODO 2.2: 
 	- shoot a shadow ray from the intersection point to the light
 	- check whether it intersects an object from the scene	
@@ -499,13 +499,12 @@ vec3 lighting(
 	vec3 col_normal;
 	// id of hit material
 	int material_id = 0;
-	if (ray_intersection(object_point + l*0.1, l, col_distance, col_normal, material_id)){
+	if (ray_intersection(object_point + l*0.001, l, col_distance, col_normal, material_id)){
 		return vec3(0.);
-		
 	}
+
 	// return the total ambiant and specular contribution of this light ray in RGB (component-wise product)
 	return light.color * intersection_color;
-
 }
 
 /*
@@ -552,8 +551,8 @@ void main() {
 
 		#if NUM_LIGHTS != 0
 			// computes diffuse, specular and shadow contribution for each light source
-			for(int i = 0; i< NUM_LIGHTS; ++i){
-				pix_color += lighting(collision_point, col_normal, lights[i].position - collision_point, lights[i], mat);
+			for(int i = 0; i < NUM_LIGHTS; ++i){
+				pix_color += lighting(collision_point, col_normal, -ray_direction, lights[i], mat);
 			}
 		#endif
 	}
@@ -585,7 +584,7 @@ void main() {
 		reflection_weight = ...;
 	}
 	*/
-	vec3 pix_color          = vec3(0.);
+	/*vec3 pix_color          = vec3(0.);
 	float reflection_weight = ...;
 
 	for(int i_reflection = 0; i_reflection < NUM_REFLECTIONS+1; i_reflection++) {
@@ -605,7 +604,7 @@ void main() {
 	}
 
 	//gl_FragColor = vec4(0.5+0.5*col_normal, 1.);
-	//gl_FragColor *= sin(5.*col_distance);
+	//gl_FragColor *= sin(5.*col_distance);*/
 	gl_FragColor = vec4(pix_color, 1.);
 
 	// <- our code
