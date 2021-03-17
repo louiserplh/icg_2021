@@ -499,7 +499,7 @@ vec3 lighting(
 	vec3 col_normal;
 	// id of hit material
 	int material_id = 0;
-	if (ray_intersection(object_point + l*0.001, l, col_distance, col_normal, material_id)){
+	if (ray_intersection(object_point + l*1e-4, l, col_distance, col_normal, material_id) && col_distance < norm(light.position-object_point)){
 		return vec3(0.);
 	}
 
@@ -592,7 +592,7 @@ void main() {
 	for(int i_reflection = 0; i_reflection < NUM_REFLECTIONS+1; i_reflection++) {
 		// ray collision's distance and normal
 		float col_distance;
-		vec3 col_normal;
+		vec3 col_normal = vec3(0.);
 		// id of hit material
 		int material_id = 0;
 
@@ -612,10 +612,11 @@ void main() {
 				}
 			#endif
 
+			// Implements theory (see TheoryExercice.pdf)
 			pix_color += (1.-mat.mirror)*reflection_weight*c_i;
 			reflection_weight *= mat.mirror;
 			ray_direction = normalize(reflect(ray_direction, col_normal));
-			ray_origin = collision_point + 0.001*ray_direction;
+			ray_origin = collision_point + 1e-4*ray_direction;
 		}
 	}
 
