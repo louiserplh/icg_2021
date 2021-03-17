@@ -468,7 +468,7 @@ vec3 lighting(
 	// our code ->
 	// initializes l (toward light), r (perfect reflection) vectors, v (toward camera) vectors
 	vec3 l = normalize(light.position - object_point);
-	vec3 r = normalize(2.*object_normal*dot(object_normal, l) - l);
+	vec3 r = normalize(reflect(-l, object_normal)); //normalize(2.*object_normal*dot(object_normal, l) - l);
 	vec3 v = normalize(direction_to_camera);
 	
 	// the total light RGB value at the object_point in space
@@ -526,13 +526,14 @@ void main() {
 	vec3 ray_origin = v2f_ray_origin;
 	vec3 ray_direction = normalize(v2f_ray_direction);
 
-	vec3 pix_color = vec3(0.);
+	//vec3 pix_color = vec3(0.);
 
 	/** TODO 2.1: 
 	- check whether the ray intersects an object in the scene
 	- if it does, compute the ambient contribution to the total intensity
 	- compute the intensity contribution from each light in the scene and store the sum in pix_color
 	*/
+	/*
 	// ray collision's distance and normal
 	float col_distance;
 	vec3 col_normal;
@@ -556,7 +557,7 @@ void main() {
 			}
 		#endif
 	}
-	
+	*/
 	
 
 	/** TODO 2.3.2: 
@@ -584,27 +585,42 @@ void main() {
 		reflection_weight = ...;
 	}
 	*/
-	/*vec3 pix_color          = vec3(0.);
-	float reflection_weight = ...;
+
+	vec3 pix_color = vec3(0.);
+	float reflection_weight = 1.;
 
 	for(int i_reflection = 0; i_reflection < NUM_REFLECTIONS+1; i_reflection++) {
+		// ray collision's distance and normal
 		float col_distance;
-		vec3 col_normal = vec3(0.);
-		int mat_id      = 0;
+		vec3 col_normal;
+		// id of hit material
+		int material_id = 0;
 
+		// computes where an intersection happens (if there is one)
 		if (ray_intersection(ray_origin, ray_direction, col_distance, col_normal, material_id)){
-			
+			Material mat = get_mat2(material_id);
+			vec3 collision_point = ray_origin + col_distance*ray_direction;
+
+			// computes ambiant light contribution
+			vec3 ma = mat.color * mat.ambient;
+			vec3 c_i = light_color_ambient * ma;
+
+			#if NUM_LIGHTS != 0
+				// computes diffuse, specular and shadow contribution for each light source
+				for(int i = 0; i < NUM_LIGHTS; ++i){
+					c_i += lighting(collision_point, col_normal, -ray_direction, lights[i], mat);
+				}
+			#endif
+
+			pix_color += (1.-mat.mirror)*reflection_weight*c_i;
+			reflection_weight *= mat.mirror;
+			ray_direction = normalize(reflect(ray_direction, col_normal));
+			ray_origin = collision_point + 0.001*ray_direction;
 		}
-
-		Material m = get_mat2(mat_id); // get material of the intersected object
-
-		ray_origin        = ...;
-		ray_direction     = ...;
-		reflection_weight = ...;
 	}
 
 	//gl_FragColor = vec4(0.5+0.5*col_normal, 1.);
-	//gl_FragColor *= sin(5.*col_distance);*/
+	//gl_FragColor *= sin(5.*col_distance);
 	gl_FragColor = vec4(pix_color, 1.);
 
 	// <- our code
