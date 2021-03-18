@@ -10,9 +10,13 @@ Here, we struggled a little bit because we were not getting the expected output.
 
 Task 2.3.1: Derive iterative formula
 
+We used Overleaf to write the theory part.
+
 Task 2.3.2: Implement reflections
 
 For this task, we had to first discuss how we would translate the theory into the code since we weren't sure to fully understand. After spending some time making sure we fully understand all the elements of the formula and what they represent in the code, we changed the main function to include reflections. We first made the mistake of not separating the final pixel color with the output of the lighting function, but quickly realized what was wrong and fixed it. In the included screenshots, we set NUM_REFLECTIONS to 2.
+
+Even though we are satisfied with our result, we noticed that in certain scenes (like Primitive) there are a few shadows that don't appear in the reference image. Sadly, we could not find the reason for this.
 
 - WORKLOAD
 Tom 40 %
