@@ -10,7 +10,7 @@ Here, we struggled a little bit because we were not getting the expected output.
 
 Task 2.3.1: Derive iterative formula
 
-We used Overleaf to write the theory part.
+We used Overleaf to write the theory part. (see TheoryExercice.pdf)
 
 Task 2.3.2: Implement reflections
 
