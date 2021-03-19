@@ -616,7 +616,7 @@ void main() {
 		reflection_weight = ...;
 	}
 	*/
-
+	// -> our code
 	vec3 pix_color = vec3(0.);
 	float reflection_weight = 1.;
 
