@@ -26,10 +26,27 @@ export function compute_triangle_normals_and_angle_weights(mesh) {
         const vert1 = get_vert(mesh, mesh.tris.indices[3*i_face + 0])
         const vert2 = get_vert(mesh, mesh.tris.indices[3*i_face + 1])
         const vert3 = get_vert(mesh, mesh.tris.indices[3*i_face + 2])
+
+        let sub1 = vec3.zero
+        let sub2 = vec3.zero
+        let sub3 = vec3.zero
+        vec3.subtract(sub1, vert2, vert1)
+        vec3.subtract(sub2, vert3, vert1)
+        vec3.subtract(sub2, vert3, vert2)
+
+        let cross = vec3.zero
+        vec3.cross(cross, sub1, sub2)
+        let normal = vec3.zero
+        vec3.normalize(normal, cross)
+        vec3.divide(normal, cross, normal)
+
+        let angle1 = vec3.angle(sub1, sub2)
+        let angle2 = vec3.angle(sub1, sub3)
+        let angle3 = vec3.angle(sub2, sub3)
         
         // Modify the way triangle normals and angle_weights are computed
-        tri_normals.push([1., 0., 0.])
-        angle_weights.push([1., 1., 1.])
+        tri_normals.push([normal[0], normal[1], normal[2]])
+        angle_weights.push([angle1, angle2, angle3])
     }
     return [tri_normals, angle_weights]
 }
