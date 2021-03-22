@@ -430,10 +430,10 @@ bool ray_triangle_intersection(
 		float tt = det_x / det_d;
 		float beta = det_y / det_d;
 		float gamma = det_z/ det_d;	
-		float alpha = 1 - beta - gamma;
+		float alpha = 1. - beta - gamma;
 		vec3 intersection_point = (alpha, beta, gamma);
 
-		if(tt > 0 && alpha >= 0 && beta >=1 && gamma >=1){
+		if(tt > 0. && alpha >= 0. && beta >=1. && gamma >=1.){
 			t = tt;
 			normal = normalize(vec3.cross(p1-p0, p2-p0));
 			return true;
