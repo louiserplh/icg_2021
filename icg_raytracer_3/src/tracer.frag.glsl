@@ -410,43 +410,55 @@ bool ray_triangle_intersection(
 	D[0] = a;
 	D[1] = b;
 	D[2] = c;
-	float det_d = determinant(D);
+	float det_d = 0.0;
+	determinante(D, det_d);
 	if( !(abs(det_d)<= 1e-12)){
 		mat3 Dx;
 		Dx[0] = d;
 		Dx[1] = b;
 		Dx[2] = c;
-		float det_x = determinant(Dx);
+		float det_x = 0.0; 
+		determinante(Dx, det_x);
 		mat3 Dy;
 		Dy[0] = a;
 		Dy[1] = d;
 		Dy[2] = c;
-		float det_y = determinant(Dy);
+		float det_y = 0.0; 
+		determinante(Dy, det_y);
 		mat3 Dz;
 		Dz[0] = a;
 		Dz[1] = b;
 		Dz[2] = d;
-		float det_z = determinant(Dz);
+		float det_z = 0.0;
+		determinante(Dz, det_z);
 		float tt = det_x / det_d;
 		float beta = det_y / det_d;
 		float gamma = det_z/ det_d;	
 		float alpha = 1. - beta - gamma;
-		vec3 intersection_point = (alpha, beta, gamma);
+		vec3 intersection_point = vec3(alpha, beta, gamma);
 
 		if(tt > 0. && alpha >= 0. && beta >=1. && gamma >=1.){
 			t = tt;
-			normal = normalize(vec3.cross(p1-p0, p2-p0));
+			normal = normalize(cross(p1-p0, p2-p0));
 			return true;
 		}
 	}
 
-	
-
-
 	return false;
 }
 
-
+void determinante(mat3 a, out float det) {
+	float a00 = a[0][0];
+	float a01 = a[0][1];
+	float a02 = a[0][2];
+	float a10 = a[1][0];
+	float a11 = a[1][1];
+	float a12 = a[1][2];
+	float a20 = a[2][0];
+	float a21 = a[2][1];
+	float a22 = a[2][2];
+  det =  a00 * (a22 * a11 - a12 * a21) + a01 * (-a22 * a10 + a12 * a20) + a02 * (a21 * a10 - a11 * a20);
+}
 
 /*
 	Check for intersection of the ray with any object in the scene.
