@@ -44,7 +44,7 @@ export function compute_triangle_normals_and_angle_weights(mesh) {
         let angle2 = Math.abs(vec3.angle(b_a, c_b))
         let angle3 = Math.abs(vec3.angle(c_a, c_b))
         
-        tri_normals.push([normal[0], normal[1], normal[2]])
+        tri_normals.push([normalized_cross[0], normalized_cross[1], normalized_cross[2]])
         angle_weights.push([angle1, angle2, angle3])
         // <- our code
     }
