@@ -23,30 +23,30 @@ export function compute_triangle_normals_and_angle_weights(mesh) {
     const tri_normals   = []
     const angle_weights = []
     for(let i_face = 0; i_face < num_faces; i_face++) {
-        const vert1 = get_vert(mesh, mesh.tris.indices[3*i_face + 0])
-        const vert2 = get_vert(mesh, mesh.tris.indices[3*i_face + 1])
-        const vert3 = get_vert(mesh, mesh.tris.indices[3*i_face + 2])
+        // our code ->
+        const a = get_vert(mesh, mesh.tris.indices[3*i_face + 0])
+        const b = get_vert(mesh, mesh.tris.indices[3*i_face + 1])
+        const c = get_vert(mesh, mesh.tris.indices[3*i_face + 2])
 
-        let sub1 = vec3.zero
-        let sub2 = vec3.zero
-        let sub3 = vec3.zero
-        vec3.subtract(sub1, vert2, vert1)
-        vec3.subtract(sub2, vert3, vert1)
-        vec3.subtract(sub2, vert3, vert2)
+        let b_a = vec3.zero
+        let c_a = vec3.zero
+        let c_b = vec3.zero
+        vec3.subtract(b_a, b, a)
+        vec3.subtract(c_a, c, a)
+        vec3.subtract(c_b, c, b)
 
         let cross = vec3.zero
-        vec3.cross(cross, sub1, sub2)
-        let normal = vec3.zero
-        vec3.normalize(normal, cross)
-        vec3.divide(normal, cross, normal)
+        vec3.cross(cross, b_a, c_a)
+        let normalized_cross = vec3.zero
+        vec3.normalize(normalized_cross, cross)
 
-        let angle1 = vec3.angle(sub1, sub2)
-        let angle2 = vec3.angle(sub1, sub3)
-        let angle3 = vec3.angle(sub2, sub3)
+        let angle1 = Math.abs(vec3.angle(b_a, c_a))
+        let angle2 = Math.abs(vec3.angle(b_a, c_b))
+        let angle3 = Math.abs(vec3.angle(c_a, c_b))
         
-        // Modify the way triangle normals and angle_weights are computed
         tri_normals.push([normal[0], normal[1], normal[2]])
         angle_weights.push([angle1, angle2, angle3])
+        // <- our code
     }
     return [tri_normals, angle_weights]
 }
