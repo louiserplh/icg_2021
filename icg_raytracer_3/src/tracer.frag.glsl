@@ -411,32 +411,34 @@ bool ray_triangle_intersection(
 	D[1] = b;
 	D[2] = c;
 	float det_d = determinant(D);
-	mat3 Dx;
-	D[0] = d;
-	D[1] = b;
-	D[2] = c;
-	float det_x = determinant(Dx);
-	mat3 Dy;
-	D[0] = a;
-	D[1] = d;
-	D[2] = c;
-	float det_y = determinant(Dy);
-	mat3 Dz;
-	D[0] = a;
-	D[1] = b;
-	D[2] = d;
-	float det_z = determinant(Dz);
-	float tt = det_x / det_d;
-	float beta = det_y / det_d;
-	float gamma = det_z/ det_d;	
-	float alpha = 1 - beta - gamma;
-	vec3 intersection_point = (alpha, beta, gamma);
-	
-	if(tt > 0 && alpha >= 0 && beta >=1 && gamma >=1){
-		t = tt;
-		normal = 
-	}
+	if( !(abs(det_d)<= 1e-12)){
+		mat3 Dx;
+		Dx[0] = d;
+		Dx[1] = b;
+		Dx[2] = c;
+		float det_x = determinant(Dx);
+		mat3 Dy;
+		Dy[0] = a;
+		Dy[1] = d;
+		Dy[2] = c;
+		float det_y = determinant(Dy);
+		mat3 Dz;
+		Dz[0] = a;
+		Dz[1] = b;
+		Dz[2] = d;
+		float det_z = determinant(Dz);
+		float tt = det_x / det_d;
+		float beta = det_y / det_d;
+		float gamma = det_z/ det_d;	
+		float alpha = 1 - beta - gamma;
+		vec3 intersection_point = (alpha, beta, gamma);
 
+		if(tt > 0 && alpha >= 0 && beta >=1 && gamma >=1){
+			t = tt;
+			normal = normalize(vec3.cross(p1-p0, p2-p0));
+			return true;
+		}
+	}
 
 	
 
