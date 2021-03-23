@@ -375,6 +375,19 @@ Triangle get_triangle(int idx) {
 }
 #endif
 
+float determinant(mat3 a) {
+	float a00 = a[0][0];
+	float a01 = a[0][1];
+	float a02 = a[0][2];
+	float a10 = a[1][0];
+	float a11 = a[1][1];
+	float a12 = a[1][2];
+	float a20 = a[2][0];
+	float a21 = a[2][1];
+	float a22 = a[2][2];
+  return a00 * (a22 * a11 - a12 * a21) + a01 * (-a22 * a10 + a12 * a20) + a02 * (a21 * a10 - a11 * a20);
+}
+
 bool ray_triangle_intersection(
 		vec3 ray_origin, vec3 ray_direction, 
 		Triangle tri,
@@ -410,27 +423,23 @@ bool ray_triangle_intersection(
 	D[0] = a;
 	D[1] = b;
 	D[2] = c;
-	float det_d = 0.0;
-	determinante(D, det_d);
+	float det_d = determinant(D);
 	if( !(abs(det_d)<= 1e-12)){
 		mat3 Dx;
 		Dx[0] = d;
 		Dx[1] = b;
 		Dx[2] = c;
-		float det_x = 0.0; 
-		determinante(Dx, det_x);
+		float det_x = determinant(Dx);
 		mat3 Dy;
 		Dy[0] = a;
 		Dy[1] = d;
 		Dy[2] = c;
-		float det_y = 0.0; 
-		determinante(Dy, det_y);
+		float det_y = determinant(Dy);
 		mat3 Dz;
 		Dz[0] = a;
 		Dz[1] = b;
 		Dz[2] = d;
-		float det_z = 0.0;
-		determinante(Dz, det_z);
+		float det_z = determinant(Dz);
 		float tt = det_x / det_d;
 		float beta = det_y / det_d;
 		float gamma = det_z/ det_d;	
@@ -445,19 +454,6 @@ bool ray_triangle_intersection(
 	}
 
 	return false;
-}
-
-void determinante(mat3 a, out float det) {
-	float a00 = a[0][0];
-	float a01 = a[0][1];
-	float a02 = a[0][2];
-	float a10 = a[1][0];
-	float a11 = a[1][1];
-	float a12 = a[1][2];
-	float a20 = a[2][0];
-	float a21 = a[2][1];
-	float a22 = a[2][2];
-  det =  a00 * (a22 * a11 - a12 * a21) + a01 * (-a22 * a10 + a12 * a20) + a02 * (a21 * a10 - a11 * a20);
 }
 
 /*
