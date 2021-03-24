@@ -33,13 +33,13 @@ export function compute_triangle_normals_and_angle_weights(mesh) {
         let c_b = vec3.zero
 
         vec3.subtract(b_a, b, a)
-        vec3.normalize(b_a, b_a)
+        b_a = vec3.normalize([0,0,0], b_a)
 
         vec3.subtract(c_a, c, a)
-        vec3.normalize(c_a, c_a)
+        c_a = vec3.normalize([0,0,0], c_a)
 
         vec3.subtract(c_b, c, b)
-        vec3.normalize(c_b, c_b)
+        c_b = vec3.normalize([0,0,0], c_b)
 
         // computes the normal to the triangle
         let cross = vec3.zero
@@ -48,17 +48,15 @@ export function compute_triangle_normals_and_angle_weights(mesh) {
         vec3.normalize(normalized_cross, cross)
 
         // compute angles by setting each vector from same starting point
-        let angle1 = Math.abs(vec3.angle(b_a, c_a))
+        let a_c = vec3.negate([0, 0, 0], c_a)
+        let a_b = vec3.negate([0, 0, 0], b_a)
+        let b_c = vec3.negate([0, 0, 0], c_b)
 
-        let a_b = vec3.zero
-        vec3.negate(a_b, b_a)
-        let angle2 = Math.abs(vec3.angle(a_b, c_b))
+        let angle1 = Math.abs(vec3.angle(a_b, a_c))
 
-        let a_c = vec3.zero
-        vec3.negate(a_c, c_a)
-        let b_c = vec3.zero
-        vec3.negate(b_c, c_b)
-        let angle3 = Math.abs(vec3.angle(a_c, b_c))
+        let angle2 = Math.abs(vec3.angle(b_a, b_c))
+
+        let angle3 = Math.abs(vec3.angle(c_b, c_a))
         
         tri_normals.push([normalized_cross[0], normalized_cross[1], normalized_cross[2]])
         angle_weights.push([angle1, angle2, angle3])
@@ -92,12 +90,9 @@ export function compute_vertex_normals(mesh, tri_normals, angle_weights) {
         const a_w_3 = angle_weights[i_face][2]
 
         // computes the weighted normals sum
-        let w_n_1 = vec3.zero
-        let w_n_2 = vec3.zero
-        let w_n_3 = vec3.zero
-        vec3.scaleAndAdd(w_n_1, vertex_normals[iv1], tri_normals[i_face], a_w_1)
-        vec3.scaleAndAdd(w_n_2, vertex_normals[iv2], tri_normals[i_face], a_w_2)
-        vec3.scaleAndAdd(w_n_3, vertex_normals[iv3], tri_normals[i_face], a_w_3)
+        let w_n_1 = vec3.scaleAndAdd([0, 0, 0], vertex_normals[iv1], tri_normals[i_face], a_w_1)
+        let w_n_2 = vec3.scaleAndAdd([0, 0, 0], vertex_normals[iv2], tri_normals[i_face], a_w_2)
+        let w_n_3 = vec3.scaleAndAdd([0, 0, 0], vertex_normals[iv3], tri_normals[i_face], a_w_3)
         // Adds them to the actual vertex_normals
         vertex_normals[iv1] = w_n_1
         vertex_normals[iv2] = w_n_2
@@ -110,8 +105,8 @@ export function compute_vertex_normals(mesh, tri_normals, angle_weights) {
         // Normalize the vertices
 
         // -> our code
-        let normalized = vec3.zero
-        vec3.normalize(normalized, vertex_normals[i_vertex])
+
+        let normalized = vec3.normalize([0, 0, 0], vertex_normals[i_vertex])
         vertex_normals[i_vertex] = normalized
         // <- our code
     }

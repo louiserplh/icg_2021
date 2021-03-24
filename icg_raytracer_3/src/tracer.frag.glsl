@@ -202,7 +202,6 @@ bool ray_plane_intersection(
 	/** TODO 1.1:
 	The plane is described by its normal vec3(nx, ny, nz) and an offset d.
 	Point p belongs to the plane iff `dot(normal, p) = d`.
-
 	- compute the ray's ntersection of the plane
 	- if ray and plane are parallel there is no intersection
 	- otherwise compute intersection data and store it in `normal`, and `t` (distance along ray until intersection).
@@ -467,7 +466,6 @@ bool ray_triangle_intersection(
 	- test which of `FLAT_SHADING_STRATEGY` or `PHONG_SHADING_STRATEGY` is defined
 	- implement flat shading using the triangle normal you computed in task 3.2.1
 	- implement Phong shading using the vertex normals stored in `tri.vertex_normals`
-
 	Hint: vertex normals are stored in the same order as the vertex positions
 	*/
 
@@ -490,9 +488,7 @@ bool ray_triangle_intersection(
 	vec3 b = B - A;
 	vec3 c = C - A;
 	// there is intersection point only if the system has a solution
-	if(!cramer_solve(a, b, c, d, ti , alpha, beta, gamma)){
-		return false;
-	}
+	cramer_solve(a, b, c, d, ti , alpha, beta, gamma);
 	
 	// we make sure to validate the conditions of barycentric coordinates
 	if(ti > 0. && ti < MAX_RANGE 
@@ -500,7 +496,7 @@ bool ray_triangle_intersection(
 	&& alpha <= 1.+1e-12 && beta <= 1.+1e-12 && gamma <= 1.+1e-12){
 		t = ti;
 
-		#if defined FLAT_SHADING_STRATEGY
+		#ifdef FLAT_SHADING_STRATEGY
 		// the code for flat shading
 		// a normal to the triangle is normal to both its edges
 		vec3 normal_to_triangle = cross(B-A, C-A);
@@ -510,7 +506,7 @@ bool ray_triangle_intersection(
 		normal = normalize(normal_to_triangle);
 		#endif
 		
-		#if defined PHONG_SHADING_STRATEGY
+		#ifdef PHONG_SHADING_STRATEGY
 		// the code for Phong shading
 		vec3 n_A = tri.vertex_normals[0];
 		vec3 n_B = tri.vertex_normals[1];
@@ -523,7 +519,8 @@ bool ray_triangle_intersection(
 		#endif
 
 		return true;
-	}else{
+	}else {
+
 		return false;
 	}
 }
@@ -716,21 +713,15 @@ void main() {
 	- compute lighting with the current ray (might be reflected)
 	- use the above formula for blending the current pixel color with the reflected one
 	- update ray origin and direction
-
 	We suggest you structure your code in the following way:
-
 	vec3 pix_color          = vec3(0.);
 	float reflection_weight = ...;
-
 	for(int i_reflection = 0; i_reflection < NUM_REFLECTIONS+1; i_reflection++) {
 		float col_distance;
 		vec3 col_normal = vec3(0.);
 		int mat_id      = 0;
-
 		...
-
 		Material m = get_mat2(mat_id); // get material of the intersected object
-
 		ray_origin        = ...;
 		ray_direction     = ...;
 		reflection_weight = ...;
@@ -775,13 +766,11 @@ void main() {
 	// <- our code
 
 	/*pix_color = 0.5+0.5*col_normal;
-
 	#if defined F_VISUALIZE_AABB && (NUM_TRIANGLES != 0)
 	if(ray_in_AABB) {
 		pix_color = 1. - pix_color;
 	}
 	#endif
-
 	gl_FragColor = vec4(pix_color, 1.);
 	//gl_FragColor *= sin(5.*col_distance);*/
 }
