@@ -351,25 +351,34 @@ bool ray_AABB_filter(
 	*/
 	//intersection point = ray_origin + ray_direction * t;
 	// computing range of t parameter where it intersect with faces of the cube
+
+	// our code ->
+
 	float tx_min = (aabb.corner_min[0] - ray_origin[0]) / ray_direction[0];
 	float tx_max = (aabb.corner_max[0] - ray_origin[0]) / ray_direction[0];
+
+
 	float ty_min = (aabb.corner_min[1] - ray_origin[1]) / ray_direction[1];
 	float ty_max = (aabb.corner_max[1] - ray_origin[1]) / ray_direction[1];
+
+
 	float tz_min = (aabb.corner_min[2] - ray_origin[2]) / ray_direction[2];
 	float tz_max = (aabb.corner_max[2] - ray_origin[2]) / ray_direction[2];
-	float t_corner_min = max(tx_min, ty_min);
-	float t_corner_max = min(tx_max, ty_max);
-	return true;
+
 	// check if ray intersect
-	if ((tx_min > ty_max) || (ty_min > tx_max)){
+	if (!((tx_min <= ty_max) && (ty_min <= tx_max))){
         return false;
 	}
-	if ((t_corner_min > tz_max) || (t_corner_min > tz_max)){
+
+	float t_total_min = max(tx_min, ty_min);
+	float t_total_max = min(tx_max, ty_max);
+
+	if (!((tz_min <= t_total_max) && (t_total_min <= tz_max))){
         return false;
 	}
-	t_corner_min = max(tz_min, t_corner_min);
-	t_corner_max = min(tz_max, t_corner_max);
+
 	return true;
+	// <- our code
 }
 
 
