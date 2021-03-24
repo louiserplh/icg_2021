@@ -86,7 +86,9 @@ export function compute_vertex_normals(mesh, tri_normals, angle_weights) {
         // Normalize the vertices
 
         // -> our code
-        vertex_normals[i_vertex] = vec3.normalize([0.,0.,0.], vertex_normals[i_vertex])
+        let normalized = vec3.zero
+        vec3.normalize(normalized, vertex_normals[i_vertex])
+        vertex_normals[i_vertex] = normalized
         // <- our code
     }
 
