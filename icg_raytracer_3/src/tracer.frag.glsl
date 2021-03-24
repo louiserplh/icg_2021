@@ -394,6 +394,9 @@ Triangle get_triangle(int idx) {
 }
 #endif
 
+/*
+	Computes the determinant of a 3x3 matrix a
+*/
 float determinant(mat3 a) {
 	float a00 = a[0][0];
 	float a01 = a[0][1];
@@ -405,6 +408,46 @@ float determinant(mat3 a) {
 	float a21 = a[2][1];
 	float a22 = a[2][2];
   return a00 * (a22 * a11 - a12 * a21) + a01 * (-a22 * a10 + a12 * a20) + a02 * (a21 * a10 - a11 * a20);
+}
+
+/*
+	Returns wether the 3x3 system
+		ti*a+beta*b+gamma*c = d
+	has solutions (in that case, returns barycentric coordinates and t)
+	(see https://en.wikipedia.org/wiki/Cramer's_rule)
+*/
+bool cramer_solve(
+	vec3 a, vec3 b, vec3 c, vec3 d, out float ti, out flat alpha,
+	out float beta, out float gamma
+){
+	// see https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Matrix_constructors 
+	mat3 D = mat3(
+		a,		// first column
+		b,		// second colum
+		c		// third column
+	);
+
+	// The system has no solutions if this det is nul
+	float det_d = determinant(D);
+	if(abs(det_d) < 1e-12){
+		return false;
+	}
+	
+	mat3 Dx = mat3(d,b,c);
+	float det_x = determinant(Dx);
+
+	mat3 Dy = mat3(a,d,c);
+	float det_y = determinant(Dy);
+
+	mat3 Dz = mat3(a,b,d);
+	float det_z = determinant(Dz);
+
+	ti = det_x / det_d;
+	beta = det_y / det_d;
+	gamma = det_z/ det_d;	
+	alpha = 1. - beta - gamma;
+
+	return true;
 }
 
 bool ray_triangle_intersection(
@@ -438,38 +481,13 @@ bool ray_triangle_intersection(
 	vec3 a = - ray_direction;
 	vec3 b = p1 - p0;
 	vec3 c = p2- p0;
-	mat3 D;
-	D[0] = a;
-	D[1] = b;
-	D[2] = c;
-	float det_d = determinant(D);
-	if( !(abs(det_d)<= 1e-12)){
-		mat3 Dx;
-		Dx[0] = d;
-		Dx[1] = b;
-		Dx[2] = c;
-		float det_x = determinant(Dx);
-		mat3 Dy;
-		Dy[0] = a;
-		Dy[1] = d;
-		Dy[2] = c;
-		float det_y = determinant(Dy);
-		mat3 Dz;
-		Dz[0] = a;
-		Dz[1] = b;
-		Dz[2] = d;
-		float det_z = determinant(Dz);
-		float tt = det_x / det_d;
-		float beta = det_y / det_d;
-		float gamma = det_z/ det_d;	
-		float alpha = 1. - beta - gamma;
-		vec3 intersection_point = vec3(alpha, beta, gamma);
+	
+	
 
-		if(tt > 0. && alpha >= 0. && beta >=1. && gamma >=1.){
-			t = tt;
-			normal = normalize(cross(p1-p0, p2-p0));
-			return true;
-		}
+	if(tt > 0. && alpha >= 0. && beta >=1. && gamma >=1.){
+		t = tt;
+		normal = normalize(cross(p1-p0, p2-p0));
+		return true;
 	}
 
 	return false;
