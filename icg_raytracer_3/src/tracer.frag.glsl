@@ -360,7 +360,7 @@ bool ray_AABB_filter(
 	float tz_max = (aabb.corner_max[2] - ray_origin[2]) / ray_direction[2];
 	float t_corner_min = max(tx_min, ty_min);
 	float t_corner_max = min(tx_max, ty_max);
-
+	return true;
 	// check if ray intersect
 	if ((tx_min > ty_max) || (ty_min > tx_max)){
         return false;
@@ -413,11 +413,11 @@ float determinant(mat3 a) {
 /*
 	Returns wether the 3x3 system
 		ti*a+beta*b+gamma*c = d
-	has solutions (in that case, returns barycentric coordinates and t)
+	has solutions (in that case, returns barycentric coordinates and ti)
 	(see https://en.wikipedia.org/wiki/Cramer's_rule)
 */
 bool cramer_solve(
-	vec3 a, vec3 b, vec3 c, vec3 d, out float ti, out flat alpha,
+	vec3 a, vec3 b, vec3 c, vec3 d, out float ti, out float alpha,
 	out float beta, out float gamma
 ){
 	// see https://www.khronos.org/opengl/wiki/Data_Type_(GLSL)#Matrix_constructors 
@@ -444,7 +444,7 @@ bool cramer_solve(
 
 	ti = det_x / det_d;
 	beta = det_y / det_d;
-	gamma = det_z/ det_d;	
+	gamma = det_z / det_d;	
 	alpha = 1. - beta - gamma;
 
 	return true;
@@ -471,26 +471,44 @@ bool ray_triangle_intersection(
 	Hint: vertex normals are stored in the same order as the vertex positions
 	*/
 
-	vec3 p0 = tri.vertices[0];
-	vec3 p1 = tri.vertices[1];
-	vec3 p2 = tri.vertices[2];
+	vec3 A = tri.vertices[0];
+	vec3 B = tri.vertices[1];
+	vec3 C = tri.vertices[2];
 
-	vec3 intersection_point;
 	t = MAX_RANGE + 10.;
-	vec3 d = ray_origin - p0;
+
+	// we initialize our elements to invalid values to make sure not to use them
+	float ti = -1.;
+	float alpha = -1.;
+	float beta = -1.;
+	float gamma = -1.;
+
+	// we want to solve the system :
+	// (o-A)=ti*(-d)+beta*(B-A)+gamma*(C-A)
+	vec3 d = ray_origin - A;
 	vec3 a = - ray_direction;
-	vec3 b = p1 - p0;
-	vec3 c = p2- p0;
-	
-	
-
-	if(tt > 0. && alpha >= 0. && beta >=1. && gamma >=1.){
-		t = tt;
-		normal = normalize(cross(p1-p0, p2-p0));
-		return true;
+	vec3 b = B - A;
+	vec3 c = C - A;
+	// there is intersection point only if the system has a solution
+	if(!cramer_solve(a, b, c, d, ti , alpha, beta, gamma)){
+		return false;
 	}
-
-	return false;
+	
+	// we make sure to validate the conditions of barycentric coordinates
+	if(ti > 0. && ti < MAX_RANGE 
+	&& alpha >= 0.-1e-12 && beta >= 0.-1e-12 && gamma >= 0.-1e-12
+	&& alpha <= 1.+1e-12 && beta <= 1.+1e-12 && gamma <= 1.+1e-12){
+		t = ti;
+		// a normal to the triangle is normal to both its edges
+		vec3 normal_to_triangle = cross(B-A, C-A);
+		if(dot(normal_to_triangle, ray_direction) > 0.){
+			normal_to_triangle = -normal_to_triangle;
+		}
+		normal = normalize(normal_to_triangle);
+		return true;
+	}else{
+		return false;
+	}
 }
 
 /*
