@@ -499,12 +499,29 @@ bool ray_triangle_intersection(
 	&& alpha >= 0.-1e-12 && beta >= 0.-1e-12 && gamma >= 0.-1e-12
 	&& alpha <= 1.+1e-12 && beta <= 1.+1e-12 && gamma <= 1.+1e-12){
 		t = ti;
+
+		#if defined FLAT_SHADING_STRATEGY
+		// the code for flat shading
 		// a normal to the triangle is normal to both its edges
 		vec3 normal_to_triangle = cross(B-A, C-A);
 		if(dot(normal_to_triangle, ray_direction) > 0.){
 			normal_to_triangle = -normal_to_triangle;
 		}
 		normal = normalize(normal_to_triangle);
+		#endif
+		
+		#if defined PHONG_SHADING_STRATEGY
+		// the code for Phong shading
+		vec3 n_A = tri.vertex_normals[0];
+		vec3 n_B = tri.vertex_normals[1];
+		vec3 n_C = tri.vertex_normals[2];
+		vec3 n_X = alpha*n_A + beta*n_B + gamma*n_C;
+		if(dot(n_X, ray_direction) > 0.){
+			n_X = -n_X;
+		}
+		normal = normalize(n_X);
+		#endif
+
 		return true;
 	}else{
 		return false;
