@@ -711,6 +711,10 @@ void main() {
 	vec3 ray_origin = v2f_ray_origin;
 	vec3 ray_direction = normalize(v2f_ray_direction);
 
+	#if defined F_VISUALIZE_AABB && (NUM_TRIANGLES != 0)
+	bool ray_in_AABB = ray_AABB_filter(ray_origin, ray_direction, mesh_extent);
+	#endif
+
 	/** TODO 2.1: 
 	- check whether the ray intersects an object in the scene
 	- if it does, compute the ambient contribution to the total intensity
@@ -770,16 +774,16 @@ void main() {
 			ray_origin = collision_point + 1e-4*ray_direction;
 		}
 	}
-	gl_FragColor = vec4(pix_color, 1.);
+	//gl_FragColor = vec4(pix_color, 1.);
 
 	// <- our code
 
-	/*pix_color = 0.5+0.5*col_normal;
 	#if defined F_VISUALIZE_AABB && (NUM_TRIANGLES != 0)
 	if(ray_in_AABB) {
 		pix_color = 1. - pix_color;
 	}
 	#endif
+
 	gl_FragColor = vec4(pix_color, 1.);
-	//gl_FragColor *= sin(5.*col_distance);*/
+	//gl_FragColor *= sin(5.*col_distance);
 }
