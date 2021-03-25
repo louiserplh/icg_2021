@@ -43,9 +43,9 @@ export function compute_triangle_normals_and_angle_weights(mesh) {
 
         // computes the normal to the triangle
         let cross = vec3.zero
-        vec3.cross(cross, b_a, c_a)
+        cross = vec3.cross([0, 0, 0], b_a, c_a)
         let normalized_cross = vec3.zero
-        vec3.normalize(normalized_cross, cross)
+        normalized_cross = vec3.normalize([0, 0, 0], cross)
 
         // compute angles by setting each vector from same starting point
         let a_c = vec3.negate([0, 0, 0], c_a)
