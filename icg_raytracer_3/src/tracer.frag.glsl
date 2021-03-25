@@ -340,7 +340,6 @@ bool ray_cylinder_intersection(
 	} // <- our code
 }
 
-
 bool ray_AABB_filter(
 	vec3 ray_origin, vec3 ray_direction, AABB aabb)
 {
@@ -354,17 +353,56 @@ bool ray_AABB_filter(
 
 	// our code ->
 
-	float tx_min = (aabb.corner_min[0] - ray_origin[0]) / ray_direction[0];
-	float tx_max = (aabb.corner_max[0] - ray_origin[0]) / ray_direction[0];
+	float tx_min = 0.0;
+	float tx_max = 0.0;
+	float ty_min = 0.0;
+	float ty_max = 0.0;
+	float tz_min = 0.0;
+	float tz_max = 0.0;
 
+	if(abs(ray_direction[0]) <= 1e-12){ // check for all coordinates if ray direction is large enough
+		tx_min = (aabb.corner_min[0] - ray_origin[0]) * MAX_RANGE;
+		tx_max = (aabb.corner_max[0] - ray_origin[0]) * MAX_RANGE;
+	}
+	else{
+		tx_min = (aabb.corner_min[0] - ray_origin[0]) / ray_direction[0];
+		tx_max = (aabb.corner_max[0] - ray_origin[0]) / ray_direction[0];
+	}
 
-	float ty_min = (aabb.corner_min[1] - ray_origin[1]) / ray_direction[1];
-	float ty_max = (aabb.corner_max[1] - ray_origin[1]) / ray_direction[1];
+	if(abs(ray_direction[1]) <= 1e-12){
+		ty_min = (aabb.corner_min[1] - ray_origin[1]) * MAX_RANGE;
+		ty_max = (aabb.corner_max[1] - ray_origin[1]) * MAX_RANGE;
+	}
+	else{
+		ty_min = (aabb.corner_min[1] - ray_origin[1]) / ray_direction[1];
+		ty_max = (aabb.corner_max[1] - ray_origin[1]) / ray_direction[1];
+	}
 
+	if(abs(ray_direction[2]) <= 1e-12){
+		tz_min = (aabb.corner_min[2] - ray_origin[2]) * MAX_RANGE;
+		tz_max = (aabb.corner_max[2] - ray_origin[2]) * MAX_RANGE;
+	}
+	else{
+		tz_min = (aabb.corner_min[2] - ray_origin[2]) / ray_direction[2];
+		tz_max = (aabb.corner_max[2] - ray_origin[2]) / ray_direction[2];
+	}
 
-	float tz_min = (aabb.corner_min[2] - ray_origin[2]) / ray_direction[2];
-	float tz_max = (aabb.corner_max[2] - ray_origin[2]) / ray_direction[2];
-
+	// check that min and max are not inverted
+	if(tx_min > tx_max){
+		float temp = tx_min;
+		tx_min = tx_max;
+		tx_max = temp;
+	}
+	if(ty_min > ty_max){
+		float temp = ty_min;
+		ty_min = ty_max;
+		ty_max = temp;
+	}
+	if(tz_min > tz_max){
+		float temp = tz_min;
+		tz_min = tz_max;
+		tz_max = temp;
+	}
 	// check if ray intersect
 	if (!((tx_min <= ty_max) && (ty_min <= tx_max))){
         return false;
