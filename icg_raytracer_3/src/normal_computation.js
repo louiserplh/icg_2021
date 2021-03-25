@@ -77,6 +77,8 @@ export function compute_vertex_normals(mesh, tri_normals, angle_weights) {
     const num_vertices = (mesh.tris.vertices.length / 3) | 0
     let vertex_normals = Array(num_vertices).fill([0., 0., 0.])
 
+    console.log(vertex_normals)
+
     for(let i_face = 0; i_face < num_faces; i_face++) {
         const iv1 = mesh.tris.indices[3*i_face + 0]
         const iv2 = mesh.tris.indices[3*i_face + 1]
