@@ -113,7 +113,8 @@ export class PlanetActor extends Actor {
 	draw({mat_projection, mat_view}) {
 		// TODO 4.2.1.2
 		// Calculate mat_mvp: model-view-projection matrix
-		//mat4_matmul_many(this.mat_mvp, ...);
+		// beware the order (see https://jsantell.com/model-view-projection/)
+		mat4_matmul_many(this.mat_mvp, mat_projection, mat_view, this.mat_model_to_world);
 
 		this.pipeline({
 			mat_mvp: this.mat_mvp,
