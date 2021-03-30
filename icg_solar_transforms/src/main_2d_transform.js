@@ -5,6 +5,8 @@ import {vec2, vec3, vec4, mat3, mat4} from "../lib/gl-matrix_3.3.0/esm/index.js"
 
 import {DOM_loaded_promise} from "./icg_web.js"
 import {deg_to_rad, mat4_to_string, vec_to_string, mat4_matmul_many} from "./icg_math.js"
+import { translate } from "../lib/gl-matrix_3.3.0/esm/mat2d.js";
+import { rotate } from "../lib/gl-matrix_3.3.0/esm/mat2.js";
 
 
 var regl_global_handle = null; // store the regl context here in case we want to touch it in devconsole
@@ -82,7 +84,8 @@ async function main() {
 		void main() {
 			// TODO 4.1.1.1 Edit the vertex shader to apply mouse_offset translation to the vertex position.
 			// We have to return a vec4, because homogenous coordinates are being used.
-			gl_Position = vec4(position, 0, 1);
+			vec2 position_new = position + mouse_offset;
+			gl_Position = vec4(position_new, 0, 1);
 		}`,
 			
 		/* 
@@ -125,7 +128,7 @@ async function main() {
 
 		void main() {
 			// TODO 4.1.2.1 Edit the vertex shader to apply mat_transform to the vertex position.
-			gl_Position = vec4(position, 0, 1);
+			gl_Position = mat_transform * vec4(position, 0, 1);
 		}`,
 		
 		frag: `
@@ -195,8 +198,8 @@ async function main() {
 		// TODO 4.1.1.2 Draw the blue triangle translated by mouse_offset
 		
 		draw_triangle_with_offset({
-			mouse_offset: [0, 0],
-			color: [0.5, 0.5, 0.5],
+			mouse_offset: mouse_offset,
+			color: color_blue,
 		});
 
 		/*
@@ -208,15 +211,21 @@ async function main() {
 				* a red triangle spinning at [0.5, 0, 0]
 			You do not have to apply the mouse_offset to them.
 		*/
-		//draw_triangle_with_transform({
-		//	mat_transform: mat_transform,
-		//	color: [0.5, 0.5, 0.5],
-		//});
+		const translation = [0.5, 0, 0];
+		let M_translation =mat4.fromTranslation(mat4.create(), translation);
+		let M_rotation = mat4.fromZRotation(mat4.create(), sim_time * 30 * deg_to_rad);
+		let M_RT = mat4_matmul_many(mat4.create(), M_translation, M_rotation);
+		let M_TR = mat4_matmul_many(mat4.create(), M_rotation, M_translation);
 
-		//draw_triangle_with_transform({
-		//	mat_transform: mat_transform,
-		//	color: [0.5, 0.5, 0.5],
-		//});
+		draw_triangle_with_transform({
+			mat_transform: M_RT,
+			color: color_green,
+		});
+
+		draw_triangle_with_transform({
+			mat_transform: M_TR,
+			color: color_red,
+		});
 
 		// You can write whatever you need in the debug box
 		debug_text.textContent = `
