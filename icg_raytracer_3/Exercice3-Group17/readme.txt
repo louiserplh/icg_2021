@@ -2,15 +2,15 @@
 
 Task 3.1.1: Compute triangle normals and opening angles
 
-At first, we coded this part without any real issues and then moved on to other tasks. However, we realized when working on Phong shading that we had several errors : first of all, some of the calculated angles were incorrect, and we had some syntax issues. When we fixed those issues, everything worked as expected.
+At first, we coded this part using the couse slides without any real issues and then moved on to other tasks. However, we realized when working on Phong shading that we had several errors : first of all, some of the calculated angles were incorrect, and we had some syntax issues. When we fixed those issues, everything worked as expected.
 
 Task 3.1.2: Compute vertex normals
 
-Similarly, we didn't run into issues with this part until we tested Phong shading. Again, the errors were mainly syntax ones (like assigning out vectors that made the program behave strangely), which we fixed to have the function work correctly.
+Similarly, we didn't run into issues with this part until we tested Phong shading. We used to formula given in the slides/handout and the scaleAndAdd function to translate it to code. Again, the errors were mainly syntax ones (like assigning out vectors that made the program behave strangely), which we fixed to have the function work correctly.
 
 Task 3.2.1: Implement ray-triangle intersection
 
-For this section, we wrote some helper methods like cramer_solve. We ran into some issues in trying to understand how entities like vec3 were represented and how we could access its elements, but we quickly figured it out and implemented an algorithm that seems correct.
+For this section, we wrote some helper methods like cramer_solve, the method of which we looked up online. We ran into some issues in trying to understand how entities like vec3 were represented and how we could access its elements, but we quickly figured it out and implemented an algorithm that seems correct.
 
 Task 3.2.2: Implement flat and Phong shading strategies
 

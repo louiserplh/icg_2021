@@ -24,3 +24,4 @@ As specified by the handout, we tackled this part by creating first a 'look_at' 
 We then easily applied, as in 4.1.2, the rotation matrices with the specified angles to rotate the camera and place it as specified.
 
 -- 4.2.3
+We created all the necessary matrices as specified and then multiplied them all and stored them in mat_model_to_world. Here, we at first did not know how to make the moon turn around the earth and not the sun, until we realized that we had to apply a first multiplication with respect to the orbit parent, and then multiply that with the scale and rotation matrices.
