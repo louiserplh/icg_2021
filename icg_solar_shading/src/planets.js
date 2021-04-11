@@ -98,22 +98,43 @@ export class PlanetActor extends Actor {
 
 		//const M_orbit = mat4.create();
 
+		const rotAroundItselfMat = mat4.fromZRotation(mat4.create(), sim_time * this.rotation_speed);
+		let scale = this.size
+		let sizeMat = mat4.fromScaling(mat4.create(), [scale, scale, scale]);
+
+		let rotAroundParentMat = mat4.create();
+		let distanceFromParentMat = mat4.create();
+		let transTemp = mat4.create();
+
+		let orbitMat = mat4.create();
+
 		if(this.orbits !== null) {
 			// Parent's translation
 			const parent_translation_v = mat4.getTranslation([0, 0, 0], this.orbits.mat_model_to_world);
+			mat4.fromTranslation(transTemp, parent_translation_v);
+
+			let radius = this.orbit_radius;
+			let angle = sim_time * this.orbit_speed + this.orbit_phase;
+
+			mat4.fromTranslation(distanceFromParentMat, [radius, 0, 0]);
 
 			// Orbit around the parent
+			mat4.fromZRotation(rotAroundParentMat, angle);
+
+
+			mat4_matmul_many(orbitMat, transTemp, rotAroundParentMat, distanceFromParentMat);
+
 		} 
 		
 		// Store the combined transform in this.mat_model_to_world
-		//mat4_matmul_many(this.mat_model_to_world, ...);
+		mat4_matmul_many(this.mat_model_to_world, orbitMat, sizeMat, rotAroundItselfMat);
 
 	}
 
 	draw({mat_projection, mat_view}) {
 		// TODO 4.2.1.2
 		// Calculate mat_mvp: model-view-projection matrix
-		//mat4_matmul_many(this.mat_mvp, ...);
+		mat4_matmul_many(this.mat_mvp, mat_projection, mat_view, this.mat_model_to_world);
 
 		this.pipeline({
 			mat_mvp: this.mat_mvp,
