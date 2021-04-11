@@ -279,7 +279,7 @@ async function main() {
 	// List of objects to draw
 	const draw_list = actors_list.slice();
 	draw_list.push(grid_actor_interface);
-	//draw_list.push(billboard); //add the billboard object
+	draw_list.push(billboard); //add the billboard object
 
 	// Consider the sun, which locates at [0, 0, 0], as the only light source
 	const light_position_world = [0, 0, 0, 1];

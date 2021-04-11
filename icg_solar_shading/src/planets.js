@@ -1,5 +1,6 @@
 import {vec2, vec3, vec4, mat3, mat4} from "../lib/gl-matrix_3.3.0/esm/index.js"
 import {mat4_matmul_many} from "./icg_math.js"
+import {length, dot, cross, normalize} from "../lib/gl-matrix_3.3.0/esm/vec3.js"
 
 const PIPELINE_CACHE = {};
 
@@ -320,38 +321,52 @@ export class EarthActor extends PhongActor {
 
 export class SunBillboardActor extends Actor {
 	init_pipeline(regl, resources) {
-		this.pipeline = cached_pipeline('sun billboard', () => regl({
-			// Vertex attributes
-			attributes: {
-				// 4 vertices with 3 coordinates each
-				position: [
-					[-1, -1, 0],
-					[1, -1, 0],
-					[1, 1, 0],
-					[-1, 1, 0],
-				],
-			},
+		this.pipeline = cached_pipeline("sun billboard", () =>
+      regl({
+        // Vertex attributes
+        attributes: {
+          // 4 vertices with 3 coordinates each
+          position: [
+            [-1, -1, 0],
+            [1, -1, 0],
+            [1, 1, 0],
+            [-1, 1, 0],
+          ],
+        },
 
-			// Faces, as triplets of vertex indices
-			elements: [
-				[0, 1, 2], // top right
-				[0, 2, 3], // bottom left
-			],
+        // Faces, as triplets of vertex indices
+        elements: [
+          [0, 1, 2], // top right
+          [0, 2, 3], // bottom left
+        ],
 
-			uniforms: {
-				mat_mvp: regl.prop('mat_mvp'),
-			},
+        uniforms: {
+          mat_mvp: regl.prop("mat_mvp"),
+        },
 
-			vert: resources.shader_billboard_vert,
-			frag: resources.shader_billboard_frag,
+        vert: resources.shader_billboard_vert,
+        frag: resources.shader_billboard_frag,
 
-			// TODO 5.1.3: understand the blending mechanism and fill up the blender block
-			// For rendering transparent objects and blending it with the background color, please refer to https://learnopengl.com/Advanced-OpenGL/Blending
-			// For using the regl blending API, please refer to https://github.com/regl-project/regl/blob/master/API.md#blending
-			blend : {
-
-			}
-		}));
+        // TODO 5.1.3: understand the blending mechanism and fill up the blender block
+        // For rendering transparent objects and blending it with the background color, please refer to https://learnopengl.com/Advanced-OpenGL/Blending
+        // For using the regl blending API, please refer to https://github.com/regl-project/regl/blob/master/API.md#blending
+        blend: {
+          enable: true,
+          func: {
+			// we took the default function proposed, solving the basic blending equation 
+            srcRGB: "src alpha",
+            srcAlpha: 1,
+            dstRGB: "one minus src alpha",
+            dstAlpha: 1,
+          },
+          equation: {
+            rgb: "add",
+            alpha: "add",
+          },
+          color: [0, 0, 0, 0],
+        },
+      })
+    );
 	}
 
 	constructor({size, ...rest}, regl, resources) {
@@ -364,12 +379,21 @@ export class SunBillboardActor extends Actor {
 	calculate_model_matrix({camera_position}) {
 
 		// TODO 5.1.1: Compute the this.mat_model_to_world, which makes the normal of the billboard always point to our eye.
-		mat4.identity(this.mat_model_to_world)
+		this.mat_model_to_world = mat4.create();
 
+		let n_b = vec3.fromValues(0,0,1);
+
+		let rotation_angle = Math.acos(dot(camera_position, n_b)/length(camera_position));
+		let rotation_axis = cross(vec3.create(), n_b, camera_position);
+		let rotation_matrix = mat4.fromRotation(mat4.create(), rotation_angle, rotation_axis);
+		
+		mat4_matmul_many(this.mat_model_to_world, rotation_matrix, this.mat_scale);
 	}
 
 	draw({mat_projection, mat_view}) {
-		//mat4_matmul_many(this.mat_mvp, ...);
+		// Implemented analogously to 4.2.1.2
+		// Calculate mat_mvp: model-view-projection matrix
+		mat4_matmul_many(this.mat_mvp, mat_projection, mat_view, this.mat_model_to_world);
 
 		this.pipeline({
 			mat_mvp: this.mat_mvp,
