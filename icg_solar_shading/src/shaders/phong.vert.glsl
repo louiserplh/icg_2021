@@ -29,7 +29,7 @@ void main() {
     Hint: Write the final vertex position to gl_Position
     */
 	// viewing vector (from camera to vertex in view coordinates), camera is at vec3(0, 0, 0) in cam coords
-	v2f_dir_from_view = mat_model_view * position; // as camera is at vec3(0, 0, 0), only the position in view coordinates give direction
+	v2f_dir_from_view = vec3(mat_model_view * vec4(position, 1.)); // as camera is at vec3(0, 0, 0), only the position in view coordinates give direction
 	// direction to light source
 	v2f_dir_to_light = vec3(light_position); // We already have this in homogenous coordinates
 	// transform normal to camera coordinates
