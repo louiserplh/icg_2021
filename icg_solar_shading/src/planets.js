@@ -204,8 +204,9 @@ export class PhongActor extends PlanetActor {
 	draw({mat_projection, mat_view, light_position_cam, sim_time}) {
 		// #TODO 5.0 
 		// Calculate this.mat_model_view, this.mat_mvp
-		//mat4_matmul_many(this.mat_model_view, ...);
-		//mat4_matmul_many(this.mat_mvp, ...);
+		// We follow the MVP pipeline (lecture 5.d, slide 4)
+		mat4_matmul_many(this.mat_model_view, mat_view, this.mat_model_to_world);
+		mat4_matmul_many(this.mat_mvp, mat_projection, this.mat_model_view);
 
 		mat3.fromMat4(this.mat_normals, this.mat_model_view);
 		mat3.transpose(this.mat_normals, this.mat_normals);
