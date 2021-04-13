@@ -25,7 +25,7 @@ void main() {
     * value
      */
      // Computes the base color of our material in RGA vector
-     vec4 material_color = texture(texture_base_color, v2f_tex_coord);
+     vec4 material_color = texture2D(texture_base_color, v2f_tex_coord);
      // Creates the useful vectors for later computations
      vec3 n = normalize(v2f_normal);
      vec3 l = normalize(v2f_dir_to_light);
@@ -37,7 +37,7 @@ void main() {
      vec3 ambiant_component = I_a * material_color.rgb;
 
      // Compute the diffuse component
-     vec3 diffuse_component = vec3(0);
+     vec3 diffuse_component = vec3(0.);
      if(dot(n, l) > 0.){
          diffuse_component = light_color * material_color.rgb * dot(n, l);
      }

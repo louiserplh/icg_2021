@@ -169,7 +169,7 @@ async function main() {
 			shininess : 20,
 			ambient : 0.2,
 		}, regl, resources),
-		new PlanetActor({
+		new PhongActor({
 			name: 'moon',
 			orbits: 'earth',
 			texture: resources.tex_moon,
@@ -181,7 +181,7 @@ async function main() {
 			shininess : 8,
 			ambient : 0.2,
 		}, regl, resources),
-		new PlanetActor({
+		new PhongActor({
 			name: 'mars',
 			orbits: 'sun',
 			texture: resources.tex_mars,
