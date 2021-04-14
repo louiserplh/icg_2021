@@ -194,19 +194,19 @@ async function main() {
 			ambient : 0.2,
 		}, regl, resources),
 		// 5.4
-		//new MeshOrbitActor({
-		//	name: 'mymesh',
-		//	orbits: 'mars',
-		//	mesh: await icg_mesh_load_obj(regl, "mesh/mymesh.obj"),
-		//	texture: resources.tex_mars,
-		//	size: 1.0,
-		//	rotation_speed: 0.7,
-		//	orbit_radius: 2.0,
-		//	orbit_speed: 0.1,
-		//	orbit_phase: 0.1,
-		//	shininess : 8,
-		//	ambient : 0.2,
-		//}, regl, resources),
+		new MeshOrbitActor({
+			name: 'mymesh',
+			orbits: 'mars',
+			mesh: await icg_mesh_load_obj(regl, "mesh/mymesh.obj"),
+			texture: resources.tex_mars,
+			size: 0.3,
+			rotation_speed: 0.7,
+			orbit_radius: 2.0,
+			orbit_speed: 0.1,
+			orbit_phase: 0.1,
+			shininess : 8,
+			ambient : 0.2,
+		}, regl, resources),
 	]
 
 	const actors_by_name = {};
