@@ -157,7 +157,7 @@ async function main() {
 			size: 2.5,
 			rotation_speed: 0.1,
 		}, regl, resources),
-		new PhongActor({
+		new EarthActor({
 			name: 'earth',
 			orbits: 'sun',
 			texture: resources.tex_earth_day,
