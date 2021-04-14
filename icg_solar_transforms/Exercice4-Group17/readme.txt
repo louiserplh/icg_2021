@@ -1,4 +1,4 @@
---- ICG: README Exercice 4 - Group 24 ---
+--- ICG: README Exercice 4 - Group 17 ---
 
 -- 4.1.1
 - 4.1.1.1
