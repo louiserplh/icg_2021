@@ -23,3 +23,12 @@ We first edited the phong.vert.glsl file. The biggest challenge was to correctly
 This part was a bit straightforward. Strong of the knowledge of previous exercices, we first computed the useful vectors to use and applied the Phong shading as done before.
 
 --- 5.3 ---
+This part did not give us too many issues, apart from the initial question of how to combine the gloss and cloud textures. The main difficulties were due to finding out how exactly the specularity should be applied. We are not sure if our current result is correct, but the code seems correct and we do not know how to do it differently.
+
+--- 5.4 ---
+Here we decided to model an apple in Blender.
+
+- WORKLOAD
+Tom 1/3
+Louise 1/3
+Emmanuelle 1/3
