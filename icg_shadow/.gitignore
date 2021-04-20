@@ -1,0 +1,11 @@
+lib_modules
+*.code-workspace
+
+dist
+
+*.blend1
+
+.DS_Store
+.idea/*
+
+exercise_shadow.html
