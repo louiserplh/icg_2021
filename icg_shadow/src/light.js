@@ -143,7 +143,7 @@ export function init_light(regl, resources) {
 		please use the function perspective, see https://stackoverflow.com/questions/28286057/trying-to-understand-the-math-behind-the-perspective-matrix-in-webgl
 		Note: this is the same for all point lights/cube faces!
 	*/
-	const cube_camera_projection = mat4.create(); // please use mat4.perspective(mat4.create(), fovy, aspect, near, far);
+	const cube_camera_projection = mat4.perspective(mat4.create(), Math.PI/2., 1., 0.1, 100);
 
 	class Light {
 		constructor({position, color, intensity, update} = {color: [1., 0.5, 0.], intensity: 5, update: null}) {
@@ -169,7 +169,40 @@ export function init_light(regl, resources) {
 				and when `side_idx = 5`, we should return the -z one.
 			 */
 
-			return mat4.create();
+			var target = vec3.create();
+			var up = vec3.create();
+
+			var light_pos = transform3DPoint(scene_view, this.position);
+
+			switch(side_idx) {
+				case 0 :
+					target = vec3.add(vec3.create(), light_pos, vec3.fromValues(1., 0., 0.));
+					up = vec3.fromValues(0., 1., 0.);
+					break;
+				case 1:
+					target = vec3.sub(vec3.create(), light_pos, vec3.fromValues(1., 0., 0.));
+					up = vec3.negate(vec3.create(), vec3.fromValues(0., 1., 0.));
+					break;
+				case 2:
+					target = vec3.add(vec3.create(), light_pos, vec3.fromValues(0., 1., 0.));
+					up = vec3.negate(vec3.create(), vec3.fromValues(0., 0., 1.));
+					break;
+				case 3:
+					target = vec3.sub(vec3.create(), light_pos, vec3.fromValues(0., 1., 0.));
+					up = vec3.fromValues(0., 0., 1,);
+					break;
+				case 4:
+					target = vec3.add(vec3.create(), light_pos, vec3.fromValues(0., 0., 1.));
+					up = vec3.fromValues(0., 1., 0.);
+					break;
+				case 5:
+					target = vec3.sub(vec3.create(), light_pos, vec3.fromValues(0., 0., 1.));
+					up = vec3.fromValues(0., 1., 0.);
+					break;
+			}
+
+			var lookAt = mat4.lookAt(mat4.create(), light_pos, target, up);
+			return mat4.multiply(mat4.create(), lookAt, scene_view);
 		}
 
 		get_cube_camera_projection() {
