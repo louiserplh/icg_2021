@@ -4,6 +4,7 @@ import {vec2, vec3, vec4, mat2, mat3, mat4} from "../lib/gl-matrix_3.3.0/esm/ind
 import {DOM_loaded_promise, load_text, load_image, register_button_with_hotkey, register_keyboard_action} from "./icg_web.js"
 import {deg_to_rad, mat4_to_string, vec_to_string, mat4_matmul_many} from "./icg_math.js"
 import {mesh_load_obj, icg_mesh_make_uv_sphere} from "./icg_mesh.js"
+import { fromYRotation, fromZRotation } from "../lib/gl-matrix_3.3.0/esm/mat4.js"
 
 import {init_light} from "./light.js"
 import {init_scene} from "./scene.js"
@@ -110,14 +111,14 @@ async function main() {
 		*/
 
 		// Example camera matrix, looking along forward-X, edit this
-		const look_at = mat4.lookAt(mat4.create(),
-			[-5, 0, 0], // camera position in world coord
-			[0, 0, 0], // view target point
-			[0, 0, 1], // up vector
+		const look_at = mat4.lookAt(mat4.create(), 
+			[cam_distance_base * cam_distance_factor, 0, 0], // camera position in world coord (distance to 'from' point), as forward-X we move along X axis
+			cam_target, // view target point (always look at the origin)
+			[0, 0, 1], // up vector (simply goes along +z axis, unit vector)
 		);
 		// Store the combined transform in mat_world_to_cam
-		// mat_world_to_cam = A * B * ...
-		mat4_matmul_many(mat_world_to_cam, look_at); // edit this
+		// mat_world_to_cam = look_at * rotation_Y * rotation_Z
+		mat4_matmul_many(mat_world_to_cam, look_at, fromYRotation(mat4.create(),-cam_angle_y), fromZRotation(mat4.create(),cam_angle_z)); // edit this
 	}
 
 	update_cam_transform();
