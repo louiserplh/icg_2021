@@ -77,7 +77,12 @@ export function init_light(regl, resources) {
 		    change the blend options
 		*/
 		blend: {
-		},
+            enable: true,
+            func: {
+                src: 'one',
+                dst: 'one',
+            },
+        },
 
 		depth: {
 			enable: true,

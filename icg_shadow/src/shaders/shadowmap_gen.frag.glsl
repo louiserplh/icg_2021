@@ -8,6 +8,6 @@ void main () {
 	Compute the Euclidean distance from the light camera to the fragment.
 	Store the distance into the red channel of the fragment's color.
 	*/
-	float depth = 5.0 * (1.0 + cos(v2f_position_view.x)); // Something temporary for you to visualize when you debug the cube camera matrices
+	float depth = length(v2f_position_view) ;
 	gl_FragColor.r = depth;
 }

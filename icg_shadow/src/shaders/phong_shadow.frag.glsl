@@ -17,8 +17,8 @@ void main() {
     // Normalize the interpolated normal
     vec3 N = -sign(dot(v2f_normal, v2f_position_view)) *  // Orient the normal so it always points opposite the camera rays (for backfaces)
              normalize(v2f_normal);
-
-    vec3 color = vec3(0.0);
+    vec3 v2f_dir_to_light = light_position - v2f_position_view;
+    vec3 I = vec3(0.);
     /** Todo 6.2.2
     * Compute this light's diffuse and specular contributions.
     * You should be able to copy your phong lighting code from assignment 5 mostly as-is,
@@ -41,6 +41,29 @@ void main() {
     * instead of additive tolerance: compare the fragment's distance to 1.01x the
     * distance from the shadow map.
     ***/
+    float shadow_map_dist = textureCube(shadow_cubemap, - v2f_dir_to_light).r;
+    if(length(v2f_dir_to_light) <= 1.01 * shadow_map_dist){ //  prevent shadow acne
 
-    gl_FragColor = vec4(color, 1.); // output: RGBA in 0..1 range
+        vec3 l = normalize(v2f_dir_to_light);
+        vec3 v = -normalize(v2f_position_view);
+        vec3 r = normalize(2. * N * dot(N,l) - l);
+        vec3 n = normalize(v2f_normal);
+
+        vec3 attenuation = (1. / pow(length(v2f_dir_to_light), 2.)) * light_color;
+        // Compute the diffuse component
+        vec3 diffuse_component = vec3(0.);
+        if(dot(n, l) > 0.){
+            diffuse_component = attenuation * v2f_diffuse_color * dot(n, l);
+        }
+
+        // Compute the specular component
+        vec3 specular_component = vec3(0.);
+        if(dot(n,l) > 0. && dot(r, v) > 0.){
+            specular_component = attenuation * v2f_specular_color * pow(dot(r, v), shininess);
+        }
+
+        vec3 I = diffuse_component + specular_component;
+    }
+
+	gl_FragColor = vec4(I, 1.); // output: RGBA in 0..1 range
 }
