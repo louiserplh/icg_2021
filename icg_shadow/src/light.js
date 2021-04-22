@@ -79,8 +79,8 @@ export function init_light(regl, resources) {
 		blend: {
             enable: true,
             func: {
-                src: 'one',
-                dst: 'one',
+                src: 1.,
+                dst: 1.,
             },
         },
 

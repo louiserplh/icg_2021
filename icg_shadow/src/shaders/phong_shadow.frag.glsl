@@ -47,22 +47,23 @@ void main() {
         vec3 l = normalize(v2f_dir_to_light);
         vec3 v = -normalize(v2f_position_view);
         vec3 r = normalize(2. * N * dot(N,l) - l);
-        vec3 n = normalize(v2f_normal);
+        //vec3 n = normalize(v2f_normal);
 
+        // Compute attenuation
         vec3 attenuation = (1. / pow(length(v2f_dir_to_light), 2.)) * light_color;
         // Compute the diffuse component
         vec3 diffuse_component = vec3(0.);
-        if(dot(n, l) > 0.){
-            diffuse_component = attenuation * v2f_diffuse_color * dot(n, l);
+        if(dot(N, l) > 0.){
+            diffuse_component = attenuation * v2f_diffuse_color * dot(N, l);
         }
 
         // Compute the specular component
         vec3 specular_component = vec3(0.);
-        if(dot(n,l) > 0. && dot(r, v) > 0.){
+        if(dot(N,l) > 0. && dot(r, v) > 0.){
             specular_component = attenuation * v2f_specular_color * pow(dot(r, v), shininess);
         }
 
-        vec3 I = diffuse_component + specular_component;
+        I = diffuse_component + specular_component;
     }
 
 	gl_FragColor = vec4(I, 1.); // output: RGBA in 0..1 range
