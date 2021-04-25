@@ -93,7 +93,23 @@ float perlin_fbm_1d(float x) {
 	
 	Note: the GLSL `for` loop may be useful.
 	*/
-	return 0.;
+	
+	float fbm = 0.;
+
+	// For performance purpose, we compute the exponentiation iteratively (avoids using pow function)
+	float ampl_multiplier_pow = 1.;
+	float freq_multiplier_pow = 1.;
+
+	// Iterative computation of \sigma_{i=0}^{N-1}(A_1^i*f(p*w_1^i))
+	for(int i = 0; i < num_octaves; ++i){
+		// Computes A_1^i*f(p*w_1^i)
+		fbm += ampl_multiplier_pow * perlin_noise_1d(x * freq_multiplier_pow);
+
+		// Updates the powered elements
+		ampl_multiplier_pow *= ampl_multiplier;
+		freq_multiplier_pow *= freq_multiplier;
+	}
+	return fbm;
 }
 
 // ----- plotting -----
