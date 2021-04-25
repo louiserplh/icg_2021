@@ -66,7 +66,22 @@ float perlin_noise_1d(float x) {
 	
 	Note: gradients in the gradient lookup table are 2D, 
 	 */
-	return 0.;
+	 // We compute the corner points (nested in floats although int would make sense, but cast to int leads to errors here)
+	 float c_0 = floor(x);
+	 float c_1 = c_0+1.;
+
+	 // Computes the gradients at both corners using the hash function to find the correct index
+	 // we are in 1D, though decided to arbitrarly set second coordinates to 0. (could've used a different offset if wanted)
+	 float g_0 = gradients(hash_func(vec2(c_0, 0.))).x;
+	 float g_1 = gradients(hash_func(vec2(c_1, 0.))).x;
+
+	 // We compute the linear contribution of each gradient 
+	 float phi_0 = g_0 * (x - c_0);
+	 float phi_1 = g_1 * (x - c_1);
+
+	 float t = x - c_0;
+	 // We finally return the mixed between both corners' linear contribution
+	return mix(phi_0, phi_1, blending_weight_poly(t));
 }
 
 float perlin_fbm_1d(float x) {
