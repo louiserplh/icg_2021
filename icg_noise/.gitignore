@@ -1,0 +1,10 @@
+lib_modules
+exercise_noise.html
+*.code-workspace
+
+dist
+
+*.blend1
+
+.DS_Store
+.idea/*
