@@ -162,7 +162,35 @@ float perlin_noise(vec2 point) {
 	Implement 2D perlin noise as described in the handout.
 	You may find a glsl `for` loop useful here, but it's not necessary.
 	*/
-	return 0.;
+
+	// Computes noise with the same naming conventions as described in 
+	// https://moodle.epfl.ch/pluginfile.php/2764467/mod_resource/content/1/ICG_ex7_Noise.html#perlin-noise-2d
+	vec2 c_00 = floor(point);
+	vec2 c_10 = c_00 + vec2(1.,0.);
+	vec2 c_01 = c_00 + vec2(0.,1.);
+	vec2 c_11 = c_00 + vec2(1.,1.);
+
+	vec2 g_00 = gradients(hash_func(c_00));
+	vec2 g_10 = gradients(hash_func(c_10));
+	vec2 g_01 = gradients(hash_func(c_01));
+	vec2 g_11 = gradients(hash_func(c_11));
+
+	vec2 a = point - c_00;
+	vec2 b = point - c_10;
+	vec2 c = point - c_01;
+	vec2 d = point - c_11;
+
+	float s = dot(g_00, a);
+	float t = dot(g_10, b);
+	float u = dot(g_01, c);
+	float v = dot(g_11, d);
+
+	float f_x = blending_weight_poly(point.x - c_00.x);
+	float f_y = blending_weight_poly(point.y - c_00.y);
+	float st = mix(s, t, f_x);
+	float uv = mix(u, v, f_x);
+
+	return mix(st, uv, f_y);
 }
 
 vec3 tex_perlin(vec2 point) {
@@ -180,7 +208,24 @@ float perlin_fbm(vec2 point) {
 	Implement 2D fBm as described in the handout. Like in the 1D case, you
 	should use the constants num_octaves, freq_multiplier, and ampl_multiplier. 
 	*/
-	return 0.;
+	// Exactly similar ton 1D case, but uses the 2D perlin noise function
+
+	float fbm = 0.;
+
+	// For performance purpose, we compute the exponentiation iteratively (avoids using pow function)
+	float ampl_multiplier_pow = 1.;
+	float freq_multiplier_pow = 1.;
+
+	// Iterative computation of \sigma_{i=0}^{N-1}(A_1^i*f(p*w_1^i))
+	for(int i = 0; i < num_octaves; ++i){
+		// Computes A_1^i*f(p*w_1^i)
+		fbm += ampl_multiplier_pow * perlin_noise(point * freq_multiplier_pow);
+
+		// Updates the powered elements
+		ampl_multiplier_pow *= ampl_multiplier;
+		freq_multiplier_pow *= freq_multiplier;
+	}
+	return fbm;
 }
 
 vec3 tex_fbm(vec2 point) {
@@ -204,6 +249,24 @@ float turbulence(vec2 point) {
 	Implement the 2D turbulence function as described in the handout.
 	Again, you should use num_octaves, freq_multiplier, and ampl_multiplier.
 	*/
+	// Exactly same implementation as fbm but takes absolute value of perlin noise
+
+	float fbm = 0.;
+
+	// For performance purpose, we compute the exponentiation iteratively (avoids using pow function)
+	float ampl_multiplier_pow = 1.;
+	float freq_multiplier_pow = 1.;
+
+	// Iterative computation of \sigma_{i=0}^{N-1}(A_1^i*f(p*w_1^i))
+	for(int i = 0; i < num_octaves; ++i){
+		// Computes A_1^i*f(p*w_1^i)
+		fbm += ampl_multiplier_pow * abs(perlin_noise(point * freq_multiplier_pow));
+
+		// Updates the powered elements
+		ampl_multiplier_pow *= ampl_multiplier;
+		freq_multiplier_pow *= freq_multiplier;
+	}
+	return fbm;
 	return 0.;
 }
 
