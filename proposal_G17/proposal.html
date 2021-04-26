@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Pretty Houses Generator</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="icg_report.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Pretty Houses Generator</h1>
+</header>
+<p><img src="images/town_scaper_1.png" width="300" alt="Screenshot of the game TownScaper 1" /> <img src="images/brick_bloc.png" width="300" alt="Screenshot of the game Brick Bloc" /> <img src="images/town_scaper_2.png" width="300" alt="Screenshot of the game TownScaper 2" /></p>
+<h1 id="title-and-summary">Title and Summary</h1>
+<p>We want to implement a wave function tiling algorithm to create cute and coherent scenes in 3D. Also, we want to make this on multiple z-axis stages where the structures remain coherent and nicely arrange in our world.</p>
+<h1 id="goals-and-deliverables">Goals and Deliverables</h1>
+<ul>
+<li>Core of the project:
+<ul>
+<li>We want to implement a wave function tiling algorithm on a <strong>finite length</strong> tile.</li>
+<li>We want to make a <strong>set of 3D tiles</strong> arranging smoothly together based on a wave function.</li>
+<li>Every start of the project should yield a <strong>new kind of arrangement</strong> based on random base conditions.</li>
+<li>Render our world using <strong>Phong Shading</strong> on textures.</li>
+</ul></li>
+<li>Extensions of the project
+<ul>
+<li>Create a <strong>user interface</strong> so the user can generate their own buildings/structures with mouse.</li>
+<li>Add a <strong>moving light source</strong> to show different types of shadows and highlights on the structure (e.g.: day/night).</li>
+<li>Add <strong>surrounding water or other landscaping</strong> and shade or reflect according to the structure.</li>
+</ul></li>
+</ul>
+<h1 id="schedule">Schedule</h1>
+<ul>
+<li>Until <em>06.05.21</em>
+<ul>
+<li>Create the project base, namely the world with a fixed tile and a camera looking at it (based on previous exercices).</li>
+<li>Create a set of tiles in blender that will represent our basis for the tile generation.</li>
+<li>Manage to render the tiles and Phong Shading in our world</li>
+</ul></li>
+<li>Until <em>13.05.21</em>
+<ul>
+<li>Make our tiles able to passe through a Wave Collapse function algorithm (label the faces between others).</li>
+<li>Try an implementation of the algorithm without considering the Z multiple levels.</li>
+</ul></li>
+<li>Until <em>20.05.21</em>
+<ul>
+<li>Produce the tiling algorithm in 3D in our world.</li>
+<li>Start the extensions after evaluating the most feasibile.</li>
+</ul></li>
+<li>Until <em>27.05.21</em>
+<ul>
+<li>Continue the extensions.</li>
+<li>Prepare the video deliverable.</li>
+</ul></li>
+</ul>
+<h1 id="resources">Resources</h1>
+<p>We’ll probably many other ressources but here is our basis:</p>
+<ul>
+<li><a href="https://github.com/mxgmn/WaveFunctionCollapse">Wave function collapse implementation</a></li>
+<li><a href="https://www.youtube.com/watch?v=2SuvO4Gi7uY&amp;">Youtube video explanation on 3D wave function collapse algorithm</a></li>
+</ul>
+</body>
+</html>
