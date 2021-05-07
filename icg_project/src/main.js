@@ -50,17 +50,12 @@ async function main() {
 	const resources = {
 		'shader_shadowmap_gen_vert': load_text('./src/shaders/shadowmap_gen.vert.glsl'),
 		'shader_shadowmap_gen_frag': load_text('./src/shaders/shadowmap_gen.frag.glsl'),
-		'shader_vis_vert': load_text('./src/shaders/cubemap_visualization.vert.glsl'),
-		'shader_vis_frag': load_text('./src/shaders/cubemap_visualization.frag.glsl'),
 
 		'shader_ambient_vert':      load_text('./src/shaders/ambient_color.vert.glsl'),
 		'shader_ambient_frag':      load_text('./src/shaders/ambient_color.frag.glsl'),
 		'shader_phong_shadow_vert': load_text('./src/shaders/phong_shadow.vert.glsl'),
 		'shader_phong_shadow_frag': load_text('./src/shaders/phong_shadow.frag.glsl'),
 		
-		'shader_viscube_vert': load_text('./src/shaders/cubemap_visualization_cube.vert.glsl'),
-		'shader_viscube_frag': load_text('./src/shaders/cubemap_visualization_cube.frag.glsl'),
-
 		//'mesh_scene': load_mesh_obj(regl, './meshes/shadow_scene_1.obj'),
 		'mesh_terrain': mesh_load_obj(regl, './meshes/shadow_scene__terrain.obj', {
 			mat_architecture: [0.79, 0.41, 0.31],
@@ -74,9 +69,12 @@ async function main() {
 		}),
 	};
 
+	// Not used, kept for the snippet in case of.
+	/*
 	for(let cube_side = 0; cube_side < 6; cube_side++) {
 		resources[`tex_cube_side_${cube_side}`] = load_image(`./textures/cube_side_${cube_side}.png`);
 	}
+	*/
 
 	// Wait for all downloads to complete
 	for (const key in resources) {
@@ -99,9 +97,7 @@ async function main() {
 	let cam_target = [0, 0, 0];
 
 	function update_cam_transform() {
-		/* TODO 4.1.0
-		* Copy your solution to Task 2.2 of assignment 5.
-		Calculate the world-to-camera transformation matrix.
+		/* Calculate the world-to-camera transformation matrix.
 		The camera orbits the scene
 		* cam_distance_base * cam_distance_factor = distance of the camera from the (0, 0, 0) point
 		* cam_angle_z - camera ray's angle around the Z axis
@@ -171,7 +167,7 @@ async function main() {
 				];
 			},
 			color: [1., 1., 1.],
-			intensity: 10.,
+			intensity: 20.,
 		}),
 		new Light({
 			position: [0, 0, 1],
@@ -183,7 +179,7 @@ async function main() {
 				];
 			},
 			color: [1., 0.5, 0.],
-			intensity: 5,
+			intensity: 20.,
 		}),
 	];
 
@@ -198,49 +194,9 @@ async function main() {
 		is_paused = !is_paused
 	})
 
-	let show_dist_map = true;
-	register_button_with_hotkey('btn-distance', 'g', () => {
-		show_dist_map = !show_dist_map
-	})
-
-
 	register_keyboard_action('z', () => {
 		debug_overlay.classList.toggle('hide');
 	})
-
-	let vis_cube_camera = false;
-	let vis_cube_camera_side = 0;
-
-	const stop_vis_cube = () => {
-		vis_cube_camera = false;
-		vis_cube_camera_side = 0;
-		console.log(`Using normal camera`)
-	}
-	register_button_with_hotkey('btn-nocube', '6', stop_vis_cube)
-
-	{
-		const elem_view_select = document.getElementById('view-options');
-
-		[0, 1, 2, 3, 4, 5].forEach((side) => {
-			const display_text = (side).toString();
-
-			const handler = () => {
-				vis_cube_camera = true;
-				vis_cube_camera_side = side;
-				console.log(`Using cube camera for side ${display_text}`)
-			}
-
-			register_keyboard_action(display_text, handler);
-			
-			const entry = document.createElement('span');
-			entry.classList.add('button');
-			entry.classList.add('keyboard');
-			entry.textContent = display_text;
-			entry.addEventListener('click', handler);
-			elem_view_select.appendChild(entry);
-		});
-
-	}
 
 	function activate_preset_view() {
 		is_paused = true;
@@ -249,7 +205,6 @@ async function main() {
 		cam_angle_y = - Math.PI * (1./6.);
 		cam_distance_factor = 0.8;
 		cam_target = [0, 0, 0];
-		stop_vis_cube();
 		
 		update_cam_transform();
 	}
@@ -285,38 +240,23 @@ async function main() {
 		}
 		update_simulation({sim_time: sim_time, actors: actors});
 
-		const light_to_visulaize = lights[lights.length - 1];
-
-		if (vis_cube_camera) {
-			active_mat_view = light_to_visulaize.cube_camera_view(vis_cube_camera_side, mat_view);
-			active_mat_projection = light_to_visulaize.get_cube_camera_projection();
-		}
-
 		const scene_info = {
 			sim_time:        sim_time,
 			mat_view:        active_mat_view, // can differ from mat_view for debugging!
 			scene_mat_view:  mat_view,
 			mat_projection:  active_mat_projection, // can differ from mat_projection for debugging!
 			actors:          actors,
-			ambient_light_color: vec3.fromValues(0.25, 0.25, 0.25),
+			ambient_light_color: vec3.fromValues(0.5, 0.5, 0.5),
 		}
 
 		// Set the whole image to black
-		regl.clear({color: [0, 0, 0, 1]});
+		regl.clear({color: [0, 0.65, 1., 1]});
 
 		render_ambient(scene_info);
 
 		for (const light of lights) {
 			light.render_shadowmap(scene_info);
 			light.draw_phong_contribution(scene_info);
-
-			if(show_dist_map) {
-				light.visualize_cube(scene_info);
-			}
-		}
-
-		if (show_dist_map) {
-			light_to_visulaize.visualize_distance_map();
 		}
 
 // 		debug_text.textContent = `

@@ -11,16 +11,6 @@ export function init_light(regl, resources) {
 		colorType:   'float',
 	});
 
-	const annotation_cubemap = regl.cube({
-		radius:      512,
-		colorFormat: 'rgba',
-		colorType:   'uint8',
-		mag: 'linear',
-		min: 'linear', 
-		faces: [0, 1, 2, 3, 4, 5].map(side_idx => resources[`tex_cube_side_${side_idx}`]),
-	});
-
-
 	const shadowmap_generation_pipeline = regl({
 		attributes: {
 			position: regl.prop('mesh.vertex_positions'),
@@ -73,9 +63,7 @@ export function init_light(regl, resources) {
 		// from fragments that should be invisible.
 		// (The depth buffer is filled by the ambient pass.)
 
-		/* Todo 6.2.3
-		    change the blend options
-		*/
+		// change the blend options
 		blend: {
             enable: true,
             func: {
@@ -93,60 +81,10 @@ export function init_light(regl, resources) {
 		cull: {enable: false},
 	});
 
-	const flattened_cubemap_pipeline = regl({
-		attributes: {
-			position: [
-				[0., 0.],
-				[3., 0.],
-				[3., 2.],
-				[0., 2.],
-			],
-		},
-		elements: [
-			[0, 1, 2], // top right
-			[0, 2, 3], // bottom left
-		],
-		uniforms: {
-			cubemap_to_show: shadow_cubemap,
-			cubemap_annotation: annotation_cubemap,
-			preview_rect_scale: ({viewportWidth, viewportHeight}) => {
-				const aspect_ratio = viewportWidth / viewportHeight;
-
-				const width_in_viewport_units = 0.8;
-				const heigh_in_viewport_units = 0.4 * aspect_ratio;
-
-				return [
-					width_in_viewport_units / 3.,
-					heigh_in_viewport_units / 2.,
-				];
-			},
-		},
-		vert: resources.shader_vis_vert,
-		frag: resources.shader_vis_frag,
-	});
-
-	const mesh_cube = icg_mesh_make_cube();
-	const cube_pipeline = regl({
-		attributes: {
-			position: mesh_cube.vertex_positions,
-		},
-		elements: mesh_cube.faces,
-		uniforms: {
-			light_distance_cubemap: shadow_cubemap,
-			annotation_cubemap: annotation_cubemap,
-			mat_mvp:        regl.prop('mat_mvp'),
-			mat_model_view: regl.prop('mat_model_view'),
-		},
-		vert: resources.shader_viscube_vert,
-		frag: resources.shader_viscube_frag,
-		cull: {enable: false},
-	});
-
 	/*
-	TODO 6.1.1 cube_camera_projection:
-		Construct the camera projection matrix which has a correct light camera's view frustum.
-		please use the function perspective, see https://stackoverflow.com/questions/28286057/trying-to-understand-the-math-behind-the-perspective-matrix-in-webgl
-		Note: this is the same for all point lights/cube faces!
+	Construct the camera projection matrix which has a correct light camera's view frustum.
+	please use the function perspective, see https://stackoverflow.com/questions/28286057/trying-to-understand-the-math-behind-the-perspective-matrix-in-webgl
+	Note: this is the same for all point lights/cube faces!
 	*/
 	const cube_camera_projection = mat4.perspective(mat4.create(), Math.PI/2., 1., 0.1, 100);
 
@@ -166,12 +104,11 @@ export function init_light(regl, resources) {
 
 		cube_camera_view(side_idx, scene_view) {
 			/*
-			Todo 6.1.2 cube_camera_view:
-				Construct the camera matrices which look through one of the 6 cube faces
-				for a cube aligned with the eye coordinate axes.
-				These faces are indexed in the order: +x, -x, +y, -y, +z, -z.
-				So when `side_idx = 0`, we should return the +x camera matrix,
-				and when `side_idx = 5`, we should return the -z one.
+			Construct the camera matrices which look through one of the 6 cube faces
+			for a cube aligned with the eye coordinate axes.
+			These faces are indexed in the order: +x, -x, +y, -y, +z, -z.
+			So when `side_idx = 0`, we should return the +x camera matrix,
+			and when `side_idx = 5`, we should return the -z one.
 			 */
 
 			var target = vec3.create();
@@ -275,24 +212,6 @@ export function init_light(regl, resources) {
 			});
 
 			phong_lighting_pipeline(batch_draw_calls);
-		}
-
-		visualize_distance_map() {
-			flattened_cubemap_pipeline();
-		}
-
-		// Note: mat_view can differ from scene_mat_view, e.g. when viewing from cube_camera_view
-		visualize_cube({mat_view, scene_mat_view, mat_projection}) {
-			const light_position_view = transform3DPoint(scene_mat_view, this.position);
-			const m_translation = mat4.fromTranslation(mat4.create(), light_position_view); // place cube at the light position in eye space
-
-			const m_model_view = mat4_matmul_many(mat4.create(), mat_view, mat4.invert(mat4.create(), scene_mat_view), m_translation, mat4.fromScaling(mat4.create(), [0.4, 0.4, 0.4]));
-			const m_mvp = mat4_matmul_many(mat4.create(), mat_projection, m_model_view);
-
-			cube_pipeline({
-				mat_model_view: m_model_view,
-				mat_mvp: m_mvp,
-			});
 		}
 	}
 

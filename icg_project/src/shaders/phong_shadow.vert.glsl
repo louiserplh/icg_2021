@@ -18,7 +18,7 @@ uniform mat3 mat_normals; // mat3 not 4, because normals are only rotated and no
 void main() {
 	vec4 position_v4 = vec4(position, 1);
 
-	/** TODO 5.2:
+	/**
 	Adapt implementation from assignment 5 to calculate the `varying` outputs
 	of this shader (v2f_position_view and v2f_normal) and the gl_Position.
     */

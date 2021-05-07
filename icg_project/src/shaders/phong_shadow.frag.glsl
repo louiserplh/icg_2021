@@ -19,7 +19,7 @@ void main() {
              normalize(v2f_normal);
     vec3 v2f_dir_to_light = light_position - v2f_position_view;
     vec3 I = vec3(0.);
-    /** Todo 6.2.2
+    /**
     * Compute this light's diffuse and specular contributions.
     * You should be able to copy your phong lighting code from assignment 5 mostly as-is,
     * though notice that the light and view vectors need to be computed from scratch
