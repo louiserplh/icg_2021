@@ -186,7 +186,7 @@ export function init_light(regl, resources) {
 					break;
 				case 1:
 					target = vec3.sub(vec3.create(), light_pos, vec3.fromValues(1., 0., 0.));
-					up = vec3.negate(vec3.create(), vec3.fromValues(0., 1., 0.));
+					up = vec3.fromValues(0., 1., 0.);
 					break;
 				case 2:
 					target = vec3.add(vec3.create(), light_pos, vec3.fromValues(0., 1., 0.));
