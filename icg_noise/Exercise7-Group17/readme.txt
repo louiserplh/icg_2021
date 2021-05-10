@@ -19,3 +19,10 @@ Proceeding exactly as above, we just added the absolute value on the noise funct
 Nothing to say for this part, we just set weights as said in the handout and called the function mix to mix it with the given colors.
 --7.6.1--
 For this part, we simply added the necessary lines of code to compute and shade the texture as described by the handout. We had some issues at the shading step which was due to the light direction being miscalculated, but this was quickly ficed. 
+
+
+WORKLOAD
+
+Tom 1/3
+Louise 1/3
+Emmanuelle 1/3
