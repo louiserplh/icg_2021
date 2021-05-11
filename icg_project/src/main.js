@@ -207,6 +207,11 @@ async function main() {
       color: [1, 1, 1],
       intensity: 20,
     }),
+	new Light({
+		position: [0.1, -0.1, -7],
+		color: [0.9, 0.9, 0.9],
+		intensity: 15,
+	  })
   ];
 
   /*
