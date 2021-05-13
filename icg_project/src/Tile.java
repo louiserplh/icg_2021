@@ -1,4 +1,4 @@
-class Tile {
+public class Tile {
 
     private String id;
 
@@ -45,6 +45,60 @@ class Tile {
 
     public int getBottomSocket() {
         return bottom_socket;
+    }
+
+    public int getSocketByIndex(int index) {
+        if(!(0 <= index && index < 6)) {
+            throw new IllegalArgumentException();
+        }
+
+        switch (index) {
+            case 0:
+                return front_socket;
+            case 1:
+                return back_socket;
+            case 2:
+                return left_socket;
+            case 3:
+                return right_socket;
+            case 4:
+                return top_socket;
+            default :
+                return bottom_socket;
+        }
+    }
+
+    public String getSocketNameByIndex(int index) {
+        if(!(0 <= index && index <= 6)) {
+            throw new IllegalArgumentException();
+        }
+
+        switch (index) {
+            case 0:
+                return "front";
+            case 1:
+                return "back";
+            case 2:
+                return "left";
+            case 3:
+                return "right";
+            case 4:
+                return "top";
+            case 5 :
+                return "bottom";
+            default :
+                return "any side";
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Tile)) {
+            throw new IllegalArgumentException();
+        }
+        Tile t = (Tile) obj;
+
+        return t.getId().equals(id);
     }
 
 } 
