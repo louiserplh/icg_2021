@@ -1,3 +1,4 @@
+package PutTogetherTiles.src;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -8,6 +9,7 @@ public class TilesDB {
 
     public TilesDB() {
 
+        // NONE = -2
         // FLOOR = 0
         // AIR = -1
 

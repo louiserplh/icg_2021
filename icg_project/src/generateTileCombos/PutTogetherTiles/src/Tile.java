@@ -1,3 +1,4 @@
+package PutTogetherTiles.src;
 public class Tile {
 
     private String id;
