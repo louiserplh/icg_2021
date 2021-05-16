@@ -14,7 +14,6 @@ uniform sampler2D texture_base_color;
 
 void main() {
 
-	// TODO 5.2: apply the phong lighting model
 	/**
     *  Implement the Phong shading model by using the passed
     *  variables and write the resulting color to `color`.

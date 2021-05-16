@@ -20,7 +20,7 @@ uniform vec4 light_position; //in camera space coordinates already
 void main() {
 	v2f_tex_coord = tex_coord;
 
-	/** TODO 5.2:
+	/**
 	Setup all outgoing variables so that you can compute in the fragmend shader
     the phong lighting. You will need to setup all the uniforms listed above, before you
     can start coding this shader.
