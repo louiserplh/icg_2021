@@ -6,32 +6,32 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>ICG : Project Group 7</title>
+	<title>ICG : 3D Solar System</title>
 	<meta name="author" content="Krzysztof Lis">
 
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<script src="src/main.js" type="module"></script>
+
+<script src="src/main.js" type="module" ></script>
+
+<!-- <canvas id="plot"></canvas> -->
+<!-- regl will add its own full-screen canvas -->
 
 <div id="debug-overlay">
 	<p>
-		<!-- <a href="src/main.js">source</a>  -->
-		ICG Project: Cute Houses Generator
+		ICG Exercise: 3D Solar System
 		⁙⁙ docs:
 		<a href="https://github.com/regl-project/regl/blob/gh-pages/API.md">regl</a>,
 		<a href="http://glmatrix.net/docs/">gl-matrix</a>,
 		<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">MDN</a>
-		⁙⁙ mouse: drag to rotate, shift+drag to move
+		⁙⁙ drag with mouse rotate
 		⁙⁙ scroll to zoom
-		⁙⁙ show/hide <strong class="keyboard">z</strong>
+		⁙⁙ toggle grid <strong class="keyboard">g</strong>
+		⁙⁙ pause <strong class="keyboard">p</strong>
+		⁙⁙ hide <strong class="keyboard">h</strong>
 	</p>
-	<p id="view-options">
-		<span id="btn-preset-view" class="button">Preset view <strong class="keyboard">c</strong></span>
-		<span id="btn-pause" class="button">Pause <strong class="keyboard">p</strong></span>
-		<span id="btn-stop" class="button">Stop render <strong class="keyboard">s</strong></span>
-	</p>
-	
+	<ul id="view-select">Focus:</ul>
 	<pre id="debug-text"></pre>
 </div>
 

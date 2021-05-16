@@ -90,25 +90,28 @@ The various units of measurement available in CSS:
 	font-size: 0.8em;
 }
 
-.button {
+#view-select {
 	display: inline;
-	padding-left: 1.1rem;
-	padding-right: 1.1rem;
+	padding: 0;
+	margin: 0;
+}
+
+#view-select li {
+	display: inline;
+	padding-left: 1rem;
+	padding-right: 1rem;
 	margin-left: 0.25rem;
 	margin-right: 0.25rem;
 
-	border: white 1px solid;
+	border: white 2px solid;
 	border-radius: 0.5rem;
 }
 
 .keyboard {
-	/* border:1px white solid;  */
+	border:1px white solid; 
 	padding: 0 0.25em 0 0.25em;
-	color:black;
-	background-color: hsl(0, 0%, 60%);
-	border-radius: 0.1em;
 }
 
-.hide {
+.hidden {
 	display: none;
 }

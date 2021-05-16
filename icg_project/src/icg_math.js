@@ -1,5 +1,5 @@
 import {setMatrixArrayType} from "../lib/gl-matrix_3.3.0/esm/common.js"
-import {vec3, vec4, mat3, mat4} from "../lib/gl-matrix_3.3.0/esm/index.js"
+import {mat3, mat4} from "../lib/gl-matrix_3.3.0/esm/index.js"
 
 export const deg_to_rad = Math.PI / 180
 
@@ -49,6 +49,7 @@ export class MyMatrix extends Array {
 		return mat4_to_string(this);
 	}
 }
+
 setMatrixArrayType(MyMatrix);
 
 export function mat4_matmul_many(out, ...operands) {
@@ -57,18 +58,4 @@ export function mat4_matmul_many(out, ...operands) {
 		mat4.multiply(out, out, m);
 	})
 	return out;
-}
-
-// Equivalent to vec4(v, w) in GLSL
-export function vec4FromVec3(v, w) {
-	return vec4.fromValues(v[0], v[1], v[2], w);
-}
-
-// Truncate vec4 to vec3; equivalent to v.xyz in GLSL
-export function vec3FromVec4(v) {
-	return vec3.fromValues(v[0], v[1], v[2]);
-}
-
-export function transform3DPoint(M4, p3) {
-	return vec3FromVec4(vec4.transformMat4(vec4.create(), vec4FromVec3(p3, 1.0), M4));
 }
