@@ -6,7 +6,7 @@ import {vec2, vec3, vec4, mat3, mat4} from "../lib/gl-matrix_3.3.0/esm/index.js"
 import {DOM_loaded_promise, load_text, load_texture, register_keyboard_action} from "./icg_web.js"
 import {deg_to_rad, mat4_to_string, vec_to_string, mat4_matmul_many} from "./icg_math.js"
 import {icg_mesh_load_obj, icg_mesh_make_uv_sphere} from "./icg_mesh.js"
-import {PlanetActor, PhongActor, SunActor, EarthActor, SunBillboardActor, MeshOrbitActor} from "./planets.js"
+import {PhongTileActor, MeshTileActor} from "./planets.js"
 import {make_grid_pipeline} from "./icg_grid.js"
 import { fromYRotation, fromZRotation } from "../lib/gl-matrix_3.3.0/esm/mat4.js"
 
@@ -54,23 +54,13 @@ async function main() {
 
 	// Start downloads in parallel
 	const resources = {
-		'tex_sun': load_texture(regl, './textures/sun.jpg'),
-		'tex_moon': load_texture(regl, './textures/moon.jpg'),
-		'tex_mars': load_texture(regl, './textures/mars.jpg'),
-		'tex_earth_day': load_texture(regl, './textures/earth_day.jpg'),
-		'tex_earth_night': load_texture(regl, './textures/earth_night.jpg'),
-		'tex_earth_gloss': load_texture(regl, './textures/earth_gloss.jpg'),
-		'tex_earth_clouds': load_texture(regl, './textures/earth_clouds.jpg', {wrapS: 'repeat'}),
+		'tex_tile_1_middle_nr': load_texture(regl, './tiles/tile_1_middle_nr.png'),
 
 
 		'shader_unshaded_vert': load_text('./src/shaders/unshaded.vert.glsl'),
 		'shader_unshaded_frag': load_text('./src/shaders/unshaded.frag.glsl'),
 		'shader_phong_vert': load_text('./src/shaders/phong.vert.glsl'),
 		'shader_phong_frag': load_text('./src/shaders/phong.frag.glsl'),
-		'shader_earth_frag': load_text('./src/shaders/earth.frag.glsl'),
-		'shader_billboard_vert': load_text('./src/shaders/billboard.vert.glsl'),
-		'shader_billboard_frag': load_text('./src/shaders/billboard_sunglow.frag.glsl'),
-		'shader_sun_vert' : load_text('./src/shaders/sun.vert.glsl'),
 	}
 	
 	// Wait for all downloads to complete
@@ -102,7 +92,7 @@ async function main() {
 	let cam_distance_factor = 1.;
 
 	function update_cam_transform() {
-		/* TODO 4.2.2
+		/*
 		Calculate the world-to-camera transformation matrix.
 		The camera orbits the scene 
 		* cam_distance_base * cam_distance_factor = distance of the camera from the (0, 0, 0) point
@@ -118,7 +108,7 @@ async function main() {
 		);
 		// Store the combined transform in mat_world_to_cam
 		// mat_world_to_cam = look_at * rotation_Y * rotation_Z
-		mat4_matmul_many(mat_world_to_cam, look_at, fromYRotation(mat4.create(),-cam_angle_y), fromZRotation(mat4.create(),cam_angle_z)); // edit this
+		mat4_matmul_many(mat_world_to_cam, look_at, fromYRotation(mat4.create(),-cam_angle_y), fromZRotation(mat4.create(),cam_angle_z));
 	}
 
 	update_cam_transform();
@@ -150,60 +140,13 @@ async function main() {
 
 	// actors in the order they should be drawn
 	const actors_list = [
-		new PlanetActor({
-			name: 'sun',
-			orbits: null,
-			texture: resources.tex_sun,
-			size: 2.5,
-			rotation_speed: 0.1,
-		}, regl, resources),
-		new EarthActor({
-			name: 'earth',
-			orbits: 'sun',
-			texture: resources.tex_earth_day,
-			size: 1,
-			rotation_speed: 0.3,
-			orbit_radius: 6,
-			orbit_speed: 0.05,
-			orbit_phase: 1.7,
-			shininess : 20,
-			ambient : 0.2,
-		}, regl, resources),
-		new PhongActor({
-			name: 'moon',
-			orbits: 'earth',
-			texture: resources.tex_moon,
-			size: 0.25,
-			rotation_speed: 0.3,
-			orbit_radius: 2.5,
-			orbit_speed: 0.4,
-			orbit_phase: 0.5,
-			shininess : 8,
-			ambient : 0.2,
-		}, regl, resources),
-		new PhongActor({
-			name: 'mars',
-			orbits: 'sun',
-			texture: resources.tex_mars,
-			size: 0.75,
-			rotation_speed: 0.7,
-			orbit_radius: 10.0,
-			orbit_speed: 0.1,
-			orbit_phase: 0.1,
-			shininess : 8,
-			ambient : 0.2,
-		}, regl, resources),
-		// 5.4
-		new MeshOrbitActor({
+		new MeshTileActor({
 			name: 'mymesh',
-			orbits: 'mars',
-			mesh: await icg_mesh_load_obj(regl, "mesh/mymesh.obj"),
-			texture: resources.tex_mars,
+			mesh: await icg_mesh_load_obj(regl, "tiles/tile_1_middle_nr.obj"),
+			texture: resources.tex_tile_1_middle_nr,
 			size: 0.3,
-			rotation_speed: 0.7,
-			orbit_radius: 2.0,
-			orbit_speed: 0.1,
-			orbit_phase: 0.1,
+			x: -3,
+			y: 0,
 			shininess : 8,
 			ambient : 0.2,
 		}, regl, resources),
@@ -213,24 +156,12 @@ async function main() {
 
 	for (const actor of actors_list) {
 		actors_by_name[actor.name] = actor;
-
-		// resolve orbits by name
-		// the orbit-parent should be in the list before its child, the child needs the parent's model matrix to be calculated earlier
-		if(actor.orbits !== null) {
-			actor.orbits = actors_by_name[actor.orbits];
-
-			if (actor.orbits === undefined) {
-				throw new Error(`Actor ${actor.name} orbits around ${actor.orbits} which is not present in the actor list before it`);
-			}
-		}
 	}
-
-	const billboard = new SunBillboardActor({size: actors_by_name['sun'].size * 3}, regl, resources);
 
 	/*
 		Center camera on selected planet
 	*/
-	let selected_planet_name = 'earth';
+	let selected_planet_name = 'mymesh';
 	const elem_view_select = document.getElementById('view-select');
 
 	function set_selected_planet(name) {
@@ -240,7 +171,7 @@ async function main() {
 		update_cam_transform();
 	}
 
-	set_selected_planet('earth');
+	set_selected_planet('mymesh');
 
 	for (const name in actors_by_name) {
 		if (actors_by_name.hasOwnProperty(name)) {
@@ -279,16 +210,15 @@ async function main() {
 	// List of objects to draw
 	const draw_list = actors_list.slice();
 	draw_list.push(grid_actor_interface);
-	draw_list.push(billboard); //add the billboard object
 
 	// Consider the sun, which locates at [0, 0, 0], as the only light source
-	const light_position_world = [0, 0, 0, 1];
+	const light_position_world = [0, -10, -8, 1];
 	const light_position_cam = [0, 0, 0, 1];
-	const light_color = [1.0, 0.941, 0.898];
+	const light_color = [0.91, 0.90, .87];
 
 	//add the light_color to the planets except sun and billboard
 	for (const actor of actors_list){
-		if(actor instanceof PhongActor){
+		if(actor instanceof PhongTileActor){
 			actor.light_color = light_color;
 		}
 	}
@@ -352,9 +282,6 @@ async function main() {
 			light_position_cam: light_position_cam,
 			camera_position: camera_position,
 		}
-
-		// Billboard needs to know the camera position to calculate its model matrix
-		billboard.calculate_model_matrix(draw_info);
 
 		// Set the whole image to black
 		regl.clear({color: [0, 0, 0, 1]});
