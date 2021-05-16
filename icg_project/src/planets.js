@@ -41,150 +41,52 @@ class Actor {
 	}
 }
 
-export class PlanetActor extends Actor {
+export class UnshadedTileActor extends Actor {
 	init_pipeline(regl, resources) {
-		// create pipeline only if it doesn't exist
-		// if pipeline not found under that key, the arrow-function is used to create it
-		this.pipeline = cached_pipeline('unshaded', () => regl({
-			attributes: {
-				position: resources.mesh_uvsphere.vertex_positions,
-				tex_coord: resources.mesh_uvsphere.vertex_tex_coords,
-			},
-			// Faces, as triplets of vertex indices
-			elements: resources.mesh_uvsphere.faces,
-	
-			// Uniforms: global data available to the shader
-			uniforms: {
-				mat_mvp: regl.prop('mat_mvp'),
-				texture_base_color: regl.prop('tex_base_color'),
-			},	
-	
-			vert: resources.shader_unshaded_vert,
-			frag: resources.shader_unshaded_frag,
-		}));
+		throw Error('Not implemented: UnshadedTileActor.init_pipeline, we shade here');
 	}
 
-	constructor({name, orbits, texture, size, rotation_speed, orbit_radius, orbit_speed, orbit_phase, ...rest}, regl, resources) {
+	constructor({name, texture, size, x, y, ...rest}, regl, resources) {
 		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#Unpacking_fields_from_objects_passed_as_function_parameter
 
 		super(rest, regl, resources);
 
 		this.name = name;
-		this.orbits = orbits;
 		this.texture = texture;
 		this.size = size;
-		this.rotation_speed = rotation_speed;
-		this.orbit_radius = orbit_radius;
-		this.orbit_speed = orbit_speed;
-		this.orbit_phase = orbit_phase;
+		// Those are coordinates on our grid (10 length squares in world coord)
+		this.x = x;
+		this.y = y;
 	}
 
 	calculate_model_matrix({sim_time}) {
 		/*
-		TODO 4.2.3
 		Construct the model matrix for the current planet and store it in this.mat_model_to_world.
-		
-		Orbit (if the parent this.orbits is not null)
-			radius = this.orbit_radius
-			angle = sim_time * this.orbit_speed + this.orbit_phase
-			around parent's position (this.orbits.mat_model_to_world)
-
-		Spin around the planet's Z axis
-			angle = sim_time * this.rotation_speed (radians)
 		
 		Scale the unit sphere to match the desired size
 			scale = this.size
 			mat4.fromScaling takes a 3D vector!
 		*/
-
-		//const M_orbit = mat4.create();
-
-		const rotAroundItselfMat = mat4.fromZRotation(mat4.create(), sim_time * this.rotation_speed);
-		let scale = this.size
+		let scale = this.size;
 		let sizeMat = mat4.fromScaling(mat4.create(), [scale, scale, scale]);
-
-		let rotAroundParentMat = mat4.create();
-		let distanceFromParentMat = mat4.create();
-		let transTemp = mat4.create();
-
-		let orbitMat = mat4.create();
-
-		if(this.orbits !== null) {
-			// Parent's translation
-			const parent_translation_v = mat4.getTranslation([0, 0, 0], this.orbits.mat_model_to_world);
-			mat4.fromTranslation(transTemp, parent_translation_v);
-
-			let radius = this.orbit_radius;
-			let angle = sim_time * this.orbit_speed + this.orbit_phase;
-
-			mat4.fromTranslation(distanceFromParentMat, [radius, 0, 0]);
-
-			// Orbit around the parent
-			mat4.fromZRotation(rotAroundParentMat, angle);
-
-
-			mat4_matmul_many(orbitMat, transTemp, rotAroundParentMat, distanceFromParentMat);
-
-		} 
+		// Matrix to shift the tile on its coordinate (and put it above the grid) values found heuristically
+		let onGridMat = mat4.fromTranslation(mat4.create(), vec3.fromValues(5*this.x, 1.2, 5*this.y));
+		// Rotate the tile to avoid put it on its default rotation
+		let rotateMatrix = mat4.fromXRotation(mat4.create(), Math.PI/2.);
 		
 		// Store the combined transform in this.mat_model_to_world
-		mat4_matmul_many(this.mat_model_to_world, orbitMat, sizeMat, rotAroundItselfMat);
+		mat4_matmul_many(this.mat_model_to_world, sizeMat, rotateMatrix, onGridMat);
 
 	}
 
 	draw({mat_projection, mat_view}) {
-		// TODO 4.2.1.2
-		// Calculate mat_mvp: model-view-projection matrix
-		mat4_matmul_many(this.mat_mvp, mat_projection, mat_view, this.mat_model_to_world);
-
-		this.pipeline({
-			mat_mvp: this.mat_mvp,
-			tex_base_color: this.texture,
-		});
+		throw Error('Not implemented: UnshadedTileActor.draw');
 	}
 }
 
-
-export class SunActor extends PlanetActor{
+export class PhongTileActor extends UnshadedTileActor {
 	init_pipeline(regl, resources) {
-	}
-	draw({mat_projection, mat_view, sim_time}) {
-	}
-}
-
-
-
-export class PhongActor extends PlanetActor {
-	init_pipeline(regl, resources) {
-		// create pipeline only if it doesn't exist
-		// if pipeline not found under that key, the arrow-function is used to create it
-		this.pipeline = cached_pipeline('phong', () => regl({
-			// Vertex attributes
-			attributes: {
-				position: resources.mesh_uvsphere.vertex_positions,
-				tex_coord: resources.mesh_uvsphere.vertex_tex_coords,
-				normal: resources.mesh_uvsphere.vertex_normals,
-			},
-			// Faces, as triplets of vertex indices
-			elements: resources.mesh_uvsphere.faces,
-	
-			// Uniforms: global data available to the shader
-			uniforms: {
-				mat_mvp: regl.prop('mat_mvp'),
-				mat_model_view: regl.prop('mat_model_view'),
-				mat_normals: regl.prop('mat_normals'),
-	
-				light_position: regl.prop('light_position'),
-				texture_base_color: regl.prop('tex_base_color'),
-
-				shininess: regl.prop('shininess'),
-				ambient :regl.prop('ambient'),
-				light_color :regl.prop('light_color'),
-			},	
-	
-			vert: resources.shader_phong_vert,
-			frag: resources.shader_phong_frag,
-		}));	
+		throw Error('Not implemented: PhongTileActor.init_pipeline, we only load meshes');
 	}
 
 	constructor(cfg, regl, resources) {
@@ -202,7 +104,6 @@ export class PhongActor extends PlanetActor {
 	// }
 
 	draw({mat_projection, mat_view, light_position_cam, sim_time}) {
-		// #TODO 5.0 
 		// Calculate this.mat_model_view, this.mat_mvp
 		// We follow the MVP pipeline (lecture 5.d, slide 4)
 		mat4_matmul_many(this.mat_model_view, mat_view, this.mat_model_to_world);
@@ -231,7 +132,7 @@ export class PhongActor extends PlanetActor {
 }
 
 
-export class MeshOrbitActor extends PhongActor {
+export class MeshTileActor extends PhongTileActor {
 	init_pipeline(regl, resources) {
 		// create pipeline only if it doesn't exist
 		// if pipeline not found under that key, the arrow-function is used to create it
@@ -273,131 +174,5 @@ export class MeshOrbitActor extends PhongActor {
 		this.pipeline = (props) => {
 			pipeline_without_mesh(Object.assign({mesh: this.mesh}, props))
 		}
-	}
-}
-
-/*
-	Implements the special shading for Earth
-*/
-export class EarthActor extends PhongActor {
-
-	init_pipeline(regl, resources) {
-		this.pipeline = cached_pipeline('earth', () => regl({
-			// Vertex attributes
-			attributes: {
-				position: resources.mesh_uvsphere.vertex_positions,
-				tex_coord: resources.mesh_uvsphere.vertex_tex_coords,
-				normal: resources.mesh_uvsphere.vertex_normals,
-			},
-			// Faces, as triplets of vertex indices
-			elements: resources.mesh_uvsphere.faces,
-	
-			// Uniforms: global data available to the shader
-			uniforms: {
-				mat_mvp: regl.prop('mat_mvp'),
-				mat_model_view: regl.prop('mat_model_view'),
-				mat_normals: regl.prop('mat_normals'),
-	
-				light_position: regl.prop('light_position'),
-
-				texture_surface_day: resources.tex_earth_day,
-				texture_surface_night: resources.tex_earth_night,
-				texture_gloss: resources.tex_earth_gloss,
-				texture_clouds: resources.tex_earth_clouds,
-
-				shininess: regl.prop('shininess'),
-				ambient :regl.prop('ambient'),
-				light_color :regl.prop('light_color'),
-
-				sim_time: regl.prop('sim_time'),
-			},	
-	
-			vert: resources.shader_phong_vert, // using phont.vert for Earth too!
-			frag: resources.shader_earth_frag,
-		}));	
-	}
-
-}
-
-
-export class SunBillboardActor extends Actor {
-	init_pipeline(regl, resources) {
-		this.pipeline = cached_pipeline("sun billboard", () =>
-      regl({
-        // Vertex attributes
-        attributes: {
-          // 4 vertices with 3 coordinates each
-          position: [
-            [-1, -1, 0],
-            [1, -1, 0],
-            [1, 1, 0],
-            [-1, 1, 0],
-          ],
-        },
-
-        // Faces, as triplets of vertex indices
-        elements: [
-          [0, 1, 2], // top right
-          [0, 2, 3], // bottom left
-        ],
-
-        uniforms: {
-          mat_mvp: regl.prop("mat_mvp"),
-        },
-
-        vert: resources.shader_billboard_vert,
-        frag: resources.shader_billboard_frag,
-
-        // TODO 5.1.3: understand the blending mechanism and fill up the blender block
-        // For rendering transparent objects and blending it with the background color, please refer to https://learnopengl.com/Advanced-OpenGL/Blending
-        // For using the regl blending API, please refer to https://github.com/regl-project/regl/blob/master/API.md#blending
-        blend: {
-          enable: true,
-          func: {
-			// we took the default function proposed, solving the basic blending equation 
-            srcRGB: "src alpha",
-            srcAlpha: 1,
-            dstRGB: "one minus src alpha",
-            dstAlpha: 1,
-          },
-          equation: {
-            rgb: "add",
-            alpha: "add",
-          },
-          color: [0, 0, 0, 0],
-        },
-      })
-    );
-	}
-
-	constructor({size, ...rest}, regl, resources) {
-		super(rest, regl, resources);
-
-		this.size = size;
-		this.mat_scale = mat4.fromScaling(mat4.create(), [this.size, this.size, this.size]);
-	}
-
-	calculate_model_matrix({camera_position}) {
-
-		// TODO 5.1.1: Compute the this.mat_model_to_world, which makes the normal of the billboard always point to our eye.
-		this.mat_model_to_world = mat4.create();
-
-		let n_b = vec3.fromValues(0,0,1);
-		
-		let rotation_angle = vec3.angle(camera_position, n_b);
-		let rotation_axis = cross(vec3.create(), n_b, camera_position);
-		let rotation_matrix = mat4.fromRotation(mat4.create(), rotation_angle, rotation_axis);
-		
-		mat4_matmul_many(this.mat_model_to_world, rotation_matrix, this.mat_scale);
-	}
-
-	draw({mat_projection, mat_view}) {
-		// Implemented analogously to 4.2.1.2
-		// Calculate mat_mvp: model-view-projection matrix
-		mat4_matmul_many(this.mat_mvp, mat_projection, mat_view, this.mat_model_to_world);
-
-		this.pipeline({
-			mat_mvp: this.mat_mvp,
-		});
 	}
 }
