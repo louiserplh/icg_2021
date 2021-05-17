@@ -15,7 +15,7 @@ public class WaveForm {
 
         boolean worked = false;
         while(!worked) {
-            WaveForm wf = new WaveForm(db.getTilesList(), corres, 4, 4, 2, TilesDB.getFloor());
+            WaveForm wf = new WaveForm(db.getTilesList(), corres, 3, 3, 3, TilesDB.getFloor());
             worked = wf.start();
         }
 
