@@ -46,7 +46,7 @@ export class UnshadedTileActor extends Actor {
 		throw Error('Not implemented: UnshadedTileActor.init_pipeline, we shade here');
 	}
 
-	constructor({name, texture, size, x, y, ...rest}, regl, resources) {
+	constructor({name, texture, size, x, y, z, ...rest}, regl, resources) {
 		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#Unpacking_fields_from_objects_passed_as_function_parameter
 
 		super(rest, regl, resources);
@@ -57,6 +57,7 @@ export class UnshadedTileActor extends Actor {
 		// Those are coordinates on our grid (10 length squares in world coord)
 		this.x = x;
 		this.y = y;
+		this.z = z;
 	}
 
 	calculate_model_matrix({sim_time}) {
@@ -70,7 +71,7 @@ export class UnshadedTileActor extends Actor {
 		let scale = this.size;
 		let sizeMat = mat4.fromScaling(mat4.create(), [scale, scale, scale]);
 		// Matrix to shift the tile on its coordinate (and put it above the grid) values found heuristically
-		let onGridMat = mat4.fromTranslation(mat4.create(), vec3.fromValues(5*this.x, 1.2, 5*this.y));
+		let onGridMat = mat4.fromTranslation(mat4.create(), vec3.fromValues(this.x, this.z, this.y));
 		// Rotate the tile to avoid put it on its default rotation
 		let rotateMatrix = mat4.fromXRotation(mat4.create(), Math.PI/2.);
 		

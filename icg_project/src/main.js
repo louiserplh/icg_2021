@@ -55,7 +55,7 @@ async function main() {
 	// Start downloads in parallel
 	const resources = {
 		'tex_tile_1_middle_nr': load_texture(regl, './tiles/tile_1_middle_nr.png'),
-
+		'tex_tile_1_middle_nr_2': load_texture(regl, './tiles/tile_1_middle_nr.png'),
 
 		'shader_unshaded_vert': load_text('./src/shaders/unshaded.vert.glsl'),
 		'shader_unshaded_frag': load_text('./src/shaders/unshaded.frag.glsl'),
@@ -144,9 +144,43 @@ async function main() {
 			name: 'mymesh',
 			mesh: await icg_mesh_load_obj(regl, "tiles/tile_1_middle_nr.obj"),
 			texture: resources.tex_tile_1_middle_nr,
-			size: 0.3,
-			x: -3,
+			size: 1,
+			x: 0,
 			y: 0,
+			z: 0,
+			shininess : 8,
+			ambient : 0.2,
+		}, regl, resources),
+		new MeshTileActor({
+			name: 'mymesh2',
+			mesh: await icg_mesh_load_obj(regl, "tiles/tile_1_middle_nr.obj"),
+			texture: resources.tex_tile_1_middle_nr,
+			size: 1,
+			x: 3.2,
+			y: 0,
+			z: 0,
+			shininess : 8,
+			ambient : 0.2,
+		}, regl, resources),
+		new MeshTileActor({
+			name: 'mymesh3',
+			mesh: await icg_mesh_load_obj(regl, "tiles/tile_1_middle_nr.obj"),
+			texture: resources.tex_tile_1_middle_nr,
+			size: 1,
+			x: 0,
+			y: 7,
+			z: 0,
+			shininess : 8,
+			ambient : 0.2,
+		}, regl, resources),
+		new MeshTileActor({
+			name: 'mymesh4',
+			mesh: await icg_mesh_load_obj(regl, "tiles/tile_1_middle_nr.obj"),
+			texture: resources.tex_tile_1_middle_nr,
+			size: 1,
+			x: 0,
+			y: 7,
+			z: 3.2,
 			shininess : 8,
 			ambient : 0.2,
 		}, regl, resources),
@@ -192,7 +226,7 @@ async function main() {
 	register_keyboard_action('p', () => is_paused = !is_paused);
 
 	// Grid, to demonstrate keyboard shortcuts
-	const draw_grid = make_grid_pipeline(regl);
+	/*const draw_grid = make_grid_pipeline(regl);
 	let grid_on = true;
 	register_keyboard_action('g', () => grid_on = !grid_on);
 
@@ -200,7 +234,7 @@ async function main() {
 		draw: ({mat_projection, mat_view}) => {
 			if(grid_on) draw_grid(mat_projection, mat_view);
 		}
-	};
+	};*/
 		
 
 	/*---------------------------------------------------------------
@@ -209,12 +243,12 @@ async function main() {
 
 	// List of objects to draw
 	const draw_list = actors_list.slice();
-	draw_list.push(grid_actor_interface);
+	//draw_list.push(grid_actor_interface);
 
 	// Consider the sun, which locates at [0, 0, 0], as the only light source
-	const light_position_world = [0, -10, -8, 1];
+	const light_position_world = [100, 100, 100, 1];
 	const light_position_cam = [0, 0, 0, 1];
-	const light_color = [0.91, 0.90, .87];
+	const light_color = [1, 1, 1];
 
 	//add the light_color to the planets except sun and billboard
 	for (const actor of actors_list){
@@ -284,7 +318,8 @@ async function main() {
 		}
 
 		// Set the whole image to black
-		regl.clear({color: [0, 0, 0, 1]});
+		//{color: [0.56, 0.90, 0.93, 1]
+		regl.clear({color: [0.22, 0.69, 0.87, 1]});
 
 		for (const actor of draw_list) {
 			try {
