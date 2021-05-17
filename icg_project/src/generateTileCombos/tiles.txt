@@ -1,0 +1,753 @@
+air : 
+  - front : 
+    • air (any side) 
+
+  - back : 
+    • tile_1_alone_nb (front) 
+    • air (front) 
+
+  - left : 
+    • tile_1_alone_nb (right) 
+    • air (right) 
+
+  - right : 
+    • tile_1_alone_nb (left) 
+    • air (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • tile_1_right_90 (top) 
+    • tile_1_alone (top) 
+    • air_b (top) 
+    • tile_1_left_corner_90 (top) 
+    • tile_1_left_corner_270 (top) 
+    • tile_1_left_corner (top) 
+    • tile_1_alone_nb (top) 
+    • tile_1_left_corner_180 (top) 
+    • air (top) 
+    • tile_1_right (top) 
+    • tile_1_left_90 (top) 
+    • tile_1_right_270 (top) 
+    • tile_1_left_180 (top) 
+    • tile_1_left_270 (top) 
+    • tile_1_left (top) 
+    • tile_1_right_180 (top) 
+
+
+ 
+air_b : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right (front) 
+    • tile_1_alone (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_alone_nr (front) 
+    • tile_1_left_180 (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_left (front) 
+    • tile_1_right_180 (front) 
+
+  - left : 
+    • tile_1_right_90 (right) 
+    • tile_1_alone (right) 
+    • air_b (right) 
+    • tile_1_left_90 (right) 
+    • tile_1_right_270 (right) 
+    • tile_1_left_corner_270 (right) 
+    • tile_1_alone_nr (right) 
+    • tile_1_left_corner (right) 
+    • tile_1_left_corner_180 (right) 
+    • tile_1_left_270 (right) 
+    • tile_1_left (right) 
+    • tile_1_right_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+floor : 
+  - front : 
+    • floor (front) 
+
+  - back : 
+    • floor (back) 
+
+  - left : 
+    • floor (left) 
+
+  - right : 
+    • floor (right) 
+
+  - top : 
+    • tile_1_right_90 (bottom) 
+    • tile_1_alone (bottom) 
+    • air_b (bottom) 
+    • tile_1_left_corner_90 (bottom) 
+    • tile_1_left_corner_270 (bottom) 
+    • tile_1_left_corner (bottom) 
+    • tile_1_left_corner_180 (bottom) 
+    • tile_1_right (bottom) 
+    • tile_1_left_90 (bottom) 
+    • tile_1_right_270 (bottom) 
+    • tile_1_alone_nr (bottom) 
+    • tile_1_left_180 (bottom) 
+    • tile_1_left_270 (bottom) 
+    • tile_1_left (bottom) 
+    • tile_1_right_180 (bottom) 
+
+  - bottom : 
+
+
+ 
+tile_1_alone : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_alone_nr (front) 
+    • tile_1_left_180 (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_left (front) 
+    • tile_1_right_180 (front) 
+
+  - left : 
+    • tile_1_right_90 (right) 
+    • air_b (right) 
+    • tile_1_left_90 (right) 
+    • tile_1_right_270 (right) 
+    • tile_1_left_corner_270 (right) 
+    • tile_1_alone_nr (right) 
+    • tile_1_left_corner (right) 
+    • tile_1_left_corner_180 (right) 
+    • tile_1_left_270 (right) 
+    • tile_1_left (right) 
+    • tile_1_right_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_alone_nb : 
+  - front : 
+    • air (any side) 
+
+  - back : 
+    • air (front) 
+
+  - left : 
+    • air (right) 
+
+  - right : 
+    • air (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • tile_1_alone_nr (top) 
+
+
+ 
+tile_1_alone_nr : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right (front) 
+    • tile_1_alone (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_left_180 (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_left (front) 
+    • tile_1_right_180 (front) 
+
+  - left : 
+    • tile_1_right_90 (right) 
+    • tile_1_alone (right) 
+    • air_b (right) 
+    • tile_1_left_90 (right) 
+    • tile_1_right_270 (right) 
+    • tile_1_left_corner_270 (right) 
+    • tile_1_left_corner (right) 
+    • tile_1_left_corner_180 (right) 
+    • tile_1_left_270 (right) 
+    • tile_1_left (right) 
+    • tile_1_right_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • tile_1_alone_nb (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_left : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right (front) 
+    • tile_1_alone (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_alone_nr (front) 
+    • tile_1_left_180 (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_right_180 (front) 
+
+  - left : 
+    • tile_1_right (right) 
+    • tile_1_left_corner_90 (right) 
+    • tile_1_left_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_left_90 : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right_90 (front) 
+    • tile_1_left_corner_270 (front) 
+    • tile_1_left_corner_180 (front) 
+    • tile_1_left_270 (front) 
+
+  - left : 
+    • tile_1_right_90 (right) 
+    • tile_1_alone (right) 
+    • air_b (right) 
+    • tile_1_right_270 (right) 
+    • tile_1_left_corner_270 (right) 
+    • tile_1_alone_nr (right) 
+    • tile_1_left_corner (right) 
+    • tile_1_left_corner_180 (right) 
+    • tile_1_left_270 (right) 
+    • tile_1_left (right) 
+    • tile_1_right_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_left_180 : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right (front) 
+    • tile_1_alone (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_alone_nr (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_left (front) 
+    • tile_1_right_180 (front) 
+
+  - left : 
+    • tile_1_right_90 (right) 
+    • tile_1_alone (right) 
+    • air_b (right) 
+    • tile_1_left_90 (right) 
+    • tile_1_right_270 (right) 
+    • tile_1_left_corner_270 (right) 
+    • tile_1_alone_nr (right) 
+    • tile_1_left_corner (right) 
+    • tile_1_left_corner_180 (right) 
+    • tile_1_left_270 (right) 
+    • tile_1_left (right) 
+    • tile_1_right_180 (right) 
+
+  - right : 
+    • tile_1_left_corner_270 (left) 
+    • tile_1_left_corner (left) 
+    • tile_1_left_corner_180 (left) 
+    • tile_1_left (left) 
+    • tile_1_right_180 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_left_270 : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right (front) 
+    • tile_1_alone (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_alone_nr (front) 
+    • tile_1_left_180 (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_left (front) 
+    • tile_1_right_180 (front) 
+
+  - left : 
+    • tile_1_right_90 (right) 
+    • tile_1_alone (right) 
+    • air_b (right) 
+    • tile_1_left_90 (right) 
+    • tile_1_right_270 (right) 
+    • tile_1_left_corner_270 (right) 
+    • tile_1_alone_nr (right) 
+    • tile_1_left_corner (right) 
+    • tile_1_left_corner_180 (right) 
+    • tile_1_left (right) 
+    • tile_1_right_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_right : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_alone (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_alone_nr (front) 
+    • tile_1_left_180 (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_left (front) 
+    • tile_1_right_180 (front) 
+
+  - left : 
+    • tile_1_right_90 (right) 
+    • tile_1_alone (right) 
+    • air_b (right) 
+    • tile_1_left_90 (right) 
+    • tile_1_right_270 (right) 
+    • tile_1_left_corner_270 (right) 
+    • tile_1_alone_nr (right) 
+    • tile_1_left_corner (right) 
+    • tile_1_left_corner_180 (right) 
+    • tile_1_left_270 (right) 
+    • tile_1_left (right) 
+    • tile_1_right_180 (right) 
+
+  - right : 
+    • tile_1_left_corner_270 (left) 
+    • tile_1_left_corner (left) 
+    • tile_1_left_corner_180 (left) 
+    • tile_1_left (left) 
+    • tile_1_right_180 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_right_90 : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right (front) 
+    • tile_1_alone (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_alone_nr (front) 
+    • tile_1_left_180 (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_left (front) 
+    • tile_1_right_180 (front) 
+
+  - left : 
+    • tile_1_alone (right) 
+    • air_b (right) 
+    • tile_1_left_90 (right) 
+    • tile_1_right_270 (right) 
+    • tile_1_left_corner_270 (right) 
+    • tile_1_alone_nr (right) 
+    • tile_1_left_corner (right) 
+    • tile_1_left_corner_180 (right) 
+    • tile_1_left_270 (right) 
+    • tile_1_left (right) 
+    • tile_1_right_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_right_180 : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right (front) 
+    • tile_1_alone (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_alone_nr (front) 
+    • tile_1_left_180 (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_left (front) 
+
+  - left : 
+    • tile_1_right (right) 
+    • tile_1_left_corner_90 (right) 
+    • tile_1_left_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_right_270 : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right_90 (front) 
+    • tile_1_left_corner_270 (front) 
+    • tile_1_left_corner_180 (front) 
+    • tile_1_left_270 (front) 
+
+  - left : 
+    • tile_1_right_90 (right) 
+    • tile_1_alone (right) 
+    • air_b (right) 
+    • tile_1_left_90 (right) 
+    • tile_1_left_corner_270 (right) 
+    • tile_1_alone_nr (right) 
+    • tile_1_left_corner (right) 
+    • tile_1_left_corner_180 (right) 
+    • tile_1_left_270 (right) 
+    • tile_1_left (right) 
+    • tile_1_right_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_left_corner : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right_90 (front) 
+    • tile_1_left_corner_270 (front) 
+    • tile_1_left_corner_180 (front) 
+    • tile_1_left_270 (front) 
+
+  - left : 
+    • tile_1_right (right) 
+    • tile_1_left_corner_90 (right) 
+    • tile_1_left_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_left_corner_90 : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right_90 (front) 
+    • tile_1_left_corner_270 (front) 
+    • tile_1_left_corner_180 (front) 
+    • tile_1_left_270 (front) 
+
+  - left : 
+    • tile_1_right_90 (right) 
+    • tile_1_alone (right) 
+    • air_b (right) 
+    • tile_1_left_90 (right) 
+    • tile_1_right_270 (right) 
+    • tile_1_left_corner_270 (right) 
+    • tile_1_alone_nr (right) 
+    • tile_1_left_corner (right) 
+    • tile_1_left_corner_180 (right) 
+    • tile_1_left_270 (right) 
+    • tile_1_left (right) 
+    • tile_1_right_180 (right) 
+
+  - right : 
+    • tile_1_left_corner_270 (left) 
+    • tile_1_left_corner (left) 
+    • tile_1_left_corner_180 (left) 
+    • tile_1_left (left) 
+    • tile_1_right_180 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_left_corner_180 : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right (front) 
+    • tile_1_alone (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_alone_nr (front) 
+    • tile_1_left_180 (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_left (front) 
+    • tile_1_right_180 (front) 
+
+  - left : 
+    • tile_1_right (right) 
+    • tile_1_left_corner_90 (right) 
+    • tile_1_left_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
+tile_1_left_corner_270 : 
+  - front : 
+    • air_b (any side) 
+
+  - back : 
+    • tile_1_right (front) 
+    • tile_1_alone (front) 
+    • air_b (front) 
+    • tile_1_left_90 (front) 
+    • tile_1_right_270 (front) 
+    • tile_1_left_corner_90 (front) 
+    • tile_1_alone_nr (front) 
+    • tile_1_left_180 (front) 
+    • tile_1_left_corner (front) 
+    • tile_1_left (front) 
+    • tile_1_right_180 (front) 
+
+  - left : 
+    • tile_1_right (right) 
+    • tile_1_left_corner_90 (right) 
+    • tile_1_left_180 (right) 
+
+  - right : 
+    • tile_1_right (left) 
+    • tile_1_right_90 (left) 
+    • tile_1_alone (left) 
+    • air_b (left) 
+    • tile_1_left_90 (left) 
+    • tile_1_right_270 (left) 
+    • tile_1_left_corner_90 (left) 
+    • tile_1_alone_nr (left) 
+    • tile_1_left_180 (left) 
+    • tile_1_left_270 (left) 
+
+  - top : 
+    • air (bottom) 
+
+  - bottom : 
+    • floor (top) 
+
+
+ 
