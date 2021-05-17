@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Pretty Houses Generator - Milestone report</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="icg_report.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Pretty Houses Generator - Milestone report</h1>
+</header>
+<h1 id="recall-summary-of-the-project">Recall summary of the project</h1>
+<p>We want to implement a wave function tiling algorithm to create cute and coherent scenes in 3D. Also, we want to make this on multiple z-axis stages where the structures remain coherent and nicely arrange in our world.</p>
+<h1 id="accomplishments">Accomplishments</h1>
+<ul>
+<li>We created a set of 39 tiles (plus their rotated versions) with MagicaVoxel. Each tile is meant to be arranged nicely with some meaningful rules.</li>
+<li>We generated the associated set of what we called ‘sockets’. It stores which tile is accepted next to every faces of each tile.</li>
+<li>We implemented the wave function collapse in Java. It outputs which tile should be on every location of our XYZ world.</li>
+<li>We finally modified the Exercice 5 and its Actor system to be able to display the tiles in our world giving it x,y,z coordinates.</li>
+</ul>
+<h1 id="preliminary-results">Preliminary results</h1>
+<p>The tiles we created in MagicaVoxel:</p>
+<p><img src="images/pretty_terrasse.jpeg" width="450" alt="Pretty Terrasse" /> <img src="images/pretty_shop.jpeg" width="450" alt="Pretty Shop" /></p>
+<p>The tiles arranged as output by WFC:</p>
+<p><img src="images/pretty_houses_1.jpeg" width="450" alt="Pretty Houses 1" /> <img src="images/pretty_houses_2.jpeg" width="450" alt="Pretty Houses 2" /></p>
+<p>The tiles in our world:</p>
+<p><img src="images/pretty_houses_world_1.png" width="450" alt="Pretty Houses in world 1" /> <img src="images/pretty_houses_world_2.png" width="450" alt="Pretty Houses in world 2" /></p>
+<h1 id="updated-schedule">Updated schedule</h1>
+<ul>
+<li><em>20/05/21</em>: We want to merge the WFC implementation with our tiles rendering.</li>
+<li><em>25/05/21</em>: Start implementing the UI for letting user set constraints.</li>
+<li><em>27/05/21</em>: Finish implementing the UI and start Bezier camera paths.</li>
+<li><em>01/06/21</em>: Finish camera paths and record video.</li>
+</ul>
+<h1 id="our-questions">Our questions</h1>
+<ul>
+<li>Our WFC runs for a very variable amount of time (many seconds for 3x3x3 world). Is this a big problem? Is optimization important for our project?</li>
+<li>We plan to display one actor per tile. Will rendering maybe dozens of tiles be a problem ? Our actors are not moving but we’re afraid it will require too much ressources, what do you think ?</li>
+<li>For animated birds or plants you suggested, we don’t really see which implementation you’re talking abount and how would it be done in JavaScript?</li>
+</ul>
+<p>Thanks a lot !</p>
+</body>
+</html>
