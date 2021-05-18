@@ -2,7 +2,6 @@ package PutTogetherTiles.src;
 import java.util.List;
 import java.util.ArrayList;
 
-
 public class TilesDB {
 
     private List<Tile> tiles;
@@ -54,8 +53,6 @@ public class TilesDB {
         tiles.add(t0_b);
         tiles.add(t40);
 
-        
-        
         Tile t1 = new Tile("tile_1_alone", -3, -3, -3, -3, -1, 0, 0);
         Tile t2 = new Tile("tile_1_alone_nb", -1, -1, -1, -1, -1, 1, -1);
         Tile t3 = new Tile("tile_1_alone_nr", -3, -3, -3, -3, 1, 0, 0);
@@ -70,7 +67,7 @@ public class TilesDB {
         Tile t6_90 = new Tile("tile_1_left_nb_90", -1, 3, -1, -1, -1, 10, -1);
 
         Tile t7 = new Tile("tile_1_left_nb_corner", -1, 3, 3, -1, -1, 13, -1);
-        Tile t7_90 = new Tile("tile_1_left_nb_corner_90",  -1, 3, -1, 3, -1, 14, -1);
+        Tile t7_90 = new Tile("tile_1_left_nb_corner_90", -1, 3, -1, 3, -1, 14, -1);
 
         Tile t8 = new Tile("tile_1_left_nr", -3, -3, 4, -3, 6, 0, 0);
         Tile t8_90 = new Tile("tile_1_left_nr_90", -3, 4, -3, -3, 10, 0, 2);
@@ -86,7 +83,7 @@ public class TilesDB {
 
         Tile t12 = new Tile("tile_1_middle_nr", -3, -3, 4, 4, 8, 0, -1);
         Tile t12_90 = new Tile("tile_1_middle_nr_90", 4, 4, -3, -3, 12, 0, -1);
-    
+
         Tile t13 = new Tile("tile_1_right", -3, -3, -3, 2, -1, 0, 0);
         Tile t13_90 = new Tile("tile_1_right_90", 2, -3, -3, -3, -1, 0, 2);
 
@@ -101,7 +98,7 @@ public class TilesDB {
 
         Tile t17 = new Tile("tile_1_right_nr", -3, -3, -3, 4, 7, 0, 0);
         Tile t17_90 = new Tile("tile_1_right_nr_90", 4, -3, -3, -3, 11, 0, 2);
-       
+
         Tile t18 = new Tile("tile_1_right_nr_corner", -3, 4, -3, 4, 15, 0, 0);
         Tile t18_90 = new Tile("tile_1_right_nr_corner_90", 4, -3, 4, -3, 16, 0, 2);
 
@@ -149,7 +146,6 @@ public class TilesDB {
         Tile t33 = new Tile("tile_3_right_nr", -1, -1, -1, 5, -1, 7, -1);
         Tile t33_90 = new Tile("tile_3_right_nr", 5, -1, -1, -1, -1, 11, -1);
 
-
         tiles.add(t1);
         tiles.add(t2);
         tiles.add(t3);
@@ -187,10 +183,10 @@ public class TilesDB {
         tiles.add(t20);
         tiles.add(t20_90);
         tiles.add(t21);
-        //tiles.add(t21_90);
+        // tiles.add(t21_90);
         tiles.add(t22);
         tiles.add(t22_90);
-        //tiles.add(t23);
+        // tiles.add(t23);
         tiles.add(t23_90);
         tiles.add(t24);
         tiles.add(t24_90);
@@ -212,7 +208,6 @@ public class TilesDB {
         tiles.add(t32_90);
         tiles.add(t33);
         tiles.add(t33_90);
-    
 
         /** 
 
@@ -266,7 +261,7 @@ public class TilesDB {
         tiles.add(t38);
         tiles.add(t39);
         */
-        
+
     }
 
     public List<Tile> getTilesList() {
@@ -284,5 +279,5 @@ public class TilesDB {
     public static Tile getFloorAir() {
         return t0_b;
     }
-    
+
 }

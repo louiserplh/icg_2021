@@ -1,4 +1,5 @@
 package PutTogetherTiles.src;
+
 public class Tile {
 
     private String id;
@@ -12,7 +13,8 @@ public class Tile {
 
     private int door_socket;
 
-    public Tile(String id, int front_socket, int back_socket, int left_socket, int right_socket, int top_socket, int bottom_socket, int door_socket) {
+    public Tile(String id, int front_socket, int back_socket, int left_socket, int right_socket, int top_socket,
+            int bottom_socket, int door_socket) {
         this.id = id;
         this.front_socket = front_socket;
         this.back_socket = back_socket;
@@ -31,7 +33,7 @@ public class Tile {
     public int getFrontSocket() {
         return front_socket;
     }
-    
+
     public int getBackSocket() {
         return back_socket;
     }
@@ -53,7 +55,7 @@ public class Tile {
     }
 
     public int getSocketByIndex(int index) {
-        if(!(0 <= index && index < 6)) {
+        if (!(0 <= index && index < 6)) {
             throw new IllegalArgumentException();
         }
 
@@ -68,13 +70,13 @@ public class Tile {
                 return right_socket;
             case 4:
                 return top_socket;
-            default :
+            default:
                 return bottom_socket;
         }
     }
 
     public String getSocketNameByIndex(int index) {
-        if(!(0 <= index && index <= 6)) {
+        if (!(0 <= index && index <= 6)) {
             throw new IllegalArgumentException();
         }
 
@@ -89,9 +91,9 @@ public class Tile {
                 return "right";
             case 4:
                 return "top";
-            case 5 :
+            case 5:
                 return "bottom";
-            default :
+            default:
                 return "any side";
         }
     }
@@ -102,7 +104,7 @@ public class Tile {
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof Tile)) {
+        if (!(obj instanceof Tile)) {
             throw new IllegalArgumentException();
         }
         Tile t = (Tile) obj;
@@ -110,6 +112,4 @@ public class Tile {
         return t.getId().equals(id);
     }
 
-
-
-} 
+}
