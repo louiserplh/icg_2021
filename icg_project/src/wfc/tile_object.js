@@ -1,10 +1,3 @@
-import {
-  getAir,
-  getFloor,
-  getFloorAir,
-  getTilesList,
-} from "./tile_database.js";
-
 export class Tile {
   constructor(
     id, // The string identificator of the tile
@@ -14,7 +7,7 @@ export class Tile {
     right_socket,
     top_socket,
     bottom_socket,
-    door_socket
+    door_side
   ) {
     this.id = id;
     this.front_socket = front_socket;
@@ -23,17 +16,7 @@ export class Tile {
     this.right_socket = right_socket;
     this.top_socket = top_socket;
     this.bottom_socket = bottom_socket;
-    this.door_socket = door_socket;
-
-    // sets of matching tiles for each face
-    this.matching = {
-      left: [],
-      right: [],
-      front: [],
-      back: [],
-      up: [],
-      down: [],
-    };
+    this.door_side = door_side; // specifies on which side there's a door (-1 if no door)
   }
 
   /* Sockets utility function */
@@ -118,77 +101,7 @@ export class Tile {
     }
   }
 
-  getDoorSocket() {
-    return this.door_socket;
-  }
-
-  /* Matching sockets computation */
-
-  // TODO : BE SURE TO UNDERSTAND THIS ONE
-  compatibleTilesOnSide(side) {
-    const socket = this.getSocketByIndex(side);
-    const compatibleTiles = [];
-
-    if (socket == -2) {
-      if (side != 5) {
-        compatibleTiles.push(getFloor());
-      }
-      return compatibleTiles;
-    }
-
-    if (
-      side == 0 &&
-      !this.id === "floor" &&
-      !this.id === "air" &&
-      !this.is === "air_b"
-    ) {
-      if (this.getBottomSocket() == getFloor().getTopSocket()) {
-        compatibleTiles.push(getFloorAir());
-      } else {
-        compatibleTiles.put(getAir());
-      }
-
-      return compatibleTiles;
-    }
-
-    if (this.getDoorSocket() == side) {
-      if (this.getBottomSocket() == 0) {
-        compatibleTiles.push(getFloorAir());
-      } else {
-        compatibleTiles.push(getAir());
-      }
-      return compatibleTiles;
-    }
-    const allTiles = getTilesList();
-    const nb_tiles = allTiles.length;
-    for (i = 0; i < nb_tiles; ++i) {
-      otherT = allTiles.get(i);
-      if (
-        !(
-          otherT.equals(this) &&
-          !this.getId().equals("air") &&
-          !this.getId().equals("air_b")
-        )
-      ) {
-        corresponding = this.getCorrespondingSide(index);
-        otherSocket = otherT.getSocketByIndex(corresponding);
-        if (socket == otherSocket) {
-          compatibleTiles.push(otherT);
-        }
-      }
-    }
-
-    return compatibleTiles;
-  }
-
-  // ENDS HERE THE TODO
-
-  equals(obj) {
-    if (!(obj instanceof Tile)) {
-      throw new IllegalArgumentException();
-    }
-
-    // Only ASCII characters in id names, we can use ===
-    return obj.getId() === this.id;
+  getDoorSide() {
+    return this.door_side;
   }
 }
