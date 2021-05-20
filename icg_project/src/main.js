@@ -6,7 +6,7 @@ import {vec2, vec3, vec4, mat3, mat4} from "../lib/gl-matrix_3.3.0/esm/index.js"
 import {DOM_loaded_promise, load_text, load_texture, register_keyboard_action} from "./icg_web.js"
 import {deg_to_rad, mat4_to_string, vec_to_string, mat4_matmul_many} from "./icg_math.js"
 import {icg_mesh_load_obj, icg_mesh_make_uv_sphere} from "./icg_mesh.js"
-import {PhongTileActor, MeshTileActor} from "./planets.js"
+import {PhongTileActor, MeshTileActor} from "./tiles.js"
 import {make_grid_pipeline} from "./icg_grid.js"
 import { fromYRotation, fromZRotation } from "../lib/gl-matrix_3.3.0/esm/mat4.js"
 
