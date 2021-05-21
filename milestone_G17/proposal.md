@@ -32,7 +32,7 @@ The tiles in our world:
 
 # Updated schedule
 
-* _20/05/21_: We want to merge the WFC implementation with our tiles rendering.
+* _20/05/21_: We want to merge the WFC implementation with our tiles rendering. [We are struggling on that part with debugging, hopefully we'll be able to parallelize for implementing bonuses while finishing debugging]
 * _25/05/21_: Start implementing the UI for letting user set constraints.
 * _27/05/21_: Finish implementing the UI and start Bezier camera paths.
 * _01/06/21_: Finish camera paths and record video.
