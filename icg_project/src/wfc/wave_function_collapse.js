@@ -11,20 +11,90 @@ export class WFC {
     this.matchings_tiles = matchings_tiles; // expected to be the object created in matching_sets.js
     this.x_size = x_size; // the dimensions of our generated space of tiles (in number of tiles)
     this.y_size = y_size;
-    this.z_size = z_side;
-    this.total_size = x_size * y_size * z_size; // the total amount of cells
+    this.z_size = z_side + 1;
+    this.total_size = x_size * y_size * (z_size + 1); // the total amount of cells
     this.nb_tiles = tiles.length;
 
     this.possible_tiles_per_cell = []; // should evolve with propagation of constraints: represents which tiles can be selected for each cell at any step
     for (var i = 0; i < this.total_size; ++i) {
-      this.possible_tiles_per_cell.push({
-        id: tiles[i].getId(),
-        possible_tiles: tiles,
-      });
+      this.possible_tiles_per_cell.push(tiles);
     }
   }
 
-  generate_layout() {}
+  generate_layout() {
+
+    for(var x = 0; x < this.x_size; ++x) {
+      for(var y = 0; y < this.y_size; ++y) {
+        var index = this.coordinates_to_index(x, y, 0);
+        tiles = [];
+        tiles.push(new Tile("floor", -2, -2, -2, -2, 0, -2, -1));
+        this.possible_tiles_per_cell.splice(index, 1, tiles);
+
+        this.propagate(index);
+      }
+    }
+
+    while(!this.is_collapsed()) {
+        this.iterate();
+    }
+
+    if(this.check_validity()) {
+      return this.possible_tiles_per_cell;
+    }
+    else {
+      return [];
+    }
+
+  }
+
+  iterate() {
+    var index = this.get_minimum_entropy_coordinates;
+    this.collapse(index);
+    this.propagate(index);
+
+  }
+
+  collapse(tile_index) {
+    var possibleTiles = this.possible_tiles_per_cell[i];
+    var random = Math.floor(Math.random * possibleTiles.length);
+
+    var l = [];
+    l.push(possibleTiles[random]);
+    this.possible_tiles_per_cell.splice(tile_index, 1, l);
+
+  }
+
+  check_validity() {
+
+    for(var i = 0; i < this.total_size; ++i) {
+
+      if(this.possible_tiles_per_cell[i].length == 0) {
+        return false;
+      }
+
+      var t = this.possible_tiles_per_cell[i][0];
+      var adjacents = this.get_adjacent_tiles_indexes(i);
+
+      for(var j = 0; j < adjacents.length; ++j) {
+
+        var index = adjacents[j];
+        if(index == -1) {
+
+          if(this.possible_tiles_per_cell[index].length == 0) {
+            return false;
+          }
+
+          var t_other = this.possible_tiles_per_cell[index][0];
+          
+          // check if t's correspondences includes t_other
+
+
+
+        }
+      }
+    }
+    return true;
+  }
 
   propagate(tile_index) {
     const stack = [];
@@ -38,10 +108,34 @@ export class WFC {
       for(var i = 0; i < 6; ++i){
           if(adjacents[i] > -1){
             const possible_adjacent_neighbours = this.possible_tiles_per_cell[adjacents[i]];
-            const matching_neighbours = this.get_possible_neighbours();
+            const possible_adjacent_neighbours_copy = this.possible_tiles_per_cell[adjacents[i]].slice();
+            
+            const matching_neighbours = this.get_possible_neighbours(current_index, i);
 
-            for(var j = 0; j < 6; ++j){
-                
+            if(possible_adjacent_neighbours.length > 1) {
+              for(var j = 0; j < possible_adjacent_neighbours.length; ++j) {
+                if(!this.tile_list_contains(possible_adjacent_neighbours[j], matching_neighbours)) {
+
+                  var tile = possible_adjacent_neighbours[j];
+                  var max = possible_adjacent_neighbours_copy.length;
+                  var k = 0;
+
+                  while(k < max) {
+                    if(possible_adjacent_neighbours_copy[k] == tile) {
+                      possible_adjacent_neighbours_copy.splice(k, 1);
+                      k = max;
+                    }
+                    k += 1;
+                  }
+
+                  if(!stack.includes(adjacents[i])) {
+                    stack.push(adjacents[i]);
+                  }
+
+                }
+
+              }
+              this.possible_tiles_per_cell.splice(adjacents[i], 1, possible_adjacent_neighbours_copy);
             }
           }
       }
@@ -78,6 +172,7 @@ export class WFC {
   // Returns the matching tiles for the tile (given through its index in possible_tiles_per_cell array) on a certain side
   get_possible_neighbours(tile_index, side) {
     // retrieves the index of our tile (on tile_index in our world) in the tiles list
+    /** 
     const index_in_tiles = tiles.findIndex(function findMatchingId(tile) {
       tile.id === possible_tiles_per_cell[tile_index].id;
     });
@@ -87,7 +182,19 @@ export class WFC {
     ) {
       return side == j;
     }).matchings_tiles;
+    */
+
+    var tilesInCell = this.possible_tiles_per_cell[tile_index];
+    var l = [];
+
+    for(var i = 0; i < tilesInCell.length; ++i) {
+      var t = this.possible_tiles_per_cell[i];
+      var c = this.getCorrespondences(t, this.matchings_tiles);
+    }
+
+
   }
+
 
   // returns the index of the tile (in possible_tiles_per_cell variable) which has the lowest entropy (random choice on ties)
   get_minimum_entropy_coordinates() {
@@ -142,5 +249,14 @@ export class WFC {
       }
     }
     return true;
+  }
+
+  tile_list_contains(tile, list) {
+    for (var i = 0; i < list.length; ++i) {
+      if (list[i] == tile) {
+          return true;
+      }
+  }
+  return false;
   }
 }

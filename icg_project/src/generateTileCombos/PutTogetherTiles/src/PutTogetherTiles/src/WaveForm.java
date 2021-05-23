@@ -46,7 +46,6 @@ public class WaveForm {
         for (int i = 0; i < totalCells; ++i) {
             possibleTilesPerCell.add(new ArrayList<>(allTiles));
         }
-
     }
 
     public boolean start() {
