@@ -97,6 +97,7 @@ async function main() {
     'tex_tile_4_middle': load_texture(regl, './textures/tile_4_middle.png'),
     'tex_tile_4_right_nr': load_texture(regl, './textures/tile_4_right_nr.png'),
     'tex_tile_4_right': load_texture(regl, './textures/tile_4_right.png'),
+    'tex_grass': load_texture(regl, './textures/grass.png'),
 
     'shader_unshaded_vert': load_text('./src/shaders/unshaded.vert.glsl'),
     'shader_unshaded_frag': load_text('./src/shaders/unshaded.frag.glsl'),
@@ -118,6 +119,10 @@ async function main() {
 
   // Loads the tiles to be displayed
   const tiles = [
+    { id: 'grass', x: 0.5, y: 0.5, z: -0.7 },
+    { id: 'grass', x: 1.5, y: 0.5, z: -0.7 },
+    { id: 'grass', x: 0.5, y: 1.5, z: -0.7 },
+    { id: 'grass', x: 1.5, y: 1.5, z: -0.7 },
     { id: 'tile_1_alone', x: 0, y: 0, z: 0 },
     { id: 'tile_1_alone', x: 1, y: 0, z: 0 },
     { id: 'tile_1_alone', x: 2, y: 0, z: 0 },
@@ -127,24 +132,24 @@ async function main() {
     { id: 'tile_1_alone', x: 0, y: 2, z: 0 },
     { id: 'tile_1_alone', x: 1, y: 2, z: 0 },
     { id: 'tile_1_alone', x: 2, y: 2, z: 0 },
-    { id: 'tile_4_right_nr', x: 0, y: 0, z: 1 },
-    { id: 'tile_3_left_fancy', x: 1, y: 0, z: 1 },
-    { id: 'tile_3_left_fancy', x: 2, y: 0, z: 1 },
-    { id: 'tile_3_left_fancy', x: 0, y: 1, z: 1 },
-    { id: 'tile_3_left_fancy', x: 1, y: 1, z: 1 },
-    { id: 'tile_3_left_fancy', x: 2, y: 1, z: 1 },
-    { id: 'tile_3_left_fancy', x: 0, y: 2, z: 1 },
-    { id: 'tile_3_left_fancy', x: 1, y: 2, z: 1 },
-    { id: 'tile_3_left_fancy', x: 2, y: 2, z: 1 },
-    { id: 'tile_4_right_nr', x: 0, y: 0, z: 2 },
-    { id: 'tile_4_right_nr', x: 1, y: 0, z: 2 },
-    { id: 'tile_4_right_nr', x: 2, y: 0, z: 2 },
-    { id: 'tile_4_right_nr', x: 0, y: 1, z: 2 },
-    { id: 'tile_4_right_nr', x: 1, y: 1, z: 2 },
-    { id: 'tile_4_right_nr', x: 2, y: 1, z: 2 },
-    { id: 'tile_4_right_nr', x: 0, y: 2, z: 2 },
-    { id: 'tile_4_right_nr', x: 1, y: 2, z: 2 },
-    { id: 'tile_4_right_nr', x: 2, y: 2, z: 2 },
+    { id: 'tile_1_alone', x: 0, y: 0, z: 1 },
+    { id: 'tile_1_alone', x: 1, y: 0, z: 1 },
+    { id: 'tile_1_alone', x: 2, y: 0, z: 1 },
+    { id: 'tile_1_alone', x: 0, y: 1, z: 1 },
+    { id: 'tile_1_alone', x: 1, y: 1, z: 1 },
+    { id: 'tile_1_alone', x: 2, y: 1, z: 1 },
+    { id: 'tile_1_alone', x: 0, y: 2, z: 1 },
+    { id: 'tile_1_alone', x: 1, y: 2, z: 1 },
+    { id: 'tile_1_alone', x: 2, y: 2, z: 1 },
+    { id: 'tile_1_alone', x: 0, y: 0, z: 2 },
+    { id: 'tile_1_alone', x: 1, y: 0, z: 2 },
+    { id: 'tile_1_alone', x: 2, y: 0, z: 2 },
+    { id: 'tile_1_alone', x: 0, y: 1, z: 2 },
+    { id: 'tile_1_alone', x: 1, y: 1, z: 2 },
+    { id: 'tile_1_alone', x: 2, y: 1, z: 2 },
+    { id: 'tile_1_alone', x: 0, y: 2, z: 2 },
+    { id: 'tile_1_alone', x: 1, y: 2, z: 2 },
+    { id: 'tile_1_alone', x: 2, y: 2, z: 2 },
   ];
 
   /*---------------------------------------------------------------
@@ -159,8 +164,8 @@ async function main() {
   const mat_world_to_cam = mat4.create();
   const cam_distance_base = 15;
 
-  let cam_angle_z = Math.PI * 0.2; // in radians!
-  let cam_angle_y = -Math.PI / 6; // in radians!
+  let cam_angle_z = 0; //Math.PI * 0.2; // in radians!
+  let cam_angle_y = 0; //-Math.PI / 6; // in radians!
   let cam_distance_factor = 1;
 
   function update_cam_transform() {
@@ -222,6 +227,8 @@ async function main() {
     if (tiles[i].id !== '') {
       const mesh_name = 'mesh/'.concat(tiles[i].id).concat('.obj');
       const texture_name = 'tex_'.concat(tiles[i].id);
+      const shine = tiles[i].id === 'grass' ? 100 : 2;
+      const amb = tiles[i].id === 'grass' ? 0.6 : 0.4;
       actors_list.push(
         new MeshTileActor(
           {
@@ -232,8 +239,8 @@ async function main() {
             x: tiles[i].x,
             y: tiles[i].y,
             z: tiles[i].z,
-            shininess: 9,
-            ambient: 0.3,
+            shininess: shine,
+            ambient: amb,
           },
           regl,
           resources
@@ -242,50 +249,75 @@ async function main() {
     }
   }
 
-  actors_list.push(
-    new MeshTileActor(
-      {
-        name: 'test_mesh',
-        mesh: await icg_mesh_load_obj(regl, 'mesh/tile_1_middle_nr.obj'),
-        texture: resources.tex_tile_1_middle_nr,
-        size: 1,
-        x: 0,
-        y: 0,
-        z: 0,
-        shininess: 8,
-        ambient: 0.2,
-      },
-      regl,
-      resources
-    )
-  );
-
   const actors_by_name = {};
+  const corners_by_name = {};
 
   for (const actor of actors_list) {
     actors_by_name[actor.name] = actor;
+
+    //if we are on corner
+    if (actor.z == 2 && actor.x != 1 && actor.y != 1) {
+      //trick to attribute a different index to each of the four corners
+      const corner_index = Math.max(0, actor.x - 1) + 2 * Math.max(0, actor.y - 1);
+      const corner_name = 'corner '.concat(corner_index.toString());
+      corners_by_name[corner_name] = actor;
+    }
+    // if we are on the middle tile
+    if (actor.x == 1 && actor.y == 1) {
+      if (actor.z == 0) {
+        corners_by_name['middle_down'] = actor;
+      }
+      if (actor.z == 1) {
+        corners_by_name['middle'] = actor;
+      }
+      if (actor.z == 2) {
+        corners_by_name['middle_up'] = actor;
+      }
+    }
   }
+
+  // https://www.w3docs.com/snippets/javascript/how-to-sort-javascript-object-by-key.html
+  const sortObject = (obj) =>
+    Object.keys(obj)
+      .sort()
+      .reduce((res, key) => ((res[key] = obj[key]), res), {});
+
+  const sorted_corners_by_name = sortObject(corners_by_name);
 
   /*
 		Center camera on selected planet
 	*/
-  let selected_planet_name = 'test_mesh';
+  let selected_corner_name = 'middle';
   const elem_view_select = document.getElementById('view-select');
 
-  function set_selected_planet(name) {
+  function set_selected_corner(name) {
     console.log('Selecting', name);
-    selected_planet_name = name;
-    cam_distance_factor = (3 * actors_by_name[name].size) / cam_distance_base;
+    cam_angle_y = -Math.PI / 9;
+    cam_angle_z = 0;
+    if (name === 'corner 0') {
+      cam_angle_z = Math.PI / 4;
+    } else if (name === 'corner 1') {
+      cam_angle_z = -Math.PI / 4;
+    } else if (name === 'corner 2') {
+      cam_angle_z = (3 * Math.PI) / 4;
+    } else if (name === 'corner 3') {
+      cam_angle_z = (-3 * Math.PI) / 4;
+    } else {
+      // we have a middle tile (mid, up or down)
+      // have to change that name to recenter the camera accordingly
+      selected_corner_name = name;
+    }
+    cam_distance_factor = 20 / cam_distance_base;
     update_cam_transform();
   }
 
-  set_selected_planet('test_mesh');
+  set_selected_corner('middle');
 
-  for (const name in actors_by_name) {
-    if (actors_by_name.hasOwnProperty(name)) {
+  for (const name in sorted_corners_by_name) {
+    if (sorted_corners_by_name.hasOwnProperty(name)) {
       const entry = document.createElement('li');
       entry.textContent = name;
-      entry.addEventListener('click', (event) => set_selected_planet(name));
+      entry.addEventListener('click', (event) => set_selected_corner(name));
       elem_view_select.appendChild(entry);
     }
   }
@@ -319,9 +351,9 @@ async function main() {
   //draw_list.push(grid_actor_interface);
 
   // Consider the sun, which locates at [0, 0, 0], as the only light source
-  const light_position_world = [100, 10, 100, 1];
+  const light_position_world = [80, 60, 60, 1];
   const light_position_cam = [0, 0, 0, 1];
-  const light_color = [1, 1, 1];
+  const light_color = [0.85, 0.8, 0.85];
 
   //add the light_color to the planets except sun and billboard
   for (const actor of actors_list) {
@@ -353,16 +385,16 @@ async function main() {
       actor.calculate_model_matrix({ sim_time: sim_time });
     }
 
-    // Calculate view matrix, view centered on chosen planet
+    // Calculate view matrix, view centered on middle tile
     {
-      const selected_planet_model_mat = actors_by_name[selected_planet_name].mat_model_to_world;
-      const selected_planet_position = mat4.getTranslation([0, 0, 0], selected_planet_model_mat);
-      vec3.scale(selected_planet_position, selected_planet_position, -1);
-      const selected_planet_translation_mat = mat4.fromTranslation(
+      const selected_corner_model_mat = corners_by_name[selected_corner_name].mat_model_to_world;
+      const selected_corner_position = mat4.getTranslation([0, 0, 0], selected_corner_model_mat);
+      vec3.scale(selected_corner_position, selected_corner_position, -1);
+      const selected_corner_translation_mat = mat4.fromTranslation(
         mat4.create(),
-        selected_planet_position
+        selected_corner_position
       );
-      mat4_matmul_many(mat_view, mat_world_to_cam, selected_planet_translation_mat);
+      mat4_matmul_many(mat_view, mat_world_to_cam, selected_corner_translation_mat);
     }
 
     // Calculate light position in camera frame
@@ -395,7 +427,7 @@ async function main() {
 
     // Set the whole image to black
     //{color: [0.56, 0.90, 0.93, 1]
-    regl.clear({ color: [0.22, 0.69, 0.87, 1] });
+    regl.clear({ color: [0.22, 0.68, 0.88, 1] });
 
     for (const actor of draw_list) {
       try {
