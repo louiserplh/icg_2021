@@ -171,28 +171,29 @@ export class WFC {
 
   // Returns the matching tiles for the tile (given through its index in possible_tiles_per_cell array) on a certain side
   get_possible_neighbours(tile_index, side) {
-    // retrieves the index of our tile (on tile_index in our world) in the tiles list
-    /** 
-    const index_in_tiles = tiles.findIndex(function findMatchingId(tile) {
-      tile.id === possible_tiles_per_cell[tile_index].id;
-    });
-    // the index found in the one of the tile in matching tiles, we now return the matches for it on side j
-    return this.matchings_tiles[index_in_tiles].matchings.find(function onSidej(
-      j
-    ) {
-      return side == j;
-    }).matchings_tiles;
-    */
+    const possible_tiles = possible_tiles_per_cell[tile_index];
+    const possible_neighbours = [];
+    const nb_possible_tiles = possible_tiles.length;
 
-    var tilesInCell = this.possible_tiles_per_cell[tile_index];
-    var l = [];
+    // goes through all current possible tiles on index
+    for (var i = 0; i < nb_possible_tiles; ++i) {
+      // retrieves the tile_index in tiles array of the current tile
+      const possible_tile_index = tiles.findIndex(
+        (tile) => tile.getId() === possible_tiles[i].id
+      );
 
-    for(var i = 0; i < tilesInCell.length; ++i) {
-      var t = this.possible_tiles_per_cell[i];
-      var c = this.getCorrespondences(t, this.matchings_tiles);
+      // gets the tiles matching with the current one
+      const matching = this.matchings_tiles[
+        possible_tile_index
+      ].matching.filter(
+        (matching_elem) =>
+          // in the matching elements for our tile, retrieves the one that matches on desired side
+          matching_elem.side == side
+      ).matching_on_side;
+
+      possible_neighbours.push(matching);
     }
-
-
+    return [].concat(possible_neighbours);
   }
 
 
@@ -259,4 +260,12 @@ export class WFC {
   }
   return false;
   }
+
+
+  tile_array_intersection_length(array1, array2) {
+    return array1.filter((tile1) =>
+      array2.filter((tile2) => tile2.getId() === tile1.getId())
+    ).length;
+  }
+
 }
