@@ -60,7 +60,6 @@ async function main() {
   const resources = {
     'tex_tile_1_alone_nb': load_texture(regl, './textures/tile_1_alone_nb.png'),
     'tex_tile_1_alone_nr': load_texture(regl, './textures/tile_1_alone_nr.png'),
-    'tex_tile_1_alone_nr': load_texture(regl, './textures/tile_1_alone_nr.png'),
     'tex_tile_1_alone': load_texture(regl, './textures/tile_1_alone.png'),
     'tex_tile_1_left_corner': load_texture(regl, './textures/tile_1_left_corner.png'),
     'tex_tile_1_left_nb_corner': load_texture(regl, './textures/tile_1_left_nb_corner.png'),
@@ -119,37 +118,37 @@ async function main() {
 
   // Loads the tiles to be displayed
   const tiles = [
-    { id: 'grass', x: 0.5, y: 0.5, z: -0.7 },
-    { id: 'grass', x: 1.5, y: 0.5, z: -0.7 },
-    { id: 'grass', x: 0.5, y: 1.5, z: -0.7 },
-    { id: 'grass', x: 1.5, y: 1.5, z: -0.7 },
-    { id: 'tile_1_alone', x: 0, y: 0, z: 0 },
-    { id: 'tile_1_alone', x: 1, y: 0, z: 0 },
-    { id: 'tile_1_alone', x: 2, y: 0, z: 0 },
-    { id: 'tile_1_alone', x: 0, y: 1, z: 0 },
-    { id: 'tile_1_alone', x: 1, y: 1, z: 0 },
-    { id: 'tile_1_alone', x: 2, y: 1, z: 0 },
-    { id: 'tile_1_alone', x: 0, y: 2, z: 0 },
-    { id: 'tile_1_alone', x: 1, y: 2, z: 0 },
-    { id: 'tile_1_alone', x: 2, y: 2, z: 0 },
-    { id: 'tile_1_alone', x: 0, y: 0, z: 1 },
-    { id: 'tile_1_alone', x: 1, y: 0, z: 1 },
-    { id: 'tile_1_alone', x: 2, y: 0, z: 1 },
-    { id: 'tile_1_alone', x: 0, y: 1, z: 1 },
-    { id: 'tile_1_alone', x: 1, y: 1, z: 1 },
-    { id: 'tile_1_alone', x: 2, y: 1, z: 1 },
-    { id: 'tile_1_alone', x: 0, y: 2, z: 1 },
-    { id: 'tile_1_alone', x: 1, y: 2, z: 1 },
-    { id: 'tile_1_alone', x: 2, y: 2, z: 1 },
-    { id: 'tile_1_alone', x: 0, y: 0, z: 2 },
-    { id: 'tile_1_alone', x: 1, y: 0, z: 2 },
-    { id: 'tile_1_alone', x: 2, y: 0, z: 2 },
-    { id: 'tile_1_alone', x: 0, y: 1, z: 2 },
-    { id: 'tile_1_alone', x: 1, y: 1, z: 2 },
-    { id: 'tile_1_alone', x: 2, y: 1, z: 2 },
-    { id: 'tile_1_alone', x: 0, y: 2, z: 2 },
-    { id: 'tile_1_alone', x: 1, y: 2, z: 2 },
-    { id: 'tile_1_alone', x: 2, y: 2, z: 2 },
+    { id: 'grass', x: 0.5, y: 0.5, z: -0.3 },
+    { id: 'grass', x: 1.5, y: 0.5, z: -0.3 },
+    { id: 'grass', x: 0.5, y: 1.5, z: -0.3 },
+    { id: 'grass', x: 1.5, y: 1.5, z: -0.3 },
+    { id: 'tile_1_alone_nr', x: 0, y: 0, z: 0 },
+    { id: 'tile_1_alone_nr', x: 1, y: 0, z: 0 },
+    { id: 'tile_1_alone_nr', x: 2, y: 0, z: 0 },
+    { id: 'tile_1_alone_nr', x: 0, y: 1, z: 0 },
+    { id: 'tile_1_alone_nr', x: 1, y: 1, z: 0 },
+    { id: 'tile_1_alone_nr', x: 2, y: 1, z: 0 },
+    { id: 'tile_1_alone_nr', x: 0, y: 2, z: 0 },
+    { id: 'tile_1_alone_nr', x: 1, y: 2, z: 0 },
+    { id: 'tile_1_alone_nr', x: 2, y: 2, z: 0 },
+    { id: 'tile_1_alone_nr', x: 0, y: 0, z: 1 },
+    { id: 'tile_1_alone_nr', x: 1, y: 0, z: 1 },
+    { id: 'tile_1_alone_nr', x: 2, y: 0, z: 1 },
+    { id: 'tile_1_alone_nr', x: 0, y: 1, z: 1 },
+    { id: 'tile_1_alone_nr', x: 1, y: 1, z: 1 },
+    { id: 'tile_1_alone_nr', x: 2, y: 1, z: 1 },
+    { id: 'tile_1_alone_nr', x: 0, y: 2, z: 1 },
+    { id: 'tile_1_alone_nr', x: 1, y: 2, z: 1 },
+    { id: 'tile_1_alone_nr', x: 2, y: 2, z: 1 },
+    { id: 'tile_1_alone_nr', x: 0, y: 0, z: 2 },
+    { id: 'tile_1_alone_nr', x: 1, y: 0, z: 2 },
+    { id: 'tile_1_alone_nr', x: 2, y: 0, z: 2 },
+    { id: 'tile_1_alone_nr', x: 0, y: 1, z: 2 },
+    { id: 'tile_1_alone_nr', x: 1, y: 1, z: 2 },
+    { id: 'tile_1_alone_nr', x: 2, y: 1, z: 2 },
+    { id: 'tile_1_alone_nr', x: 0, y: 2, z: 2 },
+    { id: 'tile_1_alone_nr', x: 1, y: 2, z: 2 },
+    { id: 'tile_1_alone_nr', x: 2, y: 2, z: 2 },
   ];
 
   /*---------------------------------------------------------------
@@ -166,7 +165,14 @@ async function main() {
 
   let cam_angle_z = 0; //Math.PI * 0.2; // in radians!
   let cam_angle_y = 0; //-Math.PI / 6; // in radians!
+  let old_cam_angle_z = 0;
+  let old_cam_angle_y = 0;
+  let new_cam_angle_z = 0;
+  let new_cam_angle_y = 0;
+
   let cam_distance_factor = 1;
+  let old_cam_distance_factor = 1;
+  let new_cam_distance_factor = 1;
 
   function update_cam_transform() {
     /*
@@ -288,26 +294,45 @@ async function main() {
 		Center camera on selected planet
 	*/
   let selected_corner_name = 'middle';
+  let old_selected_corner_name = 'middle';
+  // bezier parameter is the time t to lerp between b_0 and b_n positions (in [0,1])
+  let bezier_param = 1;
   const elem_view_select = document.getElementById('view-select');
 
   function set_selected_corner(name) {
     console.log('Selecting', name);
-    cam_angle_y = -Math.PI / 9;
-    cam_angle_z = 0;
-    if (name === 'corner 0') {
-      cam_angle_z = Math.PI / 4;
-    } else if (name === 'corner 1') {
-      cam_angle_z = -Math.PI / 4;
-    } else if (name === 'corner 2') {
-      cam_angle_z = (3 * Math.PI) / 4;
-    } else if (name === 'corner 3') {
-      cam_angle_z = (-3 * Math.PI) / 4;
-    } else {
-      // we have a middle tile (mid, up or down)
-      // have to change that name to recenter the camera accordingly
-      selected_corner_name = name;
+
+    if (bezier_param < 0.9) {
+      // It's visually not appealing to stop the lerping before the previous one is finished
+      return;
     }
-    cam_distance_factor = 20 / cam_distance_base;
+
+    old_cam_angle_y = cam_angle_y;
+    new_cam_angle_y = -Math.PI / 9;
+
+    old_cam_angle_z = cam_angle_z;
+    if (name === 'corner 0') {
+      new_cam_angle_z = (3 * Math.PI) / 4;
+    } else if (name === 'corner 1') {
+      new_cam_angle_z = (-3 * Math.PI) / 4;
+    } else if (name === 'corner 2') {
+      new_cam_angle_z = Math.PI / 4;
+    } else if (name === 'corner 3') {
+      new_cam_angle_z = -Math.PI / 4;
+    } else {
+      // we are on middle tiles
+      new_cam_angle_z = 0;
+    }
+
+    // we are starting a new bezier travel
+    bezier_param = 0;
+
+    old_selected_corner_name = selected_corner_name;
+    selected_corner_name = name;
+
+    old_cam_distance_factor = cam_distance_factor;
+    new_cam_distance_factor = 15 / cam_distance_base;
+
     update_cam_transform();
   }
 
@@ -385,16 +410,88 @@ async function main() {
       actor.calculate_model_matrix({ sim_time: sim_time });
     }
 
-    // Calculate view matrix, view centered on middle tile
+    // Calculate view matrix, view centered on a corner tile
     {
-      const selected_corner_model_mat = corners_by_name[selected_corner_name].mat_model_to_world;
-      const selected_corner_position = mat4.getTranslation([0, 0, 0], selected_corner_model_mat);
-      vec3.scale(selected_corner_position, selected_corner_position, -1);
-      const selected_corner_translation_mat = mat4.fromTranslation(
-        mat4.create(),
-        selected_corner_position
-      );
-      mat4_matmul_many(mat_view, mat_world_to_cam, selected_corner_translation_mat);
+      if (bezier_param < 1) {
+        // we are in the transition, need to compute camera_position along the Bézier curve
+
+        // we first update the parameters manages by camera in update_cam_transform (classic linear interpolation)
+        cam_angle_y = (1 - bezier_param) * old_cam_angle_y + bezier_param * new_cam_angle_y;
+        cam_angle_z = (1 - bezier_param) * old_cam_angle_z + bezier_param * new_cam_angle_z;
+        cam_distance_factor =
+          (1 - bezier_param) * old_cam_distance_factor + bezier_param * new_cam_distance_factor;
+
+        update_cam_transform();
+
+        // corner position on which we want to focus
+        const new_selected_corner_model_mat =
+          corners_by_name[selected_corner_name].mat_model_to_world;
+        const new_selected_corner_position = mat4.getTranslation(
+          [0, 0, 0],
+          new_selected_corner_model_mat
+        );
+        vec3.scale(new_selected_corner_position, new_selected_corner_position, -1);
+
+        // corner position on which we had the previous focus
+        const old_selected_corner_model_mat =
+          corners_by_name[old_selected_corner_name].mat_model_to_world;
+        const old_selected_corner_position = mat4.getTranslation(
+          [0, 0, 0],
+          old_selected_corner_model_mat
+        );
+        vec3.scale(old_selected_corner_position, old_selected_corner_position, -1);
+
+        // distance vec between those 2
+        const distance_old_new = vec3.sub(
+          vec3.create(),
+          new_selected_corner_position,
+          old_selected_corner_position
+        );
+
+        // 3rd bézier curve point (the middle between our old and new)
+        let third_point_position = vec3.scaleAndAdd(
+          vec3.create(),
+          old_selected_corner_position,
+          distance_old_new,
+          0.5
+        );
+
+        // computes perpendicular vector to the from_old_to_new vector
+        const perpendicular_vect = vec3.fromValues(
+          -distance_old_new[1] * 0.5,
+          distance_old_new[0] * 0.5,
+          distance_old_new[2] * 0.5
+        );
+        // the third point is such that it's between old and a bit upper toward perpendicular
+        third_point_position = vec3.add(vec3.create(), third_point_position, perpendicular_vect);
+
+        // the current bezier interpolated position point
+        const bezier_interpolated = vec3.bezier(
+          vec3.create(),
+          old_selected_corner_position,
+          third_point_position,
+          third_point_position,
+          new_selected_corner_position,
+          bezier_param
+        );
+
+        const bezier_translation_mat = mat4.fromTranslation(mat4.create(), bezier_interpolated);
+        // The view matrix is now shifted relatively to the interpolated position on Bézier curve
+        mat4_matmul_many(mat_view, mat_world_to_cam, bezier_translation_mat);
+
+        // we update the bezier interpolation time
+        bezier_param += 0.01;
+      } else {
+        // we apply the classic transform on the focused tile
+        const selected_corner_model_mat = corners_by_name[selected_corner_name].mat_model_to_world;
+        const selected_corner_position = mat4.getTranslation([0, 0, 0], selected_corner_model_mat);
+        vec3.scale(selected_corner_position, selected_corner_position, -1);
+        const selected_corner_translation_mat = mat4.fromTranslation(
+          mat4.create(),
+          selected_corner_position
+        );
+        mat4_matmul_many(mat_view, mat_world_to_cam, selected_corner_translation_mat);
+      }
     }
 
     // Calculate light position in camera frame
