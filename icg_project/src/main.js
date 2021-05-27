@@ -356,17 +356,6 @@ async function main() {
 
   register_keyboard_action('p', () => (is_paused = !is_paused));
 
-  // Grid, to demonstrate keyboard shortcuts
-  /*const draw_grid = make_grid_pipeline(regl);
-	let grid_on = true;
-	register_keyboard_action('g', () => grid_on = !grid_on);
-
-	const grid_actor_interface = {
-		draw: ({mat_projection, mat_view}) => {
-			if(grid_on) draw_grid(mat_projection, mat_view);
-		}
-	};*/
-
   /*---------------------------------------------------------------
 		Frame render
 	---------------------------------------------------------------*/
