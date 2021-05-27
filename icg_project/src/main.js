@@ -13,6 +13,7 @@ import { icg_mesh_load_obj, icg_mesh_make_uv_sphere } from './icg_mesh.js';
 import { PhongTileActor, MeshTileActor } from './tiles.js';
 import { make_grid_pipeline } from './icg_grid.js';
 import { fromYRotation, fromZRotation } from '../lib/gl-matrix_3.3.0/esm/mat4.js';
+import { random } from '../lib/gl-matrix_3.3.0/esm/vec3.js';
 
 var regl_global_handle = null; // store the regl context here in case we want to touch it in devconsole
 
@@ -117,7 +118,7 @@ async function main() {
   resources['mesh_uvsphere'] = icg_mesh_make_uv_sphere(15);
 
   // Loads the tiles to be displayed
-  const tiles = [
+  let tiles = [
     { id: 'grass', x: 0.5, y: 0.5, z: -0.3 },
     { id: 'grass', x: 1.5, y: 0.5, z: -0.3 },
     { id: 'grass', x: 0.5, y: 1.5, z: -0.3 },
@@ -260,16 +261,16 @@ async function main() {
 
   for (const actor of actors_list) {
     actors_by_name[actor.name] = actor;
-
-    //if we are on corner
     if (actor.z == 2 && actor.x != 1 && actor.y != 1) {
+      //if we are on corner
+
       //trick to attribute a different index to each of the four corners
       const corner_index = Math.max(0, actor.x - 1) + 2 * Math.max(0, actor.y - 1);
       const corner_name = 'corner '.concat(corner_index.toString());
       corners_by_name[corner_name] = actor;
     }
-    // if we are on the middle tile
     if (actor.x == 1 && actor.y == 1) {
+      // if we are on the middle tile
       if (actor.z == 0) {
         corners_by_name['middle_down'] = actor;
       }
@@ -355,6 +356,45 @@ async function main() {
   let prev_regl_time = 0;
 
   register_keyboard_action('p', () => (is_paused = !is_paused));
+
+  /*
+    Update actor list
+  */
+  let error_on_receive = false;
+  register_keyboard_action('g', () => {
+    fetch('http://localhost:8000')
+      .then((response) => {
+        if (response.ok) {
+          try {
+            const jsonTiles = JSON.parse(response.body);
+            if (
+              jsonTiles.length == 27 &&
+              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('id') &&
+              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('x') &&
+              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('y') &&
+              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('z')
+            ) {
+              // We know that the received JSON encodes correctly our tileset (random checks on some tile's properties)
+              tiles = Object.assign(jsonTiles);
+              error_on_receive = false;
+            } else {
+              console.log('Error on the parsed object: ' + jsonTiles);
+              error_on_receive = true;
+            }
+          } catch (error) {
+            console.log('Error on parsing the received tiles: ' + error);
+            error_on_receive = true;
+          }
+        } else {
+          console.log('Error on receiving the tiles - NOT OK response');
+          error_on_receive = true;
+        }
+      })
+      .catch((error) => {
+        console.log('Error on receiving the tiles - connection failed: ' + error);
+        error_on_receive = true;
+      });
+  });
 
   /*---------------------------------------------------------------
 		Frame render
@@ -534,6 +574,9 @@ Camera: angle_z ${(cam_angle_z / deg_to_rad).toFixed(1)}, angle_y ${(
     ).toFixed(1)}, distance ${(cam_distance_factor * cam_distance_base).toFixed(1)}
 cam pos ${vec_to_string(camera_position)}
 `;
+    if (error_on_receive) {
+      debug_text.textContent = debug_text.textContent.concat('Error on receiving new tiles set');
+    }
   });
 }
 
