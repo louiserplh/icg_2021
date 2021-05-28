@@ -41,6 +41,23 @@ export function createMatchingTilesJson() {
   return map_matching;
 }
 
+export function createMatchingTiles() {
+  const nb_tiles = tiles.length;
+  const map_matching = [];
+
+  for (var i = 0; i < nb_tiles; ++i) {
+    const tile = tiles[i];
+    const matchingForSide = [];
+    for (var j = 0; j < 6; ++j) {
+      const matchSideJ = matchingForTileOnSide(tile, j);
+      matchingForSide.push({ side: j, matching_on_side: matchSideJ });
+    }
+    map_matching[i] = { id: tile.getId(), matching: matchingForSide };
+  }
+
+  return map_matching;
+}
+
 function matchingForTileOnSide(tile, side) {
   const socket = tile.getSocketByIndex(side);
   const nb_tiles = tiles.length;

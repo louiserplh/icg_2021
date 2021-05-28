@@ -4,21 +4,23 @@ import { getTilesList } from "./tile_database.js";
 
 /* This file gives functions to performs the WFC algorithm and output a houses layout that respects our constraints */
 
-tiles = getTilesList();
-
 export class WFC {
   constructor(matchings_tiles, x_size, y_size, z_size) {
+    this.tiles = getTilesList();
     this.matchings_tiles = matchings_tiles; // expected to be the object created in matching_sets.js
     this.x_size = x_size; // the dimensions of our generated space of tiles (in number of tiles)
     this.y_size = y_size;
-    this.z_size = z_side + 1;
+    this.z_size = z_size + 1;
     this.total_size = x_size * y_size * (z_size + 1); // the total amount of cells
-    this.nb_tiles = tiles.length;
+    this.nb_tiles = this.tiles.length;
 
     this.possible_tiles_per_cell = []; // should evolve with propagation of constraints: represents which tiles can be selected for each cell at any step
     for (var i = 0; i < this.total_size; ++i) {
-      this.possible_tiles_per_cell.push(tiles);
+      this.possible_tiles_per_cell.push(this.tiles);
     }
+
+    this.generate_layout();
+
   }
 
   generate_layout() {
@@ -26,7 +28,7 @@ export class WFC {
     for(var x = 0; x < this.x_size; ++x) {
       for(var y = 0; y < this.y_size; ++y) {
         var index = this.coordinates_to_index(x, y, 0);
-        tiles = [];
+        var tiles = [];
         tiles.push(new Tile("floor", -2, -2, -2, -2, 0, -2, -1));
         this.possible_tiles_per_cell.splice(index, 1, tiles);
 
@@ -86,10 +88,11 @@ export class WFC {
 
           var t_other = this.possible_tiles_per_cell[index][0];
           
-          // check if t's correspondences includes t_other
+          var poss_neigh = this.get_possible_neighbours(i, j);
 
-
-
+          if(!this.tile_list_contains(t_other, poss_neigh)) {
+            return false;
+          }
         }
       }
     }
@@ -143,9 +146,9 @@ export class WFC {
   }
 
   get_adjacent_tiles_indexes(tile_index) {
-    const x = indexTocoordinate_x(tile_index);
-    const y = indexTocoordinate_y(tile_index);
-    const z = indexTocoordinate_z(tile_index);
+    const x = this.index_to_coord_x(tile_index);
+    const y = this.index_to_coord_y(tile_index);
+    const z = this.index_to_coord_z(tile_index);
 
     const lower_tile = z > 0 ? this.coordinates_to_index(x, y, z - 1) : -1;
     const upper_tile =
@@ -171,14 +174,14 @@ export class WFC {
 
   // Returns the matching tiles for the tile (given through its index in possible_tiles_per_cell array) on a certain side
   get_possible_neighbours(tile_index, side) {
-    const possible_tiles = possible_tiles_per_cell[tile_index];
+    const possible_tiles = this.possible_tiles_per_cell[tile_index];
     const possible_neighbours = [];
     const nb_possible_tiles = possible_tiles.length;
 
     // goes through all current possible tiles on index
     for (var i = 0; i < nb_possible_tiles; ++i) {
       // retrieves the tile_index in tiles array of the current tile
-      const possible_tile_index = tiles.findIndex(
+      const possible_tile_index = this.tiles.findIndex(
         (tile) => tile.getId() === possible_tiles[i].id
       );
 

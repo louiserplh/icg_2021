@@ -16,6 +16,9 @@ import { fromYRotation, fromZRotation } from '../lib/gl-matrix_3.3.0/esm/mat4.js
 
 var regl_global_handle = null; // store the regl context here in case we want to touch it in devconsole
 
+var waveForm = Java.type("PutTogetherTiles.src.Waveform");
+waveForm.wfc();
+
 async function main() {
   /* const in JS means the variable will not be bound to a new value, but the value can be modified (if its an object or array)
 		https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const
