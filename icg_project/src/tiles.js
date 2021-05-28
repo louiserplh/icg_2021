@@ -76,7 +76,9 @@ export class UnshadedTileActor extends Actor {
       vec3.fromValues(3.2 * this.x, 3.2 * this.z, 3.2 * this.y)
     );
     // Rotate the tile to avoid put it on its default rotation
-    let rotateMatrix = mat4.fromXRotation(mat4.create(), Math.PI / 2);
+    let rotateMatrixX = mat4.fromXRotation(mat4.create(), Math.PI / 2);
+    let rotateMatrixY = mat4.fromYRotation(mat4.create(), Math.PI / 2);
+    const rotateMatrix = mat4_matmul_many(mat4.create(), rotateMatrixX, rotateMatrixY);
 
     // Store the combined transform in this.mat_model_to_world
     mat4_matmul_many(this.mat_model_to_world, sizeMat, rotateMatrix, onGridMat);
