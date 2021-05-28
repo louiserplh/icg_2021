@@ -17,9 +17,6 @@ import { random } from '../lib/gl-matrix_3.3.0/esm/vec3.js';
 
 var regl_global_handle = null; // store the regl context here in case we want to touch it in devconsole
 
-var waveForm = Java.type("PutTogetherTiles.src.Waveform");
-waveForm.wfc();
-
 async function main() {
   /* const in JS means the variable will not be bound to a new value, but the value can be modified (if its an object or array)
 		https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const
@@ -365,8 +362,16 @@ async function main() {
   */
   let error_on_receive = false;
   register_keyboard_action('g', () => {
-    fetch('http://localhost:8000')
+    console.log('request sent')
+    fetch('http://localhost:3333', {
+      mode: 'no-cors',
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    },)
       .then((response) => {
+        console.log(response);
         if (response.ok) {
           try {
             const jsonTiles = JSON.parse(response.body);
@@ -381,6 +386,7 @@ async function main() {
               tiles = Object.assign(jsonTiles);
               error_on_receive = false;
             } else {
+              console.log('Error on the parsed object: ' + response);
               console.log('Error on the parsed object: ' + jsonTiles);
               error_on_receive = true;
             }

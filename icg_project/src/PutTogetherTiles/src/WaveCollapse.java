@@ -11,7 +11,7 @@ public class WaveCollapse {
         wfc();
     }
 
-    public static void wfc() {
+    public static String wfc() {
 
         TilesDB db = new TilesDB();
 
@@ -25,6 +25,9 @@ public class WaveCollapse {
             WaveCollapse wf = new WaveCollapse(db.getTilesList(), corres, 5, 5, 3, TilesDB.getFloor());
             worked = wf.start();
         }
+
+        System.out.println(worked.toString());
+        return worked.toString();
 
     }
 
