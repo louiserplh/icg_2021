@@ -253,7 +253,7 @@ async function main() {
     const factor_mul_base = 1.08;
     const factor_mul = event.deltaY > 0 ? factor_mul_base : 1 / factor_mul_base;
     cam_distance_factor *= factor_mul;
-    cam_distance_factor = Math.max(0.02, Math.min(cam_distance_factor, 4));
+    cam_distance_factor = Math.max(0.02, Math.min(cam_distance_factor, 1));
     // console.log('wheel', event.deltaY, event.deltaMode);
     update_cam_transform();
   });
