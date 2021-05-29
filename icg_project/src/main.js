@@ -14,6 +14,7 @@ import { PhongTileActor, MeshTileActor } from './tiles.js';
 import { make_grid_pipeline } from './icg_grid.js';
 import { fromYRotation, fromZRotation } from '../lib/gl-matrix_3.3.0/esm/mat4.js';
 import { random } from '../lib/gl-matrix_3.3.0/esm/vec3.js';
+import { query_new_tileset } from './tiles_query.js';
 
 var regl_global_handle = null; // store the regl context here in case we want to touch it in devconsole
 
@@ -409,43 +410,8 @@ async function main() {
   */
   let error_on_receive = false;
   register_keyboard_action('g', () => {
-    console.log('request sent');
-    fetch('http://localhost:3333?index=-1&tileId=-1', {
-      mode: 'no-cors',
-    })
-      .then((response) => {
-        console.log(response);
-        if (response.ok) {
-          try {
-            const jsonTiles = JSON.parse(response.body);
-            if (
-              jsonTiles.length == 27 &&
-              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('id') &&
-              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('x') &&
-              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('y') &&
-              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('z')
-            ) {
-              // We know that the received JSON encodes correctly our tileset (random checks on some tile's properties)
-              tiles = Object.assign(jsonTiles);
-              error_on_receive = false;
-            } else {
-              console.log('Error on the parsed object: ' + response);
-              console.log('Error on the parsed object: ' + jsonTiles);
-              error_on_receive = true;
-            }
-          } catch (error) {
-            console.log('Error on parsing the received tiles: ' + error);
-            error_on_receive = true;
-          }
-        } else {
-          console.log('Error on receiving the tiles - NOT OK response');
-          error_on_receive = true;
-        }
-      })
-      .catch((error) => {
-        console.log('Error on receiving the tiles - connection failed: ' + error);
-        error_on_receive = true;
-      });
+    const new_tileset = query_new_tileset('');
+    console.log(new_tileset);
   });
 
   /*---------------------------------------------------------------
