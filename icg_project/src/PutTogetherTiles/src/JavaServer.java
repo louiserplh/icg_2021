@@ -4,8 +4,6 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-import org.json.simple.JSONObject;    
-
 // made with help of https://dev.to/mateuszjarzyna/build-your-own-http-server-in-java-in-less-than-one-hour-only-get-method-2k02
 
 public class JavaServer {
@@ -34,23 +32,32 @@ public class JavaServer {
     }
 
     private static void handleClient(Socket client) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(client.getInputStream()));
-        StringBuilder requestBuilder = new StringBuilder();
-        String line;
-        while (!(line = br.readLine()).isEmpty()) {
-            requestBuilder.append(line + "\r\n");
+        DataInputStream reader = new DataInputStream(new InputStreamReader(client.getInputStream()));
+        
+        String comando = "";
+        while( (dt = reader.readByte()) >= 0){
+            
+            //telaOutput.adicionaFim(msgDoSocket);
+            try {
+                comando += msgDoSocket + " ";
+                //System.out.println(comando);
+                if(msgDoSocket.isEmpty()){
+                    processaInput(comando);
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
-        System.out.println(requestBuilder.toString());
+        System.out.println(comando);
         OutputStream clientOutput = client.getOutputStream();
 
         clientOutput.write(("HTTP/1.1 \r\n" + "200 OK").getBytes());
         clientOutput.write(("ContentType: " + "application/json" + "\r\n").getBytes());
         clientOutput.write("\r\n".getBytes());
 
-        JSONObject obj = new JSONObject();    
-        obj.put("test","a test");  
-        clientOutput.write(obj.toString().getBytes());
+        String s = "{ \"Id\": 1, \"Name\": \"Coke\" }";
+        clientOutput.write(s.getBytes());
         clientOutput.write("\r\n\r\n".getBytes());
         clientOutput.flush();
         client.close();

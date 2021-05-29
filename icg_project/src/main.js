@@ -363,12 +363,8 @@ async function main() {
   let error_on_receive = false;
   register_keyboard_action('g', () => {
     console.log('request sent')
-    fetch('http://localhost:3333', {
+    fetch('http://localhost:3333?index=-1&tileId=-1', {
       mode: 'no-cors',
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-      },
     },)
       .then((response) => {
         console.log(response);
