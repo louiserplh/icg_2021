@@ -4,3 +4,5 @@
 # VSCode files
 .metals
 .vscode
+/.idea/
+icg_2021.iml
