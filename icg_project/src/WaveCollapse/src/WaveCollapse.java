@@ -4,45 +4,16 @@ import java.io.File; // Import the File class
 import java.io.IOException;
 import java.io.FileWriter;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class WaveCollapse {
 
-    public static boolean launchWFC(int constraintIndex, String constraintName) {
-        
-        JSONArray allTiles = new JSONArray();
+    public static void launchWFC(int constraintIndex, String constraintName) {
 
-        if(constraintIndex == -1) {
-
-            List<Tile> tiles = wfc();
-
-            for(int i = 0; i < tiles.size(); ++i) {
-                JSONObject tileAtIndex = new JSONObject();
-                tileAtIndex.put(i, tiles.get(i).getId());
-                allTiles.add(tileAtIndex);
-            }
-
-            final String dir = System.getProperty("user.dir");
-            File f = new File(dir + "/tiles.json");
-
-            try {
-                FileWriter myWriter = new FileWriter("tiles.json");
-                myWriter.write(allTiles.toJSONString());
-                myWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-        else {
-
-        }
-
-        return true;
+        System.out.println(constraintName);
+        generateJSON(wfc(constraintIndex, constraintName));
     }
 
-    public static List<Tile> wfc() {
+    public static List<Tile> wfc(int constraintIndex, String constraintName) {
 
         TilesDB db = new TilesDB();
 
@@ -54,11 +25,12 @@ public class WaveCollapse {
         // re-run waveform until we find one that is valid
         while (worked.isEmpty()) {
             WaveCollapse wf = new WaveCollapse(db.getTilesList(), corres, 5, 5, 3, TilesDB.getFloor());
-            worked = wf.start();
+            worked = wf.start(constraintIndex, constraintName);
         }
 
         return worked;
     }
+    
 
     private List<TileCorrespondences> tileCorrespondences;
     private int totalCells;
@@ -94,7 +66,7 @@ public class WaveCollapse {
      * 
      * @return generated array of tiles if it is valid, empty list otherwise
      */
-    public List<Tile> start() {
+    public List<Tile> start(int indexConstraint, String tileID) {
 
         for (int x = 0; x < num_x; ++x) {
             for (int y = 0; y < num_y; ++y) {
@@ -110,6 +82,28 @@ public class WaveCollapse {
             }
         }
 
+        if(indexConstraint != -1) {
+
+            int x = indexTocoordinate_x(indexConstraint);
+            int y = indexTocoordinate_y(indexConstraint);
+            int z = indexTocoordinate_z(indexConstraint) + 1;
+
+            indexConstraint = coordinateToIndex(x, y, z);
+
+            // add constraint tile and propagate
+            List<Tile> tiles = new ArrayList<>();
+            TilesDB db = new TilesDB();
+            Tile t = getTileById(db.getTilesList(), tileID);
+            if(t != null) {
+                tiles.add(t);
+                possibleTilesPerCell.set(indexConstraint, tiles);
+                propagate(indexConstraint);
+            }
+            else {
+                System.out.println("There was an error in the tile id.");
+            }
+        }
+
         // iterate until the array is fully collapsed
         while (!isCollapsed()) {
             iterate();
@@ -118,6 +112,40 @@ public class WaveCollapse {
         // return whether generated array is valid or not
         return checkValidity();
     }
+
+     /**
+     * function launches the wfc with constraints
+     * 
+     * @return generated array of tiles if it is valid, empty list otherwise
+     */
+    public List<Tile> startWithConstraints(int indexConstraint, Tile tile) {
+
+        for (int x = 0; x < num_x; ++x) {
+            for (int y = 0; y < num_y; ++y) {
+
+                // add floor tiles to the entire z = 0 plane
+                int index = coordinateToIndex(x, y, 0);
+                List<Tile> tiles = new ArrayList<>();
+                tiles.add(floor);
+                possibleTilesPerCell.set(index, tiles);
+
+                // propagate at this index
+                propagate(index);
+            }
+        }
+
+        
+
+
+        // iterate until the array is fully collapsed
+        while (!isCollapsed()) {
+            iterate();
+        }
+
+        // return whether generated array is valid or not
+        return checkValidity();
+    }
+
 
     /**
      * function checks if generated array is valid
@@ -490,6 +518,58 @@ public class WaveCollapse {
             }
         }
         return true;
+    }
+
+    /**
+     * function generateJSON creates JSON string from a given list of tiles
+     * @param tiles the list to create the JSOn from
+     */
+    private static void generateJSON(List<Tile> tiles) {
+
+        StringBuilder allTiles = new StringBuilder();
+        allTiles.append("[");
+
+        for(int i = 0; i < tiles.size(); ++i) {
+
+            allTiles.append("{\"");
+            allTiles.append(i);
+            allTiles.append("\":\"");
+            allTiles.append(tiles.get(i).getId());
+            allTiles.append("\"}");
+
+            if(i != tiles.size() - 1) {
+                allTiles.append(",");
+            }
+        } 
+
+        allTiles.append("]");
+        
+        final String dir = System.getProperty("user.dir");
+        File f = new File(dir + "/tiles.json");
+
+        try {
+            FileWriter myWriter = new FileWriter("tiles.json");
+            myWriter.write(allTiles.toString());
+            myWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * function getTileById returns, from a list of tiles, the tile with the id given as argument
+     * @param allTiles all tiles
+     * @param tileId the id of the tile to get
+     * @return Tile the tile in question
+     */
+    private static Tile getTileById(List<Tile> allTiles, String tileId) {
+
+        for(Tile t : allTiles) {
+            if(t.getId().equals(tileId)) {
+                return t;
+            }
+        }
+        return null;
     }
 
 }
