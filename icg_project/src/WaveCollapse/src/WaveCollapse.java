@@ -524,7 +524,15 @@ public class WaveCollapse {
      * function generateJSON creates JSON string from a given list of tiles
      * @param tiles the list to create the JSOn from
      */
-    private static void generateJSON(List<Tile> tiles) {
+    private static void generateJSON(List<Tile> tilesWithFloor) {
+
+        List<Tile> tiles = new ArrayList<>();
+        for(int i = 0; i < tilesWithFloor.size(); ++i) {
+            if(tilesWithFloor.get(i).getId() != "floor") {
+                tiles.add(tilesWithFloor.get(i));
+            }
+
+        }
 
         StringBuilder allTiles = new StringBuilder();
         allTiles.append("[");
@@ -534,7 +542,12 @@ public class WaveCollapse {
             allTiles.append("{\"");
             allTiles.append(i);
             allTiles.append("\":\"");
-            allTiles.append(tiles.get(i).getId());
+            if(tiles.get(i).getId() == "air_b") {
+                allTiles.append("air");
+            }
+            else {
+                allTiles.append(tiles.get(i).getId());
+            }
             allTiles.append("\"}");
 
             if(i != tiles.size() - 1) {
