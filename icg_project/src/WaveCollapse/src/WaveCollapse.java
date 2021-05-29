@@ -539,9 +539,9 @@ public class WaveCollapse {
 
         for(int i = 0; i < tiles.size(); ++i) {
 
-            allTiles.append("{\"");
+            allTiles.append("{\"index\":\"");
             allTiles.append(i);
-            allTiles.append("\":\"");
+            allTiles.append("\",\"id\":\"");
             if(tiles.get(i).getId() == "air_b") {
                 allTiles.append("air");
             }
