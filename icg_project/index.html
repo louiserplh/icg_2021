@@ -19,7 +19,7 @@
 
 <div id="debug-overlay">
 	<p>
-		ICG Exercise: 3D Solar System
+		ICG Project: Pretty Houses Generator
 		⁙⁙ docs:
 		<a href="https://github.com/regl-project/regl/blob/gh-pages/API.md">regl</a>,
 		<a href="http://glmatrix.net/docs/">gl-matrix</a>,
@@ -28,10 +28,64 @@
 		⁙⁙ scroll to zoom
 		⁙⁙ pause <strong class="keyboard">p</strong>
 		⁙⁙ hide <strong class="keyboard">h</strong>
+		⁙⁙ 2D WFC <strong class="keyboard">w</strong>
 		⁙⁙ generate new houses <strong class="keyboard">g</strong>
 	</p>
 	<ul id="view-select">Focus:</ul>
 	<pre id="debug-text"></pre>
+</div>
+
+<div id="wfc-overlay">
+	<p id = "text-wfc">
+		2D WFC 
+		⁙⁙ click to set a tile and create pattern (choose position and tile)
+		⁙⁙ 2D WFC hide <strong class="keyboard">w</strong>
+	</p>
+	<p id ="pos-tiles">
+		<button class="but1" name="button1">tile 1</button>
+		<button class="but1" name="button2">tile 2</button>
+		<button class="but1" name="button3">tile 3</button>
+		<button class="but1" name="button4">tile 4</button>
+		<button class="but1" name="button5">tile 5</button><br>
+		<button class="but1" name="button6">tile 6</button>
+		<button class="but1" name="button7">tile 7</button>
+		<button class="but1" name="button8">tile 8</button>
+		<button class="but1" name="button9">tile 9</button>
+		<button class="but1" name="button10">tile 10</button><br>
+		<button class="but1" name="button11">tile 11</button>
+		<button class="but1" name="button12">tile 12</button>
+		<button class="but1" name="button13">tile 13</button>
+		<button class="but1" name="button14">tile 14</button>
+		<button class="but1" name="button15">tile 15</button><br>
+	</p>
+
+	<p id = "img-tiles">
+		<button class="but2" name="tile1"><img src="./img_2D/tile_1_right.png"/></button>
+		<button class="but2" name="tile2"><img src="./img_2D/tile_1_alone.png"/></button>
+		<button class="but2" name="tile3"><img src="./img_2D/tile_1_left.png"/></button>
+		<button class="but2" name="tile4"><img src="./img_2D/tile_1_right_nr.png"/></button>
+		<button class="but2" name="tile5"><img src="./img_2D/tile_1_middle_nr.png"/></button>
+		<button class="but2" name="tile6"><img src="./img_2D/tile_1_left_nr.png"/></button>
+		<button class="but2" name="tile7"><img src="./img_2D/tile_1_alone_nr.png"/></button><br>
+		<button class="but2" name="tile8"><img src="./img_2D/tile_1_middle.png"/></button>
+		<button class="but2" name="tile9"><img src="./img_2D/tile_2_alone_nr.png"/></button>
+		<button class="but2" name="tile10"><img src="./img_2D/tile_2_right_nr.png"/></button>
+		<button class="but2" name="tile11"><img src="./img_2D/tile_2_middle_nr.png"/></button>
+		<button class="but2" name="tile12"><img src="./img_2D/tile_2_left_nr.png"/></button>
+		<button class="but2" name="tile13"><img src="./img_2D/tile_3_left.png"/></button>
+		<button class="but2" name="tile14"><img src="./img_2D/tile_3_middle.png"/></button><br>
+		<button class="but2" name="tile15"><img src="./img_2D/tile_3_right.png"/></button>
+		<button class="but2" name="tile16"><img src="./img_2D/tile_3_left_nr.png"/></button>
+		<button class="but2" name="tile17"><img src="./img_2D/tile_3_middle_nr.png"/></button>
+		<button class="but2" name="tile18"><img src="./img_2D/tile_3_right_nr.png"/></button>
+		<button class="but2" name="tile19"><img src="./img_2D/tile_1_left_nb.png"/></button>
+		<button class="but2" name="tile20"><img src="./img_2D/tile_1_middle_nb.png"/></button>
+		<button class="but2" name="tile21"><img src="./img_2D/tile_1_right_nb.png"/></button><br>
+	</p>
+
+	<p id = "generate">
+		<button class="but3" name="generate">Generate Result</button><br>
+	</p>
 </div>
 
 </body>
