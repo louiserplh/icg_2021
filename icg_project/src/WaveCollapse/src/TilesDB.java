@@ -11,41 +11,45 @@ public class TilesDB {
 
     public TilesDB() {
 
-        // NONE = -2
-        // FLOOR = 0
-        // AIR = -1
-        // AIR + FLOOR = -3
+        /** 
 
-        // RED ROOF/FLOOR ALONE = 1
+        NONE = -2
+        FLOOR = 0
+        AIR = -1
+        AIR + FLOOR = -3
 
-        // RED ROOF/FLOOR LEFT = 6
-        // RED ROOF/FLOOR LEFT 90 = 10
+        RED ROOF/FLOOR ALONE = 1
 
-        // RED ROOF/FLOOR LEFT CORNER = 13
-        // RED ROOF/FLOOR LEFT CORNER 90 = 14
+        RED ROOF/FLOOR LEFT = 6
+        RED ROOF/FLOOR LEFT 90 = 10
 
-        // RED ROOF/FLOOR RIGHT = 7
-        // RED ROOF/FLOOR RIGHT 90 = 11
+        RED ROOF/FLOOR LEFT CORNER = 13
+        RED ROOF/FLOOR LEFT CORNER 90 = 14
 
-        // RED ROOF/FLOOR RIGHT CORNER = 15
-        // RED ROOF/FLOOR RIGHT CORNER 90 = 16
+        RED ROOF/FLOOR RIGHT = 7
+        RED ROOF/FLOOR RIGHT 90 = 11
 
-        // RED ROOF/FLOOR MIDDLE = 8
-        // RED ROOF/FLOOR MIDDLE 90 = 12
+        RED ROOF/FLOOR RIGHT CORNER = 15
+        RED ROOF/FLOOR RIGHT CORNER 90 = 16
 
-        // ROOF SIDE WITH FLOOR = 2
-        // ROOF SIDE WITHOUT FLOOR = 3
+        RED ROOF/FLOOR MIDDLE = 8
+        RED ROOF/FLOOR MIDDLE 90 = 12
 
-        // NO ROOF SIDE WITH FLOOR = 4
-        // NO ROOF SIDE WITHOUT FLOOR = 5
+        ROOF SIDE WITH FLOOR = 2
+        ROOF SIDE WITHOUT FLOOR = 3
 
-        // NO ROOF BALCONY = 9
+        NO ROOF SIDE WITH FLOOR = 4
+        NO ROOF SIDE WITHOUT FLOOR = 5
+
+        NO ROOF BALCONY = 9
 
 
-        // ORDER : FRONT BACK LEFT RIGHT TOP BOTTOM
-        //         0    1     2    3
+        ORDER : FRONT BACK LEFT RIGHT TOP BOTTOM
+                0     1    2    3     4   5
 
-        // turning to the left (=> 90 = 90 to the left)
+        turning to the left (=> 90 = 90 to the left)
+
+        */
 
         tiles = new ArrayList<>();
         tiles.add(t0);
@@ -144,17 +148,6 @@ public class TilesDB {
 
         Tile t33 = new Tile("tile_3_right_nr", -1, -1, -1, 5, -1, 7, TileSide.INVALID);
         Tile t33_90 = new Tile("tile_3_right_nr", 5, -1, -1, -1, -1, 11, TileSide.INVALID);
-
-        /** 
-        Tile t34 = new Tile("tile_4_left", -1, -1, 3, -1, -1, 9, TileSide.INVALID);
-        Tile t35 = new Tile("tile_4_left_nr", -1, -1, 5, -1, 9, 9, TileSide.INVALID);
-
-        Tile t36 = new Tile("tile_4_middle", -1, -1, 3, 3, -1, 9, TileSide.INVALID);
-        Tile t37 = new Tile("tile_4_middle_nr", -1, -1, 5, 5, 9, 9, TileSide.INVALID);
-
-        Tile t38 = new Tile("tile_4_right", -1, -1, -1, 3, -1, 9, TileSide.INVALID);
-        Tile t39 = new Tile("tile_4_right_nr", -1, -1, -1, 5, 9, 9, TileSide.INVALID);
-        */
 
         tiles.add(t1);
         tiles.add(t2);

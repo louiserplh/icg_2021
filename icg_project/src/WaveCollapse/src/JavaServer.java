@@ -35,7 +35,24 @@ public class JavaServer {
 
     private static boolean parseAndCall(String s) {
 
+        if(s == null) {
+            return false;
+        }
 
+        int index = 0;
+        String name = "";
+        for(String arg : s.split("&")) {
+            String[] val = arg.split("=");
+            if(val[0].equals("index")) {
+                index = Integer.parseInt(val[1]);
+            }
+            else if(val[0].equals("tileId")) {
+                name = val[1];
+            }
+        }
+
+        WaveCollapse.launchWFC(index, name);
+        return true;
     }
 
 }
