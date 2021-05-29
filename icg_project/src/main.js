@@ -31,11 +31,12 @@ async function main() {
   regl_global_handle = regl;
   // The <canvas> (HTML element for drawing graphics) was created by REGL, lets take a handle to it.
   const canvas_elem = document.getElementsByTagName('canvas')[0];
-
+  const WFC_overlay = document.getElementById('wfc-overlay');
   const debug_overlay = document.getElementById('debug-overlay');
   const debug_text = document.getElementById('debug-text');
 
   register_keyboard_action('h', () => debug_overlay.classList.toggle('hidden'));
+  register_keyboard_action('w', () => WFC_overlay.classList.toggle('hidden'));
 
   /*---------------------------------------------------------------
 		Resource loading
@@ -292,7 +293,7 @@ async function main() {
   const sorted_corners_by_name = sortObject(corners_by_name);
 
   /*
-		Center camera on selected planet
+		Center camera on selected tile
 	*/
   let selected_corner_name = 'middle';
   let old_selected_corner_name = 'middle';
@@ -358,6 +359,18 @@ async function main() {
   register_keyboard_action('p', () => (is_paused = !is_paused));
 
   /*
+		WFC buttons
+	*/
+ /* const tiles_select = document.getElementById('tile-select');
+  for (const name in sorted_corners_by_name) {
+    if (sorted_corners_by_name.hasOwnProperty(name)) {
+      const entry = document.createElement('li');
+      entry.textContent = name;
+      entry.addEventListener('click', (event) => set_selected_corner(name));
+      tiles_select.appendChild(entry);
+    }
+  }*/
+  /*
     Update actor list
   */
   let error_on_receive = false;
@@ -414,7 +427,7 @@ async function main() {
   const light_position_cam = [0, 0, 0, 1];
   const light_color = [0.85, 0.8, 0.85];
 
-  //add the light_color to the planets except sun and billboard
+  //add the light_color to the tiles except sun and billboard
   for (const actor of actors_list) {
     if (actor instanceof PhongTileActor) {
       actor.light_color = light_color;
