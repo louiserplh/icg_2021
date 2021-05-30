@@ -61,81 +61,6 @@ async function main() {
 
   // Start downloads in parallel
   const resources = {
-    /*
-    'tex_grass': load_texture(regl, './textures/grass.png'),
-    'tex_tile_1_alone': load_texture(regl, './textures/tile_1_alone.png'),
-    'tex_tile_1_alone_nb': load_texture(regl, './textures/tile_1_alone_nb.png'),
-    'tex_tile_1_alone_nr': load_texture(regl, './textures/tile_1_alone_nr.png'),
-    'tex_tile_1_left': load_texture(regl, './textures/tile_1_left.png'),
-    'tex_tile_1_left_90': load_texture(regl, './textures/tile_1_left_90.png'),
-    'tex_tile_1_left_corner': load_texture(regl, './textures/tile_1_left_corner.png'),
-    'tex_tile_1_left_corner_90': load_texture(regl, './textures/tile_1_left_corner_90.png'),
-    'tex_tile_1_left_nb': load_texture(regl, './textures/tile_1_left_nb.png'),
-    'tex_tile_1_left_nb_90': load_texture(regl, './textures/tile_1_left_nb_90.png'),
-    'tex_tile_1_left_nb_corner': load_texture(regl, './textures/tile_1_left_nb_corner.png'),
-    'tex_tile_1_left_nb_corner_90': load_texture(regl, './textures/tile_1_left_nb_corner_90.png'),
-    'tex_tile_1_left_nr': load_texture(regl, './textures/tile_1_left_nr.png'),
-    'tex_tile_1_left_nr_90': load_texture(regl, './textures/tile_1_left_nr_90.png'),
-    'tex_tile_1_left_nr_corner': load_texture(regl, './textures/tile_1_left_nr_corner.png'),
-    'tex_tile_1_left_nr_corner_90': load_texture(regl, './textures/tile_1_left_nr_corner_90.png'),
-    'tex_tile_1_middle': load_texture(regl, './textures/tile_1_middle.png'),
-    'tex_tile_1_middle_90': load_texture(regl, './textures/tile_1_middle_90.png'),
-    'tex_tile_1_middle_nb': load_texture(regl, './textures/tile_1_middle_nb.png'),
-    'tex_tile_1_middle_nb_90': load_texture(regl, './textures/tile_1_middle_nb_90.png'),
-    'tex_tile_1_middle_nr': load_texture(regl, './textures/tile_1_middle_nr.png'),
-    'tex_tile_1_middle_nr_90': load_texture(regl, './textures/tile_1_middle_nr_90.png'),
-    'tex_tile_1_right': load_texture(regl, './textures/tile_1_right.png'),
-    'tex_tile_1_right_90': load_texture(regl, './textures/tile_1_right_90.png'),
-    'tex_tile_1_right_corner': load_texture(regl, './textures/tile_1_right_corner.png'),
-    'tex_tile_1_right_corner_90': load_texture(regl, './textures/tile_1_right_corner_90.png'),
-    'tex_tile_1_right_nb': load_texture(regl, './textures/tile_1_right_nb.png'),
-    'tex_tile_1_right_nb_90': load_texture(regl, './textures/tile_1_right_nb_90.png'),
-    'tex_tile_1_right_nb_corner': load_texture(regl, './textures/tile_1_right_nb_corner.png'),
-    'tex_tile_1_right_nb_corner_90': load_texture(regl, './textures/tile_1_right_nb_corner_90.png'),
-    'tex_tile_1_right_nr': load_texture(regl, './textures/tile_1_right_nr.png'),
-    'tex_tile_1_right_nr_90': load_texture(regl, './textures/tile_1_right_nr_90.png'),
-    'tex_tile_1_right_nr_cor': load_texture(regl, './textures/tile_1_right_nr_cor.png'),
-    'tex_tile_1_right_nr_cor_90': load_texture(regl, './textures/tile_1_right_nr_cor_90.png'),
-    'tex_tile_2_alone_nr': load_texture(regl, './textures/tile_2_alone_nr.png'),
-    'tex_tile_2_left_nr_90': load_texture(regl, './textures/tile_2_left_nr_90.png'),
-    'tex_tile_2_left_nr_corner': load_texture(regl, './textures/tile_2_left_nr_corner.png'),
-    'tex_tile_2_left_nr_corner_90': load_texture(regl, './textures/tile_2_left_nr_corner_90.png'),
-    'tex_tile_2_middle_nr': load_texture(regl, './textures/tile_2_middle_nr.png'),
-    'tex_tile_2_middle_nr_90': load_texture(regl, './textures/tile_2_middle_nr_90.png'),
-    'tex_tile_2_right_nr': load_texture(regl, './textures/tile_2_right_nr.png'),
-    'tex_tile_2_right_nr_90': load_texture(regl, './textures/tile_2_right_nr_90.png'),
-    'tex_tile_2_right_nr_corner': load_texture(regl, './textures/tile_2_right_nr_corner.png'),
-    'tex_tile_2_right_nr_corner_90': load_texture(regl, './textures/tile_2_right_nr_corner_90.png'),
-    'tex_tile_3_left': load_texture(regl, './textures/tile_3_left.png'),
-    'tex_tile_3_left_90': load_texture(regl, './textures/tile_3_left_90.png'),
-    'tex_tile_3_left_fancy': load_texture(regl, './textures/tile_3_left_fancy.png'),
-    'tex_tile_3_left_fancy_90': load_texture(regl, './textures/tile_3_left_fancy_90.png'),
-    'tex_tile_3_left_nr': load_texture(regl, './textures/tile_3_left_nr.png'),
-    'tex_tile_3_left_nr_90': load_texture(regl, './textures/tile_3_left_nr_90.png'),
-    'tex_tile_3_middle': load_texture(regl, './textures/tile_3_middle.png'),
-    'tex_tile_3_middle_90': load_texture(regl, './textures/tile_3_middle_90.png'),
-    'tex_tile_3_middle_fancy': load_texture(regl, './textures/tile_3_middle_fancy.png'),
-    'tex_tile_3_middle_fancy_90': load_texture(regl, './textures/tile_3_middle_fancy_90.png'),
-    'tex_tile_3_middle_nr': load_texture(regl, './textures/tile_3_middle_nr.png'),
-    'tex_tile_3_middle_nr_90': load_texture(regl, './textures/tile_3_middle_nr_90.png'),
-    'tex_tile_3_right': load_texture(regl, './textures/tile_3_right.png'),
-    'tex_tile_3_right_90': load_texture(regl, './textures/tile_3_right_90.png'),
-    'tex_tile_3_right_fancy': load_texture(regl, './textures/tile_3_right_fancy.png'),
-    'tex_tile_3_right_fancy_90': load_texture(regl, './textures/tile_3_right_fancy_90.png'),
-    'tex_tile_3_right_nr': load_texture(regl, './textures/tile_3_right_nr.png'),
-    'tex_tile_3_right_nr_90': load_texture(regl, './textures/tile_3_right_nr_90.png'),
-    'tex_tile_4_left': load_texture(regl, './textures/tile_4_left.png'),
-    'tex_tile_4_left_90': load_texture(regl, './textures/tile_4_left_90.png'),
-    'tex_tile_4_left_nr': load_texture(regl, './textures/tile_4_left_nr.png'),
-    'tex_tile_4_left_nr_90': load_texture(regl, './textures/tile_4_left_nr_90.png'),
-    'tex_tile_4_middle': load_texture(regl, './textures/tile_4_middle.png'),
-    'tex_tile_4_middle_90': load_texture(regl, './textures/tile_4_middle_90.png'),
-    'tex_tile_4_middle_nr': load_texture(regl, './textures/tile_4_middle_nr.png'),
-    'tex_tile_4_right': load_texture(regl, './textures/tile_4_right.png'),
-    'tex_tile_4_right_90': load_texture(regl, './textures/tile_4_right_90.png'),
-    'tex_tile_4_right_nr': load_texture(regl, './textures/tile_4_right_nr.png'),
-    'tex_tile_4_right_nr_90': load_texture(regl, './textures/tile_4_right_nr_90.png'),*/
-
     'shader_unshaded_vert': load_text('./src/shaders/unshaded.vert.glsl'),
     'shader_unshaded_frag': load_text('./src/shaders/unshaded.frag.glsl'),
     'shader_phong_vert': load_text('./src/shaders/phong.vert.glsl'),
@@ -154,6 +79,9 @@ async function main() {
   // we create it in code instead of loading from a file
   resources['mesh_uvsphere'] = icg_mesh_make_uv_sphere(15);
 
+  const X_SIZE = 5;
+  const Y_SIZE = 5;
+  const Z_SIZE = 3;
   // Loads the tiles to be displayed
   const floor_tiles = [
     { id: 'grass', x: 0, y: 0, z: -0.7 },
@@ -162,38 +90,10 @@ async function main() {
     { id: 'grass', x: 5, y: 5, z: -0.7 },
   ];
   let tiles = floor_tiles.concat([
-    { id: 'tile_1_middle_nr', x: 0, y: 0, z: 0 },
-    { id: 'tile_1_alone_nr', x: 1, y: 0, z: 0 },
-    { id: 'tile_1_alone_nr', x: 2, y: 0, z: 0 },
-    { id: 'tile_1_left_nr', x: 0, y: 1, z: 0 },
-    { id: 'tile_1_alone_nr', x: 1, y: 1, z: 0 },
-    { id: 'tile_1_alone_nr', x: 2, y: 1, z: 0 },
-    { id: 'tile_1_alone_nr', x: 0, y: 2, z: 0 },
-    { id: 'tile_2_alone_nr', x: 1, y: 2, z: 0 },
-    { id: 'tile_1_alone_nr', x: 2, y: 2, z: 0 },
-    { id: 'tile_1_alone_nr', x: 0, y: 0, z: 1 },
-    { id: 'tile_1_alone_nr', x: 1, y: 0, z: 1 },
-    { id: 'tile_1_alone_nr', x: 2, y: 0, z: 1 },
-    { id: 'tile_1_alone_nr', x: 0, y: 1, z: 1 },
-    { id: 'tile_1_alone_nr', x: 1, y: 1, z: 1 },
-    { id: 'tile_1_alone_nr', x: 2, y: 1, z: 1 },
-    { id: 'tile_1_alone_nr', x: 0, y: 2, z: 1 },
-    { id: 'tile_1_alone_nr', x: 1, y: 2, z: 1 },
-    { id: 'tile_1_alone_nr', x: 2, y: 2, z: 1 },
-    { id: 'tile_1_alone_nr', x: 0, y: 0, z: 2 },
-    { id: 'tile_1_alone_nr', x: 1, y: 0, z: 2 },
-    { id: 'tile_1_alone_nr', x: 2, y: 0, z: 2 },
-    { id: 'tile_1_alone_nr', x: 0, y: 1, z: 2 },
-    { id: 'tile_1_alone_nr', x: 1, y: 1, z: 2 },
-    { id: 'tile_1_alone_nr', x: 2, y: 1, z: 2 },
-    { id: 'tile_1_alone_nr', x: 0, y: 2, z: 2 },
-    { id: 'tile_1_alone_nr', x: 1, y: 2, z: 2 },
-    { id: 'tile_1_alone_nr', x: 2, y: 2, z: 2 },
+    { id: 'tile_1_middle', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 0 },
+    { id: 'tile_1_middle', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 1 },
+    { id: 'tile_3_left_fancy', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 2 },
   ]);
-
-  const X_SIZE = 5;
-  const Y_SIZE = 5;
-  const Z_SIZE = 3;
 
   /*---------------------------------------------------------------
 		GPU pipeline
@@ -451,6 +351,7 @@ async function main() {
   register_keyboard_action('g', () => {
     // we prefer sending requests for new tiles one by one
     if (!querying_new_tiles) {
+      error_on_receive = false;
       querying_new_tiles = true;
       received_new_tiles = false;
       query_new_tileset([]);
@@ -486,24 +387,28 @@ async function main() {
                 });
               } else {
                 error_on_receive = true;
+                querying_new_tiles = false;
                 console.error('Error on parsing the json tiles - unvalid format for tiles');
               }
               return;
             } catch (error) {
               error_on_receive = true;
+              querying_new_tiles = false;
               console.error('Error on parsing the json tiles - unvalid format for tiles');
               return;
             }
           })
           .catch((error) => {
             error_on_receive = true;
+            querying_new_tiles = false;
             console.error('Error on taking the json tiles - cant load the json file:' + error);
             return;
           });
       })
       .catch((error) => {
         error_on_receive = true;
-        console.error('Error on receiving the tiles - connection failed:' + error);
+        querying_new_tiles = false;
+        console.error('Error on receiving the tiles - connection failed');
         return;
       });
   }
@@ -736,18 +641,25 @@ async function main() {
     }
 
     debug_text.textContent = `
-Hello!
 Camera: angle_z ${(cam_angle_z / deg_to_rad).toFixed(1)}, angle_y ${(
       cam_angle_y / deg_to_rad
     ).toFixed(1)}, distance ${(cam_distance_factor * cam_distance_base).toFixed(1)}
 cam pos ${vec_to_string(camera_position)}
 `;
     if (error_on_receive) {
-      debug_text.textContent = debug_text.textContent.concat('Error on receiving new tiles set');
+      debug_text.textContent = debug_text.textContent.concat(
+        'Error on receiving new tiles set :( Try again (make sure you launched the java server: java icg_project/WaveCollapse_classes/JavaServer)'
+      );
     } else if (querying_new_tiles) {
-      debug_text.textContent = debug_text.textContent.concat('Request for new tiles sent');
+      debug_text.textContent = debug_text.textContent.concat(
+        'Request for new tiles sent, please wait ...(this can take a while)'
+      );
+    } else if (!querying_new_tiles && !received_new_tiles) {
+      debug_text.textContent = debug_text.textContent.concat(
+        'New tiles set created, rendering in process ...'
+      );
     } else if (received_new_tiles) {
-      debug_text.textContent = debug_text.textContent.concat('New tiles set received');
+      debug_text.textContent = debug_text.textContent.concat('New tiles set received !!');
     }
   });
 }
