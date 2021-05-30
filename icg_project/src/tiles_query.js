@@ -1,24 +1,22 @@
-import { load_text } from './icg_web';
+import { load_text } from './icg_web.js';
 
-export function query_new_tileset(user_contraints) {
+export function query_new_tileset(user_constraints) {
   console.log('Sending request');
-  fetch('http://localhost:3333?' + stringify_constraints(user_contraints))
+  return fetch('http://localhost:3333?' + stringify_constraints(user_constraints), {
+    mode: 'no-cors',
+  })
     .then((response) => {
       console.log('received a response');
       load_text('./WaveCollapse_classes/tiles.json')
         .then((json_tiles) => {
           try {
             const parsed_json = JSON.parse(json_tiles);
-            if (
-              parsed_json.length == 27 &&
-              parsed_json[Math.floor(Math.random() * 26)].hasOwnProperty('id') &&
-              parsed_json[Math.floor(Math.random() * 26)].hasOwnProperty('x') &&
-              parsed_json[Math.floor(Math.random() * 26)].hasOwnProperty('y') &&
-              parsed_json[Math.floor(Math.random() * 26)].hasOwnProperty('z')
-            ) {
-              // We know that the received JSON encodes correctly our tileset (random checks on some tile's properties)
+            if (parsed_json.length == 75) {
+              // We know that the received JSON encodes one object per tile
               console.log('successfuly received new tiles set');
-              return Object.assign(parsed_json);
+              tiles = Object.assign(parsed_json);
+            } else {
+              console.error('Error on parsing the json tiles - unvalid format for tiles');
             }
           } catch (error) {
             console.error('Error on parsing the json tiles - unvalid format for tiles');
@@ -26,29 +24,26 @@ export function query_new_tileset(user_contraints) {
         })
         .catch((error) => {
           console.error('Error on taking the json tiles - cant load the json file:' + error);
-          return [];
         });
     })
     .catch((error) => {
       console.error('Error on receiving the tiles - connection failed:' + error);
-      return [];
     });
 }
 
-function stringify_constraints(user_contraints) {
+function stringify_constraints(user_constraints) {
   let stringified = '';
-  for (constraint in user_contraints) {
+  for (const constraint of user_constraints) {
     const index = coordinates_to_index(constraint.x, constraint.y, constraint.z);
     stringified.concat('index=' + index + '&' + 'tileId=' + constraint.id + '&');
   }
-
   // we must remove the last '&'
   return stringified.substring(0, stringified.length - 1);
 }
 
 // Methods to convert from and to the index in the flat array representing our tiles world.
 function coordinates_to_index(x, y, z) {
-  return x + this.x_size * y + this.x_size * this.y_size * z;
+  return parseInt(x) + 5 * parseInt(y) + 5 * 5 * parseInt(z);
 }
 
 function index_to_coord_x(index) {
