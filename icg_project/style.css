@@ -159,53 +159,60 @@ The various units of measurement available in CSS:
 }
 
 .button {
-	background-color: white;
-	border: none;
 	border-radius: 2%;
-	color: white;
 	text-align: center;
-	font-size: 30px;
 	cursor: pointer;
 	margin: 0;
-}
-.but1 {
-	background-color: white;
-	color: black;
-	width: 50px;
-	height: 50px;
-	font-size: 15px;
-	border: 2px solid rgb(67, 105, 78);
-}
-.but3 {
 	background-color: white;
 	color: black;
 	padding: 10px 10px;
 	font-size: 15px;
 	border: 2px solid rgb(67, 105, 78);
 }
-.but1:hover, .but3:hover {
+
+.button:hover {
 	background-color: rgb(67, 105, 78);;
 	color: white;
 }
-.but1:focus, .but3:focus {
+.button:focus {
 	background-color: rgb(67, 105, 78);;
 	color: white;
 }
-.but2 {
-	background-color: white;
-	color: black;
-	border: 2px solid rgb(255, 231, 160);
+
+#error-message {  
+	margin: auto;
+  	width: 50%;
+	padding: 10px;
+	text-align: center;
+	z-index: 4;
+	border-radius: 0.5rem;
+	background: rgb(207, 134, 134);
+	color: rgb(0, 0, 0);
+	overflow: hidden;
+	display: none;
+}
+#error-message p{
+	margin: 30px;
+	padding: 0;
 }
 
-.but2:hover {
-	background-color: rgb(255, 231, 160);;
-	color: white;
+#generation {
+	top: 1rem; 
+	left: 1rem;  
+	position: center; 
+	z-index: 3;
+	border-radius: 0.5rem;
+	background: rgb(131, 192, 149);
+	color: rgb(0, 0, 0);
+	font-size: 0;
+	overflow: hidden;
+	display: none;
 }
-.but2:focus {
-	background-color: rgb(255, 231, 160);;
-	color: white;
+#generation p{
+	margin: 30px;
+	color: rgb(0, 0, 0);
+	padding: 0;
 }
-
 img {
 	width: 60px;
 	height: 60px;
