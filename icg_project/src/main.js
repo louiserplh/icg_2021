@@ -8,13 +8,10 @@ import {
   load_texture,
   register_keyboard_action,
 } from './icg_web.js';
-import { deg_to_rad, mat4_to_string, vec_to_string, mat4_matmul_many } from './icg_math.js';
+import { deg_to_rad, vec_to_string, mat4_matmul_many } from './icg_math.js';
 import { icg_mesh_load_obj, icg_mesh_make_uv_sphere } from './icg_mesh.js';
 import { PhongTileActor, MeshTileActor } from './tiles.js';
-import { make_grid_pipeline } from './icg_grid.js';
 import { fromYRotation, fromZRotation } from '../lib/gl-matrix_3.3.0/esm/mat4.js';
-import { random } from '../lib/gl-matrix_3.3.0/esm/vec3.js';
-import { query_new_tileset } from './tiles_query.js';
 
 var regl_global_handle = null; // store the regl context here in case we want to touch it in devconsole
 
@@ -205,7 +202,7 @@ async function main() {
           new MeshTileActor(
             {
               name: tiles[i].id,
-              mesh: tiles[i].id !== 'air' ? await icg_mesh_load_obj(regl, mesh_name) : {}, // we put a mesh for non empty tiles
+              mesh: tiles[i].id !== 'air' ? await icg_mesh_load_obj(regl, mesh_name) : {}, // we put a mesh for non empty tiles only
               texture: tiles[i].id !== 'air' ? await load_texture(regl, texture_name) : {}, //our tiles textures are small, easily runtime loaded
               size: 1,
               x: tiles[i].x,
@@ -493,11 +490,13 @@ async function main() {
       100 // far
     );
 
+    // have to recompute the actors list (changes over time now)
     draw_list = actors_list.slice();
 
     // Calculate model matrices
     for (const actor of actors_list) {
       if (actor.name === 'grass' || received_new_tiles) {
+        // we don't render tiles if we are receiving new tiles (grass excepted as kept always the same)
         if (actor instanceof PhongTileActor) {
           actor.light_color = light_color;
         }
@@ -592,6 +591,7 @@ async function main() {
         }
       }
     } else {
+      // if we did not yet received the new tiles, we keep the same camera position and update juste the rotation/zoom transforms (with mat_world_to_cam)
       mat4_matmul_many(mat_view, mat_world_to_cam, selected_corner_translation_mat);
     }
 
@@ -629,6 +629,7 @@ async function main() {
 
     for (const actor of draw_list) {
       if ((actor.name === 'grass' || received_new_tiles) && actor.name !== 'air') {
+        // we don't render actor if we're receiving tiles (except grass ground) or if it's 'air' tile (nothing)
         try {
           actor.draw(draw_info);
         } catch (e) {
