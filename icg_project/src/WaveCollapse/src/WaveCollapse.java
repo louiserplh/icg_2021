@@ -7,9 +7,13 @@ import java.io.FileWriter;
 
 public class WaveCollapse {
 
+    private static int num_x = 5;
+    private static int num_y = 5;
+    private static int num_z = 4;
+
     public static void launchWFC(int constraintIndex, String constraintName) {
 
-        System.out.println(constraintName);
+        System.out.println(constraintIndex);
         generateJSON(wfc(constraintIndex, constraintName));
     }
 
@@ -24,7 +28,7 @@ public class WaveCollapse {
 
         // re-run waveform until we find one that is valid
         while (worked.isEmpty()) {
-            WaveCollapse wf = new WaveCollapse(db.getTilesList(), corres, 5, 5, 3, TilesDB.getFloor());
+            WaveCollapse wf = new WaveCollapse(db.getTilesList(), corres, TilesDB.getFloor());
             worked = wf.start(constraintIndex, constraintName);
         }
 
@@ -34,9 +38,6 @@ public class WaveCollapse {
 
     private List<TileCorrespondences> tileCorrespondences;
     private int totalCells;
-    private int num_x;
-    private int num_y;
-    private int num_z;
 
     private Random rand;
 
@@ -44,14 +45,11 @@ public class WaveCollapse {
 
     private List<List<Tile>> possibleTilesPerCell;
 
-    public WaveCollapse(List<Tile> allTiles, List<TileCorrespondences> tileCorrespondences, int num_x, int num_y, int num_z,
-            Tile floor) {
+    public WaveCollapse(List<Tile> allTiles, List<TileCorrespondences> tileCorrespondences, Tile floor) {
         this.tileCorrespondences = new ArrayList<>(tileCorrespondences);
-        this.num_x = num_x;
-        this.num_y = num_y;
-        this.num_z = num_z + 1; // add 1 to z dimension for floor tiles
+
         this.floor = floor;
-        this.totalCells = num_x * num_y * (num_z + 1);
+        this.totalCells = num_x * num_y * num_z;
         rand = new Random();
 
         // in the beginning, all tiles are possible tiles for every cell
@@ -82,7 +80,10 @@ public class WaveCollapse {
             }
         }
 
-        if(indexConstraint != -1) {
+        TilesDB db = new TilesDB();
+        Tile t = getTileById(db.getTilesList(), tileID);
+
+        if(indexConstraint >= 0 && t != null) {
 
             int x = indexTocoordinate_x(indexConstraint);
             int y = indexTocoordinate_y(indexConstraint);
@@ -92,50 +93,13 @@ public class WaveCollapse {
 
             // add constraint tile and propagate
             List<Tile> tiles = new ArrayList<>();
-            TilesDB db = new TilesDB();
-            Tile t = getTileById(db.getTilesList(), tileID);
-            if(t != null) {
-                tiles.add(t);
-                possibleTilesPerCell.set(indexConstraint, tiles);
-                propagate(indexConstraint);
-            }
-            else {
-                System.out.println("There was an error in the tile id.");
-            }
+           
+            tiles.add(t);
+            possibleTilesPerCell.set(indexConstraint, tiles);
+            propagate(indexConstraint);
+            
+           
         }
-
-        // iterate until the array is fully collapsed
-        while (!isCollapsed()) {
-            iterate();
-        }
-
-        // return whether generated array is valid or not
-        return checkValidity();
-    }
-
-     /**
-     * function launches the wfc with constraints
-     * 
-     * @return generated array of tiles if it is valid, empty list otherwise
-     */
-    public List<Tile> startWithConstraints(int indexConstraint, Tile tile) {
-
-        for (int x = 0; x < num_x; ++x) {
-            for (int y = 0; y < num_y; ++y) {
-
-                // add floor tiles to the entire z = 0 plane
-                int index = coordinateToIndex(x, y, 0);
-                List<Tile> tiles = new ArrayList<>();
-                tiles.add(floor);
-                possibleTilesPerCell.set(index, tiles);
-
-                // propagate at this index
-                propagate(index);
-            }
-        }
-
-        
-
 
         // iterate until the array is fully collapsed
         while (!isCollapsed()) {
@@ -479,24 +443,24 @@ public class WaveCollapse {
     }
 
     // helper function to get index version of (x, y, z) coordinate
-    private int coordinateToIndex(int x, int y, int z) {
+    private static int coordinateToIndex(int x, int y, int z) {
         return x + num_x * y + num_x * num_y * z;
     }
 
     // helper function to get the x coordinate of an index
-    private int indexTocoordinate_x(int index) {
+    private static int indexTocoordinate_x(int index) {
         return index % num_x;
     }
 
     // helper function to get the y coordinate of an index
-    private int indexTocoordinate_y(int index) {
+    private static int indexTocoordinate_y(int index) {
         index = index / num_x;
         return index % num_y;
 
     }
 
     // helper function to get the z coordinate of an index
-    private int indexTocoordinate_z(int index) {
+    private static int indexTocoordinate_z(int index) {
         index = index / num_x;
         index = index / num_y;
         return index % num_z;
@@ -531,7 +495,6 @@ public class WaveCollapse {
             if(tilesWithFloor.get(i).getId() != "floor") {
                 tiles.add(tilesWithFloor.get(i));
             }
-
         }
 
         StringBuilder allTiles = new StringBuilder();
@@ -539,8 +502,32 @@ public class WaveCollapse {
 
         for(int i = 0; i < tiles.size(); ++i) {
 
+            int x = indexTocoordinate_x(i);
+            int y = indexTocoordinate_y(i);
+            int z = indexTocoordinate_z(i);
+
+            int index = 0;
+
+            switch(y) {
+                case 0:
+                    index = coordinateToIndex(x, 4, z);
+                    break;
+                case 1:
+                    index = coordinateToIndex(x, 3, z);
+                    break;
+                case 2:
+                    index = coordinateToIndex(x, 2, z);
+                    break;
+                case 3:
+                    index = coordinateToIndex(x, 1, z);
+                    break;
+                case 4:
+                    index = coordinateToIndex(x, 0, z);
+                    break;
+            }
+
             allTiles.append("{\"index\":\"");
-            allTiles.append(i);
+            allTiles.append(index);
             allTiles.append("\",\"id\":\"");
             if(tiles.get(i).getId() == "air_b") {
                 allTiles.append("air");
@@ -584,5 +571,6 @@ public class WaveCollapse {
         }
         return null;
     }
+
 
 }
