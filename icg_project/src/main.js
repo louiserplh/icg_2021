@@ -193,8 +193,8 @@ async function main() {
       if (tiles[i].id !== '') {
         const mesh_name = 'mesh/' + tiles[i].id + '.obj';
         const texture_name = 'textures/' + tiles[i].id + '.png';
-        const shine = tiles[i].id === 'grass' ? 100 : 2;
-        const amb = tiles[i].id === 'grass' ? 0.6 : 0.4;
+        const shine = tiles[i].id === 'grass' ? 1 : 14;
+        const amb = tiles[i].id === 'grass' ? 0.9 : 0.5;
         new_actors_list.push(
           new MeshTileActor(
             {
