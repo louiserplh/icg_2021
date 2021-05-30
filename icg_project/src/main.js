@@ -8,12 +8,10 @@ import {
   load_texture,
   register_keyboard_action,
 } from './icg_web.js';
-import { deg_to_rad, mat4_to_string, vec_to_string, mat4_matmul_many } from './icg_math.js';
+import { deg_to_rad, vec_to_string, mat4_matmul_many } from './icg_math.js';
 import { icg_mesh_load_obj, icg_mesh_make_uv_sphere } from './icg_mesh.js';
 import { PhongTileActor, MeshTileActor } from './tiles.js';
-import { make_grid_pipeline } from './icg_grid.js';
 import { fromYRotation, fromZRotation } from '../lib/gl-matrix_3.3.0/esm/mat4.js';
-import { random } from '../lib/gl-matrix_3.3.0/esm/vec3.js';
 
 var regl_global_handle = null; // store the regl context here in case we want to touch it in devconsole
 
@@ -60,46 +58,6 @@ async function main() {
 
   // Start downloads in parallel
   const resources = {
-    'tex_tile_1_alone_nb': load_texture(regl, './textures/tile_1_alone_nb.png'),
-    'tex_tile_1_alone_nr': load_texture(regl, './textures/tile_1_alone_nr.png'),
-    'tex_tile_1_alone': load_texture(regl, './textures/tile_1_alone.png'),
-    'tex_tile_1_left_corner': load_texture(regl, './textures/tile_1_left_corner.png'),
-    'tex_tile_1_left_nb_corner': load_texture(regl, './textures/tile_1_left_nb_corner.png'),
-    'tex_tile_1_left_nb': load_texture(regl, './textures/tile_1_left_nb.png'),
-    'tex_tile_1_left_nr_corner': load_texture(regl, './textures/tile_1_left_nr_corner.png'),
-    'tex_tile_1_left_nr': load_texture(regl, './textures/tile_1_left_nr.png'),
-    'tex_tile_1_left': load_texture(regl, './textures/tile_1_left.png'),
-    'tex_tile_1_middle_nb': load_texture(regl, './textures/tile_1_middle_nb.png'),
-    'tex_tile_1_middle_nr': load_texture(regl, './textures/tile_1_middle_nr.png'),
-    'tex_tile_1_middle': load_texture(regl, './textures/tile_1_middle.png'),
-    'tex_tile_1_right_corner': load_texture(regl, './textures/tile_1_right_corner.png'),
-    'tex_tile_1_right_nb_corner': load_texture(regl, './textures/tile_1_right_nb_corner.png'),
-    'tex_tile_1_right_nb': load_texture(regl, './textures/tile_1_right_nb.png'),
-    'tex_tile_1_right_nr_cor': load_texture(regl, './textures/tile_1_right_nr_cor.png'),
-    'tex_tile_1_right_nr': load_texture(regl, './textures/tile_1_right_nr.png'),
-    'tex_tile_1_right': load_texture(regl, './textures/tile_1_right.png'),
-    'tex_tile_2_alone_nr': load_texture(regl, './textures/tile_2_alone_nr.png'),
-    'tex_tile_2_left_nr_corner': load_texture(regl, './textures/tile_2_left_nr_corner.png'),
-    'tex_tile_2_middle_nr': load_texture(regl, './textures/tile_2_middle_nr.png'),
-    'tex_tile_2_right_nr_corner': load_texture(regl, './textures/tile_2_right_nr_corner.png'),
-    'tex_tile_2_right_nr': load_texture(regl, './textures/tile_2_right_nr.png'),
-    'tex_tile_3_left_fancy': load_texture(regl, './textures/tile_3_left_fancy.png'),
-    'tex_tile_3_left_nr': load_texture(regl, './textures/tile_3_left_nr.png'),
-    'tex_tile_3_left': load_texture(regl, './textures/tile_3_left.png'),
-    'tex_tile_3_middle_fancy': load_texture(regl, './textures/tile_3_middle_fancy.png'),
-    'tex_tile_3_middle_nr': load_texture(regl, './textures/tile_3_middle_nr.png'),
-    'tex_tile_3_middle': load_texture(regl, './textures/tile_3_middle.png'),
-    'tex_tile_3_right_fancy': load_texture(regl, './textures/tile_3_right_fancy.png'),
-    'tex_tile_3_right_nr': load_texture(regl, './textures/tile_3_right_nr.png'),
-    'tex_tile_3_right': load_texture(regl, './textures/tile_3_right.png'),
-    'tex_tile_4_left_nr': load_texture(regl, './textures/tile_4_left_nr.png'),
-    'tex_tile_4_left': load_texture(regl, './textures/tile_4_left.png'),
-    'tex_tile_4_middle_nr': load_texture(regl, './textures/tile_4_middle_nr.png'),
-    'tex_tile_4_middle': load_texture(regl, './textures/tile_4_middle.png'),
-    'tex_tile_4_right_nr': load_texture(regl, './textures/tile_4_right_nr.png'),
-    'tex_tile_4_right': load_texture(regl, './textures/tile_4_right.png'),
-    'tex_grass': load_texture(regl, './textures/grass.png'),
-
     'shader_unshaded_vert': load_text('./src/shaders/unshaded.vert.glsl'),
     'shader_unshaded_frag': load_text('./src/shaders/unshaded.frag.glsl'),
     'shader_phong_vert': load_text('./src/shaders/phong.vert.glsl'),
@@ -118,40 +76,18 @@ async function main() {
   // we create it in code instead of loading from a file
   resources['mesh_uvsphere'] = icg_mesh_make_uv_sphere(15);
 
+  const X_SIZE = 5;
+  const Y_SIZE = 5;
+  const Z_SIZE = 3;
   // Loads the tiles to be displayed
-  let tiles = [
-    { id: 'grass', x: 0.5, y: 0.5, z: -0.3 },
-    { id: 'grass', x: 1.5, y: 0.5, z: -0.3 },
-    { id: 'grass', x: 0.5, y: 1.5, z: -0.3 },
-    { id: 'grass', x: 1.5, y: 1.5, z: -0.3 },
-    { id: 'tile_1_alone_nr', x: 0, y: 0, z: 0 },
-    { id: 'tile_1_alone_nr', x: 1, y: 0, z: 0 },
-    { id: 'tile_1_alone_nr', x: 2, y: 0, z: 0 },
-    { id: 'tile_1_alone_nr', x: 0, y: 1, z: 0 },
-    { id: 'tile_1_alone_nr', x: 1, y: 1, z: 0 },
-    { id: 'tile_1_alone_nr', x: 2, y: 1, z: 0 },
-    { id: 'tile_1_alone_nr', x: 0, y: 2, z: 0 },
-    { id: 'tile_1_alone_nr', x: 1, y: 2, z: 0 },
-    { id: 'tile_1_alone_nr', x: 2, y: 2, z: 0 },
-    { id: 'tile_1_alone_nr', x: 0, y: 0, z: 1 },
-    { id: 'tile_1_alone_nr', x: 1, y: 0, z: 1 },
-    { id: 'tile_1_alone_nr', x: 2, y: 0, z: 1 },
-    { id: 'tile_1_alone_nr', x: 0, y: 1, z: 1 },
-    { id: 'tile_1_alone_nr', x: 1, y: 1, z: 1 },
-    { id: 'tile_1_alone_nr', x: 2, y: 1, z: 1 },
-    { id: 'tile_1_alone_nr', x: 0, y: 2, z: 1 },
-    { id: 'tile_1_alone_nr', x: 1, y: 2, z: 1 },
-    { id: 'tile_1_alone_nr', x: 2, y: 2, z: 1 },
-    { id: 'tile_1_alone_nr', x: 0, y: 0, z: 2 },
-    { id: 'tile_1_alone_nr', x: 1, y: 0, z: 2 },
-    { id: 'tile_1_alone_nr', x: 2, y: 0, z: 2 },
-    { id: 'tile_1_alone_nr', x: 0, y: 1, z: 2 },
-    { id: 'tile_1_alone_nr', x: 1, y: 1, z: 2 },
-    { id: 'tile_1_alone_nr', x: 2, y: 1, z: 2 },
-    { id: 'tile_1_alone_nr', x: 0, y: 2, z: 2 },
-    { id: 'tile_1_alone_nr', x: 1, y: 2, z: 2 },
-    { id: 'tile_1_alone_nr', x: 2, y: 2, z: 2 },
+  const floor_tiles = [
+    { id: 'grass', x: 2, y: 2, z: -0.7 },
   ];
+  let tiles = floor_tiles.concat([
+    { id: 'tile_1_middle', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 0 },
+    { id: 'tile_1_middle', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 1 },
+    { id: 'tile_3_left_fancy', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 2 },
+  ]);
 
   /*---------------------------------------------------------------
 		GPU pipeline
@@ -220,7 +156,7 @@ async function main() {
     const factor_mul_base = 1.08;
     const factor_mul = event.deltaY > 0 ? factor_mul_base : 1 / factor_mul_base;
     cam_distance_factor *= factor_mul;
-    cam_distance_factor = Math.max(0.02, Math.min(cam_distance_factor, 4));
+    cam_distance_factor = Math.max(0.02, Math.min(cam_distance_factor, 3));
     // console.log('wheel', event.deltaY, event.deltaMode);
     update_cam_transform();
   });
@@ -230,67 +166,11 @@ async function main() {
 	---------------------------------------------------------------*/
 
   // actors in the order they should be drawn
-  const actors_list = [];
-  for (var i = 0; i < tiles.length; ++i) {
-    if (tiles[i].id !== '') {
-      const mesh_name = 'mesh/'.concat(tiles[i].id).concat('.obj');
-      const texture_name = 'tex_'.concat(tiles[i].id);
-      const shine = tiles[i].id === 'grass' ? 100 : 2;
-      const amb = tiles[i].id === 'grass' ? 0.6 : 0.4;
-      actors_list.push(
-        new MeshTileActor(
-          {
-            name: tiles[i].id,
-            mesh: await icg_mesh_load_obj(regl, mesh_name),
-            texture: resources[texture_name],
-            size: 1,
-            x: tiles[i].x,
-            y: tiles[i].y,
-            z: tiles[i].z,
-            shininess: shine,
-            ambient: amb,
-          },
-          regl,
-          resources
-        )
-      );
-    }
-  }
+  let actors_list = [];
 
-  const actors_by_name = {};
-  const corners_by_name = {};
-
-  for (const actor of actors_list) {
-    actors_by_name[actor.name] = actor;
-    if (actor.z == 2 && actor.x != 1 && actor.y != 1) {
-      //if we are on corner
-
-      //trick to attribute a different index to each of the four corners
-      const corner_index = Math.max(0, actor.x - 1) + 2 * Math.max(0, actor.y - 1);
-      const corner_name = 'corner '.concat(corner_index.toString());
-      corners_by_name[corner_name] = actor;
-    }
-    if (actor.x == 1 && actor.y == 1) {
-      // if we are on the middle tile
-      if (actor.z == 0) {
-        corners_by_name['middle_down'] = actor;
-      }
-      if (actor.z == 1) {
-        corners_by_name['middle'] = actor;
-      }
-      if (actor.z == 2) {
-        corners_by_name['middle_up'] = actor;
-      }
-    }
-  }
-
-  // https://www.w3docs.com/snippets/javascript/how-to-sort-javascript-object-by-key.html
-  const sortObject = (obj) =>
-    Object.keys(obj)
-      .sort()
-      .reduce((res, key) => ((res[key] = obj[key]), res), {});
-
-  const sorted_corners_by_name = sortObject(corners_by_name);
+  let actors_by_name = {};
+  let corners_by_name = {};
+  let sorted_corners_by_name = [];
 
   /*
 		Center camera on selected tile
@@ -299,7 +179,87 @@ async function main() {
   let old_selected_corner_name = 'middle';
   // bezier parameter is the time t to lerp between b_0 and b_n positions (in [0,1])
   let bezier_param = 1;
+  // creates the buttons to select a corner
   const elem_view_select = document.getElementById('view-select');
+
+  await create_actor_list().then(() => create_actor_corner_by_name());
+
+  /*
+    Generates the actor lists
+  */
+  async function create_actor_list() {
+    let new_actors_list = [];
+    for (var i = 0; i < tiles.length; ++i) {
+      if (tiles[i].id !== '') {
+        const mesh_name = 'mesh/' + tiles[i].id + '.obj';
+        const texture_name = 'textures/' + tiles[i].id + '.png';
+        const shine = tiles[i].id === 'grass' ? 1 : 14;
+        const amb = tiles[i].id === 'grass' ? 0.9 : 0.5;
+        new_actors_list.push(
+          new MeshTileActor(
+            {
+              name: tiles[i].id,
+              mesh: tiles[i].id !== 'air' ? await icg_mesh_load_obj(regl, mesh_name) : {}, // we put a mesh for non empty tiles only
+              texture: tiles[i].id !== 'air' ? await load_texture(regl, texture_name) : {}, //our tiles textures are small, easily runtime loaded
+              size: 1,
+              x: tiles[i].x,
+              y: tiles[i].y,
+              z: tiles[i].z,
+              shininess: shine,
+              ambient: amb,
+            },
+            regl,
+            resources
+          )
+        );
+      }
+    }
+    actors_list = [].concat(new_actors_list);
+  }
+
+  function create_actor_corner_by_name() {
+    let corner_index = 0;
+    let new_actors_by_name = {};
+    let new_corners_by_name = {};
+    for (const actor of actors_list) {
+      new_actors_by_name[actor.name] = actor;
+      if (
+        actor.z == Z_SIZE - 1 &&
+        (actor.x == 0 || actor.x == X_SIZE - 1) &&
+        (actor.y == 0 || actor.y == Y_SIZE - 1)
+      ) {
+        //if we are on corner
+
+        //trick to attribute a different index to each of the four corners
+        const corner_name = 'corner ' + corner_index;
+        new_corners_by_name[corner_name] = actor;
+        corner_index += 1;
+      }
+      if (actor.x == Math.floor(X_SIZE / 2) && actor.y == Math.floor(Y_SIZE / 2)) {
+        // if we are on the middle tile
+        if (actor.z == 0) {
+          new_corners_by_name['middle_down'] = actor;
+        }
+        if (actor.z == Math.floor(Z_SIZE / 2)) {
+          new_corners_by_name['middle'] = actor;
+        }
+        if (actor.z == Z_SIZE - 1) {
+          new_corners_by_name['middle_up'] = actor;
+        }
+      }
+    }
+    actors_by_name = Object.assign(new_actors_by_name);
+    corners_by_name = Object.assign(new_corners_by_name);
+    // create the sorted version for displaying corner buttons
+    // https://www.w3docs.com/snippets/javascript/how-to-sort-javascript-object-by-key.html
+    const sortObject = (obj) =>
+      Object.keys(obj)
+        .sort()
+        .reduce((res, key) => ((res[key] = obj[key]), res), {});
+    sorted_corners_by_name = sortObject(new_corners_by_name);
+    create_corner_buttons();
+    set_selected_corner('middle');
+  }
 
   function set_selected_corner(name) {
     console.log('Selecting', name);
@@ -338,14 +298,18 @@ async function main() {
     update_cam_transform();
   }
 
-  set_selected_corner('middle');
-
-  for (const name in sorted_corners_by_name) {
-    if (sorted_corners_by_name.hasOwnProperty(name)) {
-      const entry = document.createElement('li');
-      entry.textContent = name;
-      entry.addEventListener('click', (event) => set_selected_corner(name));
-      elem_view_select.appendChild(entry);
+  function create_corner_buttons() {
+    // we clear all previous buttons
+    while (elem_view_select.lastElementChild) {
+      elem_view_select.removeChild(elem_view_select.lastElementChild);
+    }
+    for (const name in sorted_corners_by_name) {
+      if (sorted_corners_by_name.hasOwnProperty(name)) {
+        const entry = document.createElement('li');
+        entry.textContent = name;
+        entry.addEventListener('click', (event) => set_selected_corner(name));
+        elem_view_select.appendChild(entry);
+      }
     }
   }
 
@@ -361,7 +325,7 @@ async function main() {
   /*
 		WFC buttons
 	*/
- /* const tiles_select = document.getElementById('tile-select');
+  /* const tiles_select = document.getElementById('tile-select');
   for (const name in sorted_corners_by_name) {
     if (sorted_corners_by_name.hasOwnProperty(name)) {
       const entry = document.createElement('li');
@@ -370,56 +334,126 @@ async function main() {
       tiles_select.appendChild(entry);
     }
   }*/
+
   /*
     Update actor list
   */
   let error_on_receive = false;
+  let querying_new_tiles = false;
+  let received_new_tiles = true;
+
   register_keyboard_action('g', () => {
-    console.log('request sent')
-    fetch('http://localhost:3333?index=-1&tileId=-1', {
-      mode: 'no-cors',
-    },)
-      .then((response) => {
-        console.log(response);
-        if (response.ok) {
-          try {
-            const jsonTiles = JSON.parse(response.body);
-            if (
-              jsonTiles.length == 27 &&
-              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('id') &&
-              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('x') &&
-              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('y') &&
-              jsonTiles[Math.floor(Math.random() * 26)].hasOwnProperty('z')
-            ) {
-              // We know that the received JSON encodes correctly our tileset (random checks on some tile's properties)
-              tiles = Object.assign(jsonTiles);
-              error_on_receive = false;
-            } else {
-              console.log('Error on the parsed object: ' + response);
-              console.log('Error on the parsed object: ' + jsonTiles);
-              error_on_receive = true;
-            }
-          } catch (error) {
-            console.log('Error on parsing the received tiles: ' + error);
-            error_on_receive = true;
-          }
-        } else {
-          console.log('Error on receiving the tiles - NOT OK response');
-          error_on_receive = true;
-        }
-      })
-      .catch((error) => {
-        console.log('Error on receiving the tiles - connection failed: ' + error);
-        error_on_receive = true;
-      });
+    // we prefer sending requests for new tiles one by one
+    if (!querying_new_tiles) {
+      error_on_receive = false;
+      querying_new_tiles = true;
+      received_new_tiles = false;
+      query_new_tileset([]);
+    }
   });
 
+  async function query_new_tileset(user_constraints) {
+    console.log('Sending request');
+    if (!querying_new_tiles) {
+      return;
+    }
+    fetch('http://localhost:3333?' + stringify_constraints(user_constraints), {
+      mode: 'no-cors',
+    })
+      .then((response) => {
+        // receiving a response means the json file has been written
+        console.log('received a response');
+        querying_new_tiles = false;
+        load_text('./WaveCollapse_classes/tiles.json')
+          .then((json_tiles) => {
+            try {
+              const parsed_json = JSON.parse(json_tiles);
+              if (parsed_json.length == X_SIZE * Y_SIZE * Z_SIZE) {
+                // We know that the received JSON encodes one object per tile
+                console.log('successfuly received new tiles set');
+                error_on_receive = false;
+
+                // we update the tiles list and create the updated actors
+                tiles = floor_tiles.concat(create_new_tileset(parsed_json));
+                create_actor_list().then(() => {
+                  create_actor_corner_by_name();
+                  received_new_tiles = true;
+                });
+              } else {
+                error_on_receive = true;
+                querying_new_tiles = false;
+                console.error('Error on parsing the json tiles - unvalid format for tiles');
+              }
+              return;
+            } catch (error) {
+              error_on_receive = true;
+              querying_new_tiles = false;
+              console.error('Error on parsing the json tiles - unvalid format for tiles');
+              return;
+            }
+          })
+          .catch((error) => {
+            error_on_receive = true;
+            querying_new_tiles = false;
+            console.error('Error on taking the json tiles - cant load the json file:' + error);
+            return;
+          });
+      })
+      .catch((error) => {
+        error_on_receive = true;
+        querying_new_tiles = false;
+        console.error('Error on receiving the tiles - connection failed');
+        return;
+      });
+  }
+
+  // we prepare the GET query generated from the buttons
+  function stringify_constraints(user_constraints) {
+    let stringified = '';
+    for (const constraint of user_constraints) {
+      const index = coordinates_to_index(constraint.x, constraint.y, constraint.z);
+      stringified.concat('index=' + index + '&' + 'tileId=' + constraint.id + '&');
+    }
+    // we must remove the last '&'
+    return stringified.substring(0, stringified.length - 1);
+  }
+
+  // from the received json we create the next value for 'tiles' variable
+  function create_new_tileset(parsed_json) {
+    const new_tileset = [];
+    for (const tile of parsed_json) {
+      new_tileset.push({
+        id: tile.id,
+        x: index_to_coord_x(tile.index),
+        y: index_to_coord_y(tile.index),
+        z: index_to_coord_z(tile.index),
+      });
+    }
+    return [].concat(new_tileset);
+  }
+
+  // Methods to convert from and to the index in the flat array representing our tiles world.
+  function coordinates_to_index(x, y, z) {
+    return parseInt(x) + X_SIZE * parseInt(y) + Y_SIZE * X_SIZE * parseInt(z);
+  }
+
+  function index_to_coord_x(index) {
+    return parseInt(index) % X_SIZE;
+  }
+
+  function index_to_coord_y(index) {
+    return Math.floor(parseInt(index) / X_SIZE) % Y_SIZE;
+  }
+
+  function index_to_coord_z(index) {
+    return Math.floor(parseInt(index) / X_SIZE / Y_SIZE) % Z_SIZE;
+  }
   /*---------------------------------------------------------------
 		Frame render
 	---------------------------------------------------------------*/
 
   // List of objects to draw
-  const draw_list = actors_list.slice();
+  let draw_list = actors_list.slice();
   //draw_list.push(grid_actor_interface);
 
   // Consider the sun, which locates at [0, 0, 0], as the only light source
@@ -436,6 +470,7 @@ async function main() {
 
   const mat_view = mat4.create();
   const camera_position = [0, 0, 0];
+  const selected_corner_translation_mat = mat4.create();
 
   regl.frame((frame) => {
     if (!is_paused) {
@@ -452,93 +487,109 @@ async function main() {
       100 // far
     );
 
+    // have to recompute the actors list (changes over time now)
+    draw_list = actors_list.slice();
+
     // Calculate model matrices
     for (const actor of actors_list) {
-      actor.calculate_model_matrix({ sim_time: sim_time });
+      if (actor.name === 'grass' || received_new_tiles) {
+        // we don't render tiles if we are receiving new tiles (grass excepted as kept always the same)
+        if (actor instanceof PhongTileActor) {
+          actor.light_color = light_color;
+        }
+        actor.calculate_model_matrix({ sim_time: sim_time });
+      }
     }
 
-    // Calculate view matrix, view centered on a corner tile
-    {
-      if (bezier_param < 1) {
-        // we are in the transition, need to compute camera_position along the Bézier curve
+    if (received_new_tiles) {
+      // Calculate view matrix, view centered on a corner tile
+      {
+        if (bezier_param < 1) {
+          // we are in the transition, need to compute camera_position along the Bézier curve
 
-        // we first update the parameters manages by camera in update_cam_transform (classic linear interpolation)
-        cam_angle_y = (1 - bezier_param) * old_cam_angle_y + bezier_param * new_cam_angle_y;
-        cam_angle_z = (1 - bezier_param) * old_cam_angle_z + bezier_param * new_cam_angle_z;
-        cam_distance_factor =
-          (1 - bezier_param) * old_cam_distance_factor + bezier_param * new_cam_distance_factor;
+          // we first update the parameters manages by camera in update_cam_transform (classic linear interpolation)
+          cam_angle_y = (1 - bezier_param) * old_cam_angle_y + bezier_param * new_cam_angle_y;
+          cam_angle_z = (1 - bezier_param) * old_cam_angle_z + bezier_param * new_cam_angle_z;
+          cam_distance_factor =
+            (1 - bezier_param) * old_cam_distance_factor + bezier_param * new_cam_distance_factor;
 
-        update_cam_transform();
+          update_cam_transform();
 
-        // corner position on which we want to focus
-        const new_selected_corner_model_mat =
-          corners_by_name[selected_corner_name].mat_model_to_world;
-        const new_selected_corner_position = mat4.getTranslation(
-          [0, 0, 0],
-          new_selected_corner_model_mat
-        );
-        vec3.scale(new_selected_corner_position, new_selected_corner_position, -1);
+          // corner position on which we want to focus
+          const new_selected_corner_model_mat =
+            corners_by_name[selected_corner_name].mat_model_to_world;
+          const new_selected_corner_position = mat4.getTranslation(
+            [0, 0, 0],
+            new_selected_corner_model_mat
+          );
+          vec3.scale(new_selected_corner_position, new_selected_corner_position, -1);
 
-        // corner position on which we had the previous focus
-        const old_selected_corner_model_mat =
-          corners_by_name[old_selected_corner_name].mat_model_to_world;
-        const old_selected_corner_position = mat4.getTranslation(
-          [0, 0, 0],
-          old_selected_corner_model_mat
-        );
-        vec3.scale(old_selected_corner_position, old_selected_corner_position, -1);
+          // corner position on which we had the previous focus
+          const old_selected_corner_model_mat =
+            corners_by_name[old_selected_corner_name].mat_model_to_world;
+          const old_selected_corner_position = mat4.getTranslation(
+            [0, 0, 0],
+            old_selected_corner_model_mat
+          );
+          vec3.scale(old_selected_corner_position, old_selected_corner_position, -1);
 
-        // distance vec between those 2
-        const distance_old_new = vec3.sub(
-          vec3.create(),
-          new_selected_corner_position,
-          old_selected_corner_position
-        );
+          // distance vec between those 2
+          const distance_old_new = vec3.sub(
+            vec3.create(),
+            new_selected_corner_position,
+            old_selected_corner_position
+          );
 
-        // 3rd bézier curve point (the middle between our old and new)
-        let third_point_position = vec3.scaleAndAdd(
-          vec3.create(),
-          old_selected_corner_position,
-          distance_old_new,
-          0.5
-        );
+          // 3rd bézier curve point (the middle between our old and new)
+          let third_point_position = vec3.scaleAndAdd(
+            vec3.create(),
+            old_selected_corner_position,
+            distance_old_new,
+            0.5
+          );
 
-        // computes perpendicular vector to the from_old_to_new vector
-        const perpendicular_vect = vec3.fromValues(
-          -distance_old_new[1] * 0.5,
-          distance_old_new[0] * 0.5,
-          distance_old_new[2] * 0.5
-        );
-        // the third point is such that it's between old and a bit upper toward perpendicular
-        third_point_position = vec3.add(vec3.create(), third_point_position, perpendicular_vect);
+          // computes perpendicular vector to the from_old_to_new vector
+          const perpendicular_vect = vec3.fromValues(
+            -distance_old_new[1] * 0.5,
+            distance_old_new[0] * 0.5,
+            distance_old_new[2] * 0.5
+          );
+          // the third point is such that it's between old and a bit upper toward perpendicular
+          third_point_position = vec3.add(vec3.create(), third_point_position, perpendicular_vect);
 
-        // the current bezier interpolated position point
-        const bezier_interpolated = vec3.bezier(
-          vec3.create(),
-          old_selected_corner_position,
-          third_point_position,
-          third_point_position,
-          new_selected_corner_position,
-          bezier_param
-        );
+          // the current bezier interpolated position point
+          const bezier_interpolated = vec3.bezier(
+            vec3.create(),
+            old_selected_corner_position,
+            third_point_position,
+            third_point_position,
+            new_selected_corner_position,
+            bezier_param
+          );
 
-        const bezier_translation_mat = mat4.fromTranslation(mat4.create(), bezier_interpolated);
-        // The view matrix is now shifted relatively to the interpolated position on Bézier curve
-        mat4_matmul_many(mat_view, mat_world_to_cam, bezier_translation_mat);
+          const bezier_translation_mat = mat4.fromTranslation(mat4.create(), bezier_interpolated);
+          // The view matrix is now shifted relatively to the interpolated position on Bézier curve
+          mat4_matmul_many(mat_view, mat_world_to_cam, bezier_translation_mat);
 
-        // we update the bezier interpolation time
-        bezier_param += 0.01;
-      } else {
-        // we apply the classic transform on the focused tile
-        const selected_corner_model_mat = corners_by_name[selected_corner_name].mat_model_to_world;
-        const selected_corner_position = mat4.getTranslation([0, 0, 0], selected_corner_model_mat);
-        vec3.scale(selected_corner_position, selected_corner_position, -1);
-        const selected_corner_translation_mat = mat4.fromTranslation(
-          mat4.create(),
-          selected_corner_position
-        );
-        mat4_matmul_many(mat_view, mat_world_to_cam, selected_corner_translation_mat);
+          // we update the bezier interpolation time
+          bezier_param += 0.01;
+        } else {
+          // we apply the classic transform on the focused tile
+          const selected_corner_model_mat =
+            corners_by_name[selected_corner_name].mat_model_to_world;
+          const selected_corner_position = mat4.getTranslation(
+            [0, 0, 0],
+            selected_corner_model_mat
+          );
+          vec3.scale(selected_corner_position, selected_corner_position, -1);
+
+          mat4.fromTranslation(selected_corner_translation_mat, selected_corner_position);
+          mat4_matmul_many(mat_view, mat_world_to_cam, selected_corner_translation_mat);
+        }
       }
+    } else {
+      // if we did not yet received the new tiles, we keep the same camera position and update juste the rotation/zoom transforms (with mat_world_to_cam)
+      mat4_matmul_many(mat_view, mat_world_to_cam, selected_corner_translation_mat);
     }
 
     // Calculate light position in camera frame
@@ -574,26 +625,39 @@ async function main() {
     regl.clear({ color: [0.22, 0.68, 0.88, 1] });
 
     for (const actor of draw_list) {
-      try {
-        actor.draw(draw_info);
-      } catch (e) {
-        console.error('Error when rendering actor:', actor);
-        throw e;
+      if ((actor.name === 'grass' || received_new_tiles) && actor.name !== 'air') {
+        // we don't render actor if we're receiving tiles (except grass ground) or if it's 'air' tile (nothing)
+        try {
+          actor.draw(draw_info);
+        } catch (e) {
+          console.error('Error when rendering actor:', actor);
+          throw e;
+        }
       }
-
       // for better performance we should collect these props and then draw them all together
       // http://regl.party/api#batch-rendering
     }
 
     debug_text.textContent = `
-Hello! Sim time is ${sim_time.toFixed(2)} s
 Camera: angle_z ${(cam_angle_z / deg_to_rad).toFixed(1)}, angle_y ${(
       cam_angle_y / deg_to_rad
     ).toFixed(1)}, distance ${(cam_distance_factor * cam_distance_base).toFixed(1)}
 cam pos ${vec_to_string(camera_position)}
 `;
     if (error_on_receive) {
-      debug_text.textContent = debug_text.textContent.concat('Error on receiving new tiles set');
+      debug_text.textContent = debug_text.textContent.concat(
+        'Error on receiving new tiles set :( Try again (make sure you launched the java server: java icg_project/WaveCollapse_classes/JavaServer)'
+      );
+    } else if (querying_new_tiles) {
+      debug_text.textContent = debug_text.textContent.concat(
+        'Request for new tiles sent, please wait ...(this can take a while)'
+      );
+    } else if (!querying_new_tiles && !received_new_tiles) {
+      debug_text.textContent = debug_text.textContent.concat(
+        'New tiles set created, rendering in process ...'
+      );
+    } else if (received_new_tiles) {
+      debug_text.textContent = debug_text.textContent.concat('New tiles set received !!');
     }
   });
 }

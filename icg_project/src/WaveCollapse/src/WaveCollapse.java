@@ -4,45 +4,20 @@ import java.io.File; // Import the File class
 import java.io.IOException;
 import java.io.FileWriter;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 public class WaveCollapse {
 
-    public static boolean launchWFC(int constraintIndex, String constraintName) {
-        
-        JSONArray allTiles = new JSONArray();
+    private static int num_x = 5;
+    private static int num_y = 5;
+    private static int num_z = 4;
 
-        if(constraintIndex == -1) {
+    public static void launchWFC(int constraintIndex, String constraintName) {
 
-            List<Tile> tiles = wfc();
-
-            for(int i = 0; i < tiles.size(); ++i) {
-                JSONObject tileAtIndex = new JSONObject();
-                tileAtIndex.put(i, tiles.get(i).getId());
-                allTiles.add(tileAtIndex);
-            }
-
-            final String dir = System.getProperty("user.dir");
-            File f = new File(dir + "/tiles.json");
-
-            try {
-                FileWriter myWriter = new FileWriter("tiles.json");
-                myWriter.write(allTiles.toJSONString());
-                myWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-        else {
-
-        }
-
-        return true;
+        System.out.println(constraintIndex);
+        generateJSON(wfc(constraintIndex, constraintName));
     }
 
-    public static List<Tile> wfc() {
+    public static List<Tile> wfc(int constraintIndex, String constraintName) {
 
         TilesDB db = new TilesDB();
 
@@ -53,18 +28,16 @@ public class WaveCollapse {
 
         // re-run waveform until we find one that is valid
         while (worked.isEmpty()) {
-            WaveCollapse wf = new WaveCollapse(db.getTilesList(), corres, 5, 5, 3, TilesDB.getFloor());
-            worked = wf.start();
+            WaveCollapse wf = new WaveCollapse(db.getTilesList(), corres, TilesDB.getFloor());
+            worked = wf.start(constraintIndex, constraintName);
         }
 
         return worked;
     }
+    
 
     private List<TileCorrespondences> tileCorrespondences;
     private int totalCells;
-    private int num_x;
-    private int num_y;
-    private int num_z;
 
     private Random rand;
 
@@ -72,14 +45,11 @@ public class WaveCollapse {
 
     private List<List<Tile>> possibleTilesPerCell;
 
-    public WaveCollapse(List<Tile> allTiles, List<TileCorrespondences> tileCorrespondences, int num_x, int num_y, int num_z,
-            Tile floor) {
+    public WaveCollapse(List<Tile> allTiles, List<TileCorrespondences> tileCorrespondences, Tile floor) {
         this.tileCorrespondences = new ArrayList<>(tileCorrespondences);
-        this.num_x = num_x;
-        this.num_y = num_y;
-        this.num_z = num_z + 1; // add 1 to z dimension for floor tiles
+
         this.floor = floor;
-        this.totalCells = num_x * num_y * (num_z + 1);
+        this.totalCells = num_x * num_y * num_z;
         rand = new Random();
 
         // in the beginning, all tiles are possible tiles for every cell
@@ -94,7 +64,7 @@ public class WaveCollapse {
      * 
      * @return generated array of tiles if it is valid, empty list otherwise
      */
-    public List<Tile> start() {
+    public List<Tile> start(int indexConstraint, String tileID) {
 
         for (int x = 0; x < num_x; ++x) {
             for (int y = 0; y < num_y; ++y) {
@@ -110,6 +80,27 @@ public class WaveCollapse {
             }
         }
 
+        TilesDB db = new TilesDB();
+        Tile t = getTileById(db.getTilesList(), tileID);
+
+        if(indexConstraint >= 0 && t != null) {
+
+            int x = indexTocoordinate_x(indexConstraint);
+            int y = indexTocoordinate_y(indexConstraint);
+            int z = indexTocoordinate_z(indexConstraint) + 1;
+
+            indexConstraint = coordinateToIndex(x, y, z);
+
+            // add constraint tile and propagate
+            List<Tile> tiles = new ArrayList<>();
+           
+            tiles.add(t);
+            possibleTilesPerCell.set(indexConstraint, tiles);
+            propagate(indexConstraint);
+            
+           
+        }
+
         // iterate until the array is fully collapsed
         while (!isCollapsed()) {
             iterate();
@@ -118,6 +109,7 @@ public class WaveCollapse {
         // return whether generated array is valid or not
         return checkValidity();
     }
+
 
     /**
      * function checks if generated array is valid
@@ -451,24 +443,24 @@ public class WaveCollapse {
     }
 
     // helper function to get index version of (x, y, z) coordinate
-    private int coordinateToIndex(int x, int y, int z) {
+    private static int coordinateToIndex(int x, int y, int z) {
         return x + num_x * y + num_x * num_y * z;
     }
 
     // helper function to get the x coordinate of an index
-    private int indexTocoordinate_x(int index) {
+    private static int indexTocoordinate_x(int index) {
         return index % num_x;
     }
 
     // helper function to get the y coordinate of an index
-    private int indexTocoordinate_y(int index) {
+    private static int indexTocoordinate_y(int index) {
         index = index / num_x;
         return index % num_y;
 
     }
 
     // helper function to get the z coordinate of an index
-    private int indexTocoordinate_z(int index) {
+    private static int indexTocoordinate_z(int index) {
         index = index / num_x;
         index = index / num_y;
         return index % num_z;
@@ -491,5 +483,94 @@ public class WaveCollapse {
         }
         return true;
     }
+
+    /**
+     * function generateJSON creates JSON string from a given list of tiles
+     * @param tiles the list to create the JSOn from
+     */
+    private static void generateJSON(List<Tile> tilesWithFloor) {
+
+        List<Tile> tiles = new ArrayList<>();
+        for(int i = 0; i < tilesWithFloor.size(); ++i) {
+            if(tilesWithFloor.get(i).getId() != "floor") {
+                tiles.add(tilesWithFloor.get(i));
+            }
+        }
+
+        StringBuilder allTiles = new StringBuilder();
+        allTiles.append("[");
+
+        for(int i = 0; i < tiles.size(); ++i) {
+
+            int x = indexTocoordinate_x(i);
+            int y = indexTocoordinate_y(i);
+            int z = indexTocoordinate_z(i);
+
+            int index = 0;
+
+            switch(y) {
+                case 0:
+                    index = coordinateToIndex(x, 4, z);
+                    break;
+                case 1:
+                    index = coordinateToIndex(x, 3, z);
+                    break;
+                case 2:
+                    index = coordinateToIndex(x, 2, z);
+                    break;
+                case 3:
+                    index = coordinateToIndex(x, 1, z);
+                    break;
+                case 4:
+                    index = coordinateToIndex(x, 0, z);
+                    break;
+            }
+
+            allTiles.append("{\"index\":\"");
+            allTiles.append(index);
+            allTiles.append("\",\"id\":\"");
+            if(tiles.get(i).getId() == "air_b") {
+                allTiles.append("air");
+            }
+            else {
+                allTiles.append(tiles.get(i).getId());
+            }
+            allTiles.append("\"}");
+
+            if(i != tiles.size() - 1) {
+                allTiles.append(",");
+            }
+        } 
+
+        allTiles.append("]");
+        
+        final String dir = System.getProperty("user.dir");
+        File f = new File(dir + "/tiles.json");
+
+        try {
+            FileWriter myWriter = new FileWriter("tiles.json");
+            myWriter.write(allTiles.toString());
+            myWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * function getTileById returns, from a list of tiles, the tile with the id given as argument
+     * @param allTiles all tiles
+     * @param tileId the id of the tile to get
+     * @return Tile the tile in question
+     */
+    private static Tile getTileById(List<Tile> allTiles, String tileId) {
+
+        for(Tile t : allTiles) {
+            if(t.getId().equals(tileId)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
 
 }
