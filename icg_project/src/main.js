@@ -32,9 +32,11 @@ async function main() {
   const WFC_overlay = document.getElementById('wfc-overlay');
   const debug_overlay = document.getElementById('debug-overlay');
   const debug_text = document.getElementById('debug-text');
+  const generate_button = document.getElementById('generate');
 
   register_keyboard_action('h', () => debug_overlay.classList.toggle('hidden'));
   register_keyboard_action('w', () => WFC_overlay.classList.toggle('hidden'));
+  generate_button.addEventListener('click', () => send_with_constraints());
 
   /*---------------------------------------------------------------
 		Resource loading
@@ -80,9 +82,7 @@ async function main() {
   const Y_SIZE = 5;
   const Z_SIZE = 3;
   // Loads the tiles to be displayed
-  const floor_tiles = [
-    { id: 'grass', x: 2, y: 2, z: -0.7 },
-  ];
+  const floor_tiles = [{ id: 'grass', x: 2, y: 2, z: -0.7 }];
   let tiles = floor_tiles.concat([
     { id: 'tile_1_middle', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 0 },
     { id: 'tile_1_middle', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 1 },
@@ -323,19 +323,6 @@ async function main() {
   register_keyboard_action('p', () => (is_paused = !is_paused));
 
   /*
-		WFC buttons
-	*/
-  /* const tiles_select = document.getElementById('tile-select');
-  for (const name in sorted_corners_by_name) {
-    if (sorted_corners_by_name.hasOwnProperty(name)) {
-      const entry = document.createElement('li');
-      entry.textContent = name;
-      entry.addEventListener('click', (event) => set_selected_corner(name));
-      tiles_select.appendChild(entry);
-    }
-  }*/
-
-  /*
     Update actor list
   */
   let error_on_receive = false;
@@ -348,6 +335,7 @@ async function main() {
       error_on_receive = false;
       querying_new_tiles = true;
       received_new_tiles = false;
+      // no constraints specified, we send empty
       query_new_tileset([]);
     }
   });
@@ -407,17 +395,6 @@ async function main() {
       });
   }
 
-  // we prepare the GET query generated from the buttons
-  function stringify_constraints(user_constraints) {
-    let stringified = '';
-    for (const constraint of user_constraints) {
-      const index = coordinates_to_index(constraint.x, constraint.y, constraint.z);
-      stringified.concat('index=' + index + '&' + 'tileId=' + constraint.id + '&');
-    }
-    // we must remove the last '&'
-    return stringified.substring(0, stringified.length - 1);
-  }
-
   // from the received json we create the next value for 'tiles' variable
   function create_new_tileset(parsed_json) {
     const new_tileset = [];
@@ -447,6 +424,64 @@ async function main() {
 
   function index_to_coord_z(index) {
     return Math.floor(parseInt(index) / X_SIZE / Y_SIZE) % Z_SIZE;
+  }
+
+  /*
+    Update actors list with constraints
+  */
+  function send_with_constraints() {
+    WFC_overlay.classList.toggle('hidden');
+
+    const position = document.getElementById('pos-tiles');
+    const x = 0;
+    let y = -1;
+    let z = -1;
+    for (var i = 0; i < position.length; ++i) {
+      if (position[i].checked) {
+        console.log(position[i].id + ' checked');
+        y = i % Z_SIZE;
+        z = Math.floor(i / Y_SIZE);
+      }
+    }
+
+    const tile = document.getElementById('img-tiles');
+    let tile_id = '';
+    for (var i = 0; i < tile.length; ++i) {
+      if (tile[i].checked) {
+        console.log(tile[i].id + ' checked');
+        tile_id = [].concat(tile[i].id);
+      }
+    }
+
+    if (y != -1 && z != -1 && tile_id !== '' && check_constraint_valid(x, y, z, tile_id)) {
+      if (!querying_new_tiles) {
+        querying_new_tiles = true;
+        received_new_tiles = false;
+        error_on_receive = false;
+        query_new_tileset(stringify_constraints({ x: x, y: y, z: z, id: tile_id }));
+      }
+      return;
+    } else {
+      alert(
+        "The tile you selected can't be put at the desired position :( Please try another layout"
+      );
+    }
+    return;
+  }
+
+  function check_constraint_valid(x, y, z, tile_id) {
+    return false; //TODO
+  }
+
+  // we prepare the GET query generated from the buttons
+  function stringify_constraints(user_constraints) {
+    let stringified = '';
+    for (const constraint of user_constraints) {
+      const index = coordinates_to_index(constraint.x, constraint.y, constraint.z);
+      stringified.concat('index=' + index + '&' + 'tileId=' + constraint.id + '&');
+    }
+    // we must remove the last '&'
+    return stringified.substring(0, stringified.length - 1);
   }
   /*---------------------------------------------------------------
 		Frame render

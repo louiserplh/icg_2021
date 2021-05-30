@@ -11,97 +11,123 @@
 
 	<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<script src="src/main.js" type="module" ></script>
-<!-- <canvas id="plot"></canvas> -->
-<!-- regl will add its own full-screen canvas -->
+	<script src="src/main.js" type="module"></script>
+	<!-- <canvas id="plot"></canvas> -->
+	<!-- regl will add its own full-screen canvas -->
 
-<div id="debug-overlay">
-	<p>
-		ICG Project: Pretty Houses Generator
-		⁙⁙ docs:
-		<a href="https://github.com/regl-project/regl/blob/gh-pages/API.md">regl</a>,
-		<a href="http://glmatrix.net/docs/">gl-matrix</a>,
-		<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">MDN</a>
-		⁙⁙ drag with mouse rotate
-		⁙⁙ scroll to zoom
-		⁙⁙ pause <strong class="keyboard">p</strong>
-		⁙⁙ hide <strong class="keyboard">h</strong>
-		⁙⁙ 2D WFC <strong class="keyboard">w</strong>
-		⁙⁙ generate new houses <strong class="keyboard">g</strong>
-	</p>
-	<ul id="view-select">Focus:</ul>
-	<pre id="debug-text"></pre>
-</div>
+	<div id="debug-overlay">
+		<p>
+			ICG Project: Pretty Houses Generator
+			⁙⁙ docs:
+			<a href="https://github.com/regl-project/regl/blob/gh-pages/API.md">regl</a>,
+			<a href="http://glmatrix.net/docs/">gl-matrix</a>,
+			<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">MDN</a>
+			⁙⁙ drag with mouse rotate
+			⁙⁙ scroll to zoom
+			⁙⁙ pause <strong class="keyboard">p</strong>
+			⁙⁙ hide <strong class="keyboard">h</strong>
+			⁙⁙ set constraints <strong class="keyboard">w</strong>
+			⁙⁙ generate new houses (no constraints) <strong class="keyboard">g</strong>
+		</p>
+		<ul id="view-select">Focus:</ul>
+		<pre id="debug-text"></pre>
+	</div>
 
-<div id="wfc-overlay">
-	<p id = "text-wfc">
-		2D WFC 
-		⁙⁙ click to set a tile and create pattern (choose position and tile)
-		⁙⁙ 2D WFC hide <strong class="keyboard">w</strong>
-	</p>
-	<p id ="pos-tiles">
-		<input type= "checkbox" id= "but1" name="button1"><label>tile 1</label>>
-		<input type= "checkbox" id= "but1" name="button2"><label>tile 2</label>>
-		<input type= "checkbox" id= "but1" name="button3"><label>tile 3</label>>
-		<input type= "checkbox" id= "but1" name="button4"><label>tile 4</label>>
-		<input type= "checkbox" id= "but1" name="button5"><label>tile 5</label>><br>
-		<input type= "checkbox" id= "but1" name="button6"><label>tile 6</label>>
-		<input type= "checkbox" id= "but1" name="button7"><label>tile 7</label>>
-		<input type= "checkbox" id= "but1" name="button8"><label>tile 8</label>>
-		<input type= "checkbox" id= "but1" name="button9"><label>tile 9</label>>
-		<input type= "checkbox" id= "but1" name="button10"><label>tile 10</label><br>
-		<input type= "checkbox" id= "but1" name="button11"><label>tile 11</label>
-		<input type= "checkbox" id= "but1" name="button12"><label>tile 12</label>
-		<input type= "checkbox" id= "but1" name="button13"><label>tile 13</label>
-		<input type= "checkbox" id= "but1" name="button14"><label>tile 14</label>
-		<input type= "checkbox" id= "but1" name="button15"><label>tile 15</label><br>
-	</p>
+	<div id="wfc-overlay">
+		<p id="text-wfc">
+			Select one position on the first face to set a tile on (choose <strong>one</strong> position and
+			<strong>one</strong> tile) ⁙⁙ hide set constraints <strong class="keyboard">w</strong>
+		</p>
 
-	<p id = "img-tiles">
-		<input type= "checkbox" id= "but2" name="tile1"><label><img src="./img_2D/tile_1_right.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile2"><label><img src="./img_2D/tile_1_alone.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile3"><label><img src="./img_2D/tile_1_left.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile4"><label><img src="./img_2D/tile_1_right_nr.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile5"><label><img src="./img_2D/tile_1_middle_nr.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile6"><label><img src="./img_2D/tile_1_left_nr.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile7"><label><img src="./img_2D/tile_1_alone_nr.png"/></label><br>
-		<input type= "checkbox" id= "but2" name="tile8"><label><img src="./img_2D/tile_1_middle.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile9"><label><img src="./img_2D/tile_2_alone_nr.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile10"><label><img src="./img_2D/tile_2_right_nr.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile11"><label><img src="./img_2D/tile_2_middle_nr.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile12"><label><img src="./img_2D/tile_2_left_nr.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile13"><label><img src="./img_2D/tile_3_left.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile14"><label><img src="./img_2D/tile_3_middle.png"/></label><br>
-		<input type= "checkbox" id= "but2" name="tile15"><label><img src="./img_2D/tile_3_right.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile16"><label><img src="./img_2D/tile_3_left_nr.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile17"><label><img src="./img_2D/tile_3_middle_nr.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile18"><label><img src="./img_2D/tile_3_right_nr.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile19"><label><img src="./img_2D/tile_1_left_nb.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile20"><label><img src="./img_2D/tile_1_middle_nb.png"/></label>
-		<input type= "checkbox" id= "but2" name="tile21"><label><img src="./img_2D/tile_1_right_nb.png"/></label><br>
-	</p>
+		<h4 style="text-align:center">Position</h4>
+		<p>Coordinates (x,y,z) to set:</p>
+		<form id="pos-tiles">
+			<input type="radio" id="pos000" name="position">
+			<label for="pos000"> (0,0,0)</label>
+			<input type="radio" id="pos010" name="position">
+			<label for="pos010"> (0,1,0)</label>
+			<input type="radio" id="pos020" name="position">
+			<label for="pos020"> (0,2,0)</label>
+			<input type="radio" id="pos030" name="position">
+			<label for="pos030"> (0,3,0)</label>
+			<input type="radio" id="pos040" name="position">
+			<label for="pos040"> (0,4,0)</label></br>
+			<input type="radio" id="pos001" name="position">
+			<label for="pos001"> (0,0,1)</label>
+			<input type="radio" id="pos011" name="position">
+			<label for="pos011"> (0,1,1)</label>
+			<input type="radio" id="pos021" name="position">
+			<label for="pos021"> (0,2,1)</label>
+			<input type="radio" id="pos031" name="position">
+			<label for="pos031"> (0,3,1)</label>
+			<input type="radio" id="pos041" name="position">
+			<label for="pos041"> (0,4,1)</label></br>
+			<input type="radio" id="pos002" name="position">
+			<label for="pos002"> (0,0,2)</label>
+			<input type="radio" id="pos012" name="position">
+			<label for="pos012"> (0,1,2)</label>
+			<input type="radio" id="pos022" name="position">
+			<label for="pos022"> (0,2,2)</label>
+			<input type="radio" id="pos032" name="position">
+			<label for="pos032"> (0,3,2)</label>
+			<input type="radio" id="pos042" name="position">
+			<label for="pos042"> (0,4,2)</label></br>
+		</form>
 
-	<p id = "generate">
-		<button type= "button" name="generate">Generate Result</button><br>
-	</p>
-</div>
+		<h4 style="text-align:center">Tile</h4>
+		<p>The tile you want to put in:</p>
+		<form id="img-tiles">
+			<input type="radio" id="tile_1_right" name="tile"><label for="tile_1_right"><img
+					src="./img_2D/tile_1_right.png" /></label>
+			<input type="radio" id="tile_1_alone" name="tile"><label for="tile_1_alone"><img
+					src="./img_2D/tile_1_alone.png" /></label>
+			<input type="radio" id="tile_1_left" name="tile"><label for="tile_1_left"><img
+					src="./img_2D/tile_1_left.png" /></label>
+			<input type="radio" id="tile_1_right_nr" name="tile"><label for="tile_1_right_nr"><img
+					src="./img_2D/tile_1_right_nr.png" /></label>
+			<input type="radio" id="tile_1_middle_nr" name="tile"><label for="tile_1_middle_nr"><img
+					src="./img_2D/tile_1_middle_nr.png" /></label>
+			<input type="radio" id="tile_1_left_nr" name="tile"><label for="tile_1_left_nr"><img
+					src="./img_2D/tile_1_left_nr.png" /></label>
+			<input type="radio" id="tile_1_alone_nr" name="tile"><label for="tile_1_alone_nr"><img
+					src="./img_2D/tile_1_alone_nr.png" /></label><br>
+			<input type="radio" id="tile_1_middle" name="tile"><label for="tile_1_middle"><img
+					src="./img_2D/tile_1_middle.png" /></label>
+			<input type="radio" id="tile_2_alone_nr" name="tile"><label for="tile_2_alone_nr"><img
+					src="./img_2D/tile_2_alone_nr.png" /></label>
+			<input type="radio" id="tile_2_right_nr" name="tile"><label for="tile_2_right_nr"><img
+					src="./img_2D/tile_2_right_nr.png" /></label>
+			<input type="radio" id="tile_2_middle_nr" name="tile"><label for="tile_2_middle_nr"><img
+					src="./img_2D/tile_2_middle_nr.png" /></label>
+			<input type="radio" id="tile_2_left_nr" name="tile"><label for="tile_2_left_nr"><img
+					src="./img_2D/tile_2_left_nr.png" /></label>
+			<input type="radio" id="tile_3_left" name="tile"><label for="tile_3_left"><img
+					src="./img_2D/tile_3_left.png" /></label>
+			<input type="radio" id="tile_3_middle" name="tile"><label for="tile_3_middle"><img
+					src="./img_2D/tile_3_middle.png" /></label><br>
+			<input type="radio" id="tile_3_right" name="tile"><label for="tile_3_right"><img
+					src="./img_2D/tile_3_right.png" /></label>
+			<input type="radio" id="tile_3_left_nr" name="tile"><label for="tile_3_left_nr"><img
+					src="./img_2D/tile_3_left_nr.png" /></label>
+			<input type="radio" id="tile_3_middle_nr" name="tile"><label for="tile_3_middle_nr"><img
+					src="./img_2D/tile_3_middle_nr.png" /></label>
+			<input type="radio" id="tile_3_right_nr" name="tile"><label for="tile_3_right_nr"><img
+					src="./img_2D/tile_3_right_nr.png" /></label>
+			<input type="radio" id="tile_1_left_nb" name="tile"><label for="tile_1_left_nb"><img
+					src="./img_2D/tile_1_left_nb.png" /></label>
+			<input type="radio" id="tile_1_middle_nb" name="tile"><label for="tile_1_middle_nb"><img
+					src="./img_2D/tile_1_middle_nb.png" /></label>
+			<input type="radio" id="tile_1_right_nb" name="tile"><label for="tile_1_right_nb"><img
+					src="./img_2D/tile_1_right_nb.png" /></label><br>
+		</form>
 
-<div id= "generation">
-	<p id = "text-generation">
-		Result of generation
-		⁙⁙ restart <strong class="keyboard">r</strong>
-	</p>
-	<p><img src="./img_2D/tile_1_right_nb.png"/></p>
-</div>
-
-<div id= "error-message">
-	<p id = "text-error">
-		Error 
-		⁙⁙ You have to choose only one tile and position
-		⁙⁙ restart <strong class="keyboard">r</strong>
-	</p>
-</div>
+		<div style="text-align:center">
+			<button type="button" class="button" id="generate">New tiles set with constraints</button>
+		</div>
+	</div>
 </body>
+
 </html>

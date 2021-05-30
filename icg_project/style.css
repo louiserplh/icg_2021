@@ -113,13 +113,12 @@ The various units of measurement available in CSS:
 	position: center; 
 	z-index: 3;
 	border-radius: 0.5rem;
-	background: rgb(131, 192, 149);
+	background: rgb(174, 212, 185);
 	color: rgb(0, 0, 0);
-	font-size: 0;
 	overflow: hidden;
 }
 #wfc-overlay p{
-	margin: 30px;
+	margin: 20px;
 	padding: 0;
 }
 #text-wfc {
@@ -130,21 +129,19 @@ The various units of measurement available in CSS:
 
 #pos-tiles {
 	color: black;
-	padding: 40px;
+	padding: 20px;
 	text-align: center;
-	line-height: 0;
 }
 
 #img-tiles {
 	color: black;
-	padding: 40px;
+	padding: 20px;
 	text-align: center;
-	line-height: 0;
 }
 
 #generate {
 	color: black;
-	padding: 40px;
+	padding: 20px;
 	text-align: center;
 	font-size: large;
 }
@@ -165,16 +162,12 @@ The various units of measurement available in CSS:
 	margin: 0;
 	background-color: white;
 	color: black;
-	padding: 10px 10px;
+	padding: 5px 5px;
 	font-size: 15px;
 	border: 2px solid rgb(67, 105, 78);
 }
 
 .button:hover {
-	background-color: rgb(67, 105, 78);;
-	color: white;
-}
-.button:focus {
 	background-color: rgb(67, 105, 78);;
 	color: white;
 }
