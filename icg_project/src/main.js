@@ -81,10 +81,7 @@ async function main() {
   const Z_SIZE = 3;
   // Loads the tiles to be displayed
   const floor_tiles = [
-    { id: 'grass', x: 0, y: 0, z: -0.7 },
-    { id: 'grass', x: 0, y: 5, z: -0.7 },
-    { id: 'grass', x: 5, y: 0, z: -0.7 },
-    { id: 'grass', x: 5, y: 5, z: -0.7 },
+    { id: 'grass', x: 2, y: 2, z: -0.7 },
   ];
   let tiles = floor_tiles.concat([
     { id: 'tile_1_middle', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 0 },
