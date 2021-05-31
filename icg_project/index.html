@@ -36,35 +36,15 @@
 		<pre id="debug-text"></pre>
 	</div>
 
-	<div id="wfc-overlay">
+	<div id="wfc-overlay" class="hidden">
 		<p id="text-wfc">
 			Select one position on the first face to set a tile on (choose <strong>one</strong> position and
 			<strong>one</strong> tile) ⁙⁙ hide set constraints <strong class="keyboard">w</strong>
 		</p>
 
 		<h4 style="text-align:center">Position</h4>
-		<p>Coordinates (x,y,z) to set:</p>
+		<p>Coordinates (x,y,z) to set (on the face you see when pressing <strong class="keyboard">middle</strong>):</p>
 		<form id="pos-tiles">
-			<input type="radio" id="pos000" name="position">
-			<label for="pos000"> (0,0,0)</label>
-			<input type="radio" id="pos010" name="position">
-			<label for="pos010"> (0,1,0)</label>
-			<input type="radio" id="pos020" name="position">
-			<label for="pos020"> (0,2,0)</label>
-			<input type="radio" id="pos030" name="position">
-			<label for="pos030"> (0,3,0)</label>
-			<input type="radio" id="pos040" name="position">
-			<label for="pos040"> (0,4,0)</label></br>
-			<input type="radio" id="pos001" name="position">
-			<label for="pos001"> (0,0,1)</label>
-			<input type="radio" id="pos011" name="position">
-			<label for="pos011"> (0,1,1)</label>
-			<input type="radio" id="pos021" name="position">
-			<label for="pos021"> (0,2,1)</label>
-			<input type="radio" id="pos031" name="position">
-			<label for="pos031"> (0,3,1)</label>
-			<input type="radio" id="pos041" name="position">
-			<label for="pos041"> (0,4,1)</label></br>
 			<input type="radio" id="pos002" name="position">
 			<label for="pos002"> (0,0,2)</label>
 			<input type="radio" id="pos012" name="position">
@@ -75,6 +55,26 @@
 			<label for="pos032"> (0,3,2)</label>
 			<input type="radio" id="pos042" name="position">
 			<label for="pos042"> (0,4,2)</label></br>
+			<input type="radio" id="pos001" name="position">
+			<label for="pos001"> (0,0,1)</label>
+			<input type="radio" id="pos011" name="position">
+			<label for="pos011"> (0,1,1)</label>
+			<input type="radio" id="pos021" name="position">
+			<label for="pos021"> (0,2,1)</label>
+			<input type="radio" id="pos031" name="position">
+			<label for="pos031"> (0,3,1)</label>
+			<input type="radio" id="pos041" name="position">
+			<label for="pos041"> (0,4,1)</label></br>
+			<input type="radio" id="pos000" name="position">
+			<label for="pos000"> (0,0,0)</label>
+			<input type="radio" id="pos010" name="position">
+			<label for="pos010"> (0,1,0)</label>
+			<input type="radio" id="pos020" name="position">
+			<label for="pos020"> (0,2,0)</label>
+			<input type="radio" id="pos030" name="position">
+			<label for="pos030"> (0,3,0)</label>
+			<input type="radio" id="pos040" name="position">
+			<label for="pos040"> (0,4,0)</label></br>
 		</form>
 
 		<h4 style="text-align:center">Tile</h4>
