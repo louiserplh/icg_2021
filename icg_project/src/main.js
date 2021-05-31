@@ -453,7 +453,7 @@ async function main() {
       }
     }
 
-    if (y != -1 && z != -1 && tile_id !== '' && check_constraint_valid(x, y, z, tile_id)) {
+    if (y != -1 && z != -1 && tile_id !== '' && check_constraint_valid(z, tile_id)) {
       if (!querying_new_tiles) {
         querying_new_tiles = true;
         received_new_tiles = false;
@@ -469,8 +469,23 @@ async function main() {
     return;
   }
 
-  function check_constraint_valid(x, y, z, tile_id) {
-    return false; //TODO
+  function check_constraint_valid(z, tile_id) {
+    if(z == 0) {
+      if(!(tile_id[0] === 'tile_1_right' || tile_id[0] === 'tile_1_alone'
+      || tile_id[0] === 'tile_1_left' || tile_id[0] === 'tile_1_alone_nr' || tile_id[0] === 'tile_1_middle'
+      || tile_id[0] === 'tile_1_right_nr' || tile_id[0] === 'tile_1_left_nr' || tile_id[0] === 'tile_1_middle')) {
+        return false;
+      }
+      return true;
+    }
+    else {
+      if((tile_id[0] === 'tile_1_right' || tile_id[0] === 'tile_1_alone'
+      || tile_id[0] === 'tile_1_left' || tile_id[0] === 'tile_1_alone_nr' || tile_id[0] === 'tile_1_middle'
+      || tile_id[0] === 'tile_1_right_nr' || tile_id[0] === 'tile_1_left_nr' || tile_id[0] === 'tile_1_middle')) {
+        return false;
+      }
+      return true;
+    }
   }
 
   // we prepare the GET query generated from the buttons
