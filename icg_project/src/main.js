@@ -84,9 +84,9 @@ async function main() {
   // Loads the tiles to be displayed
   const floor_tiles = [{ id: 'grass', x: 2, y: 2, z: -0.7 }];
   let tiles = floor_tiles.concat([
-    { id: 'tile_1_middle', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 0 },
-    { id: 'tile_1_middle', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 1 },
-    { id: 'tile_3_left_fancy', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 2 },
+    { id: 'tile_2_alone_nr', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 0 },
+    { id: 'tile_2_alone_nr', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 1 },
+    { id: 'tile_2_alone_nr', x: Math.floor(X_SIZE / 2), y: Math.floor(Y_SIZE / 2), z: 2 },
   ]);
 
   /*---------------------------------------------------------------
@@ -341,11 +341,13 @@ async function main() {
   });
 
   async function query_new_tileset(user_constraints) {
-    console.log('Sending request');
     if (!querying_new_tiles) {
       return;
     }
-    fetch('http://localhost:3333?' + stringify_constraints(user_constraints), {
+    console.log(
+      'Sending request: http://localhost:3333?'.concat(stringify_constraints(user_constraints))
+    );
+    fetch('http://localhost:3333?'.concat(stringify_constraints(user_constraints)), {
       mode: 'no-cors',
     })
       .then((response) => {
@@ -430,8 +432,6 @@ async function main() {
     Update actors list with constraints
   */
   function send_with_constraints() {
-    WFC_overlay.classList.toggle('hidden');
-
     const position = document.getElementById('pos-tiles');
     const x = 0;
     let y = -1;
@@ -439,8 +439,8 @@ async function main() {
     for (var i = 0; i < position.length; ++i) {
       if (position[i].checked) {
         console.log(position[i].id + ' checked');
-        y = i % Z_SIZE;
-        z = Math.floor(i / Y_SIZE);
+        y = i % X_SIZE;
+        z = Z_SIZE - 1 - Math.floor(i / X_SIZE);
       }
     }
 
@@ -454,11 +454,13 @@ async function main() {
     }
 
     if (y != -1 && z != -1 && tile_id !== '' && check_constraint_valid(z, tile_id)) {
+      WFC_overlay.classList.toggle('hidden');
       if (!querying_new_tiles) {
         querying_new_tiles = true;
         received_new_tiles = false;
         error_on_receive = false;
-        query_new_tileset(stringify_constraints({ x: x, y: y, z: z, id: tile_id }));
+        // boilerplates the x,y inversion
+        query_new_tileset({ x: y, y: x, z: z, id: tile_id });
       }
       return;
     } else {
@@ -470,18 +472,33 @@ async function main() {
   }
 
   function check_constraint_valid(z, tile_id) {
-    if(z == 0) {
-      if(!(tile_id[0] === 'tile_1_right' || tile_id[0] === 'tile_1_alone'
-      || tile_id[0] === 'tile_1_left' || tile_id[0] === 'tile_1_alone_nr' || tile_id[0] === 'tile_1_middle'
-      || tile_id[0] === 'tile_1_right_nr' || tile_id[0] === 'tile_1_left_nr' || tile_id[0] === 'tile_1_middle')) {
+    if (z == 0) {
+      if (
+        !(
+          tile_id[0] === 'tile_1_right' ||
+          tile_id[0] === 'tile_1_alone' ||
+          tile_id[0] === 'tile_1_left' ||
+          tile_id[0] === 'tile_1_alone_nr' ||
+          tile_id[0] === 'tile_1_middle' ||
+          tile_id[0] === 'tile_1_right_nr' ||
+          tile_id[0] === 'tile_1_left_nr' ||
+          tile_id[0] === 'tile_1_middle'
+        )
+      ) {
         return false;
       }
       return true;
-    }
-    else {
-      if((tile_id[0] === 'tile_1_right' || tile_id[0] === 'tile_1_alone'
-      || tile_id[0] === 'tile_1_left' || tile_id[0] === 'tile_1_alone_nr' || tile_id[0] === 'tile_1_middle'
-      || tile_id[0] === 'tile_1_right_nr' || tile_id[0] === 'tile_1_left_nr' || tile_id[0] === 'tile_1_middle')) {
+    } else {
+      if (
+        tile_id[0] === 'tile_1_right' ||
+        tile_id[0] === 'tile_1_alone' ||
+        tile_id[0] === 'tile_1_left' ||
+        tile_id[0] === 'tile_1_alone_nr' ||
+        tile_id[0] === 'tile_1_middle' ||
+        tile_id[0] === 'tile_1_right_nr' ||
+        tile_id[0] === 'tile_1_left_nr' ||
+        tile_id[0] === 'tile_1_middle'
+      ) {
         return false;
       }
       return true;
@@ -490,13 +507,16 @@ async function main() {
 
   // we prepare the GET query generated from the buttons
   function stringify_constraints(user_constraints) {
-    let stringified = '';
-    for (const constraint of user_constraints) {
-      const index = coordinates_to_index(constraint.x, constraint.y, constraint.z);
-      stringified.concat('index=' + index + '&' + 'tileId=' + constraint.id + '&');
+    if (Object.keys(user_constraints).length == 0) {
+      return 'index=-1&tileId=air_b';
     }
-    // we must remove the last '&'
-    return stringified.substring(0, stringified.length - 1);
+
+    let stringified = '';
+
+    const index = coordinates_to_index(user_constraints.x, user_constraints.y, user_constraints.z);
+    stringified = stringified.concat('index=' + index + '&' + 'tileId=' + user_constraints.id);
+
+    return stringified;
   }
   /*---------------------------------------------------------------
 		Frame render
@@ -689,9 +709,7 @@ async function main() {
     }
 
     debug_text.textContent = `
-Camera: angle_z ${(cam_angle_z / deg_to_rad).toFixed(1)}, angle_y ${(
-      cam_angle_y / deg_to_rad
-    ).toFixed(1)}, distance ${(cam_distance_factor * cam_distance_base).toFixed(1)}
+Try generate new houses! You can set one constraint or let the algorithm output a full surprise !
 cam pos ${vec_to_string(camera_position)}
 `;
     if (error_on_receive) {
