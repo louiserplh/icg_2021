@@ -439,8 +439,8 @@ async function main() {
     for (var i = 0; i < position.length; ++i) {
       if (position[i].checked) {
         console.log(position[i].id + ' checked');
-        y = i % X_SIZE;
-        z = Z_SIZE - 1 - Math.floor(i / X_SIZE);
+        y = i % Y_SIZE;
+        z = Z_SIZE - 1 - Math.floor(i / Y_SIZE);
       }
     }
 
