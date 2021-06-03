@@ -69,8 +69,8 @@ export class UnshadedTileActor extends Actor {
 		*/
     let scale = this.size;
     let sizeMat = mat4.fromScaling(mat4.create(), [scale, scale, scale]);
-    // Matrix to shift the tile on its coordinate (and put it above the grid) values found heuristically
-    let onGridMat = mat4.fromTranslation(
+    // Matrix to shift the tile on its coordinate (and put it above the ground). Each tile is 32px large, long and high. 1 length unit is 10px observed
+    let placingMatrix = mat4.fromTranslation(
       mat4.create(),
       vec3.fromValues(3.2 * this.x, 3.2 * this.z, 3.2 * this.y)
     );
@@ -80,7 +80,7 @@ export class UnshadedTileActor extends Actor {
     const rotateMatrix = mat4_matmul_many(mat4.create(), rotateMatrixX, rotateMatrixY);
 
     // Store the combined transform in this.mat_model_to_world
-    mat4_matmul_many(this.mat_model_to_world, sizeMat, rotateMatrix, onGridMat);
+    mat4_matmul_many(this.mat_model_to_world, sizeMat, rotateMatrix, placingMatrix);
   }
 
   draw({ mat_projection, mat_view }) {
