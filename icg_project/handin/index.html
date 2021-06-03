@@ -5,27 +5,89 @@
 </head>
 
 <body>
-	<!--comment-->
+	<!-- PrettyFy scripting -->
 	<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+	<!-- For using LaTeX -->
+	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 	<h1 style="display:center">ICG Project: Pretty Houses Generator</h1>
 	<p class="group17">A project by Emmanuelle Denove, Louise Rieupouilh and Tom Demont</p>
 
 	<h2>Abstract</h2>
-	<p>In Pretty Houses Generator, we wanted to create an app showing various tiles layout in a 3D world that are matching nicely with each other. The main part was the implementation of a Wave Collapse Function to output a valid layout of the tiles we created. We also wanted the app to be interactive to let the user discover and appreciate a visually appealing layout while having a hand on its creation.</p>
+	<p>In Pretty Houses Generator, we wanted to create an app showing various tiles layout in a 3D world that are
+		matching nicely with each other. The main part was the implementation of a Wave Collapse Function to output a
+		valid layout of the tiles we created. We also wanted the app to be interactive to let the user discover and
+		appreciate a visually appealing layout while having a hand on its creation.</p>
 
 	<h2>Technical approach</h2>
-	<p>TODO</p>
+	<p>We decided to create our project using the REGL pipelines and JavaScript to display it in browser using WebGL.
+		Indeed we wanted our project to benefit all the WebGL advantages (GPU computation, portability ...) while being
+		consistant with the tools we developped along the semester's exercices. From the tiles design to the user
+		interface, we wanted to master all the steps of this processus and create a fully functionnal Pretty Houses
+		Generator. We based our GLSL and JavaScript implementations of the Exercice 5: Solar Shading.</p>
+
+	<h3>Tiles design</h3>
+
+	<h3>Tiles rendering</h3>
+	<h4>Actors model</h4>
+	<p>For the rendering of our tiles, we created the file <code>tiles.js</code> where we took the basis of the
+		<code>planets.js</code> actors modelization. We could get rid of the physical (orbit, speed, size) aspects as we
+		just wanted to display 3D fixed tile actors. We then created the classes <code>UnshadedTileActor</code>,
+		<code>PhongTileActor</code> and <code>MeshTileActor</code>, each one inheritting the former. The only
+		modification with relation to the previous <code>PlanetActors</code> is in the computation of the
+		<code>mat_model_to_world</code> matrix.
+		Indeed, we added <code>x</code>, <code>y</code> and <code>z</code> attributes to place the tiles in a grid where
+		each tile would occupy one cell. This helped us to boilerplate the tiles placing in the algorithms by just
+		taking this 3D cells representations. The model matrix computation makes sure to rotate the tile facing the user
+		in default position and placing it correctly in the world: our tiles are \(32\times 32 \times 32\)px, observing
+		\(1\) unit length is \(10\)px, we created the correct translation matrix:
+	</p>
+	<pre class="prettyprint lang-js">
+		<code>// Matrix to shift the tile on its coordinate (and put it above the ground). 
+		//Each tile is 32px large, long and high. 1 length unit is 10px observed
+		let placingMatrix = mat4.fromTranslation(
+		mat4.create(),
+		vec3.fromValues(3.2 * this.x, 3.2 * this.z, 3.2 * this.y)
+		);
+		// Rotate the tile to avoid put it on its default rotation
+		let rotateMatrixX = mat4.fromXRotation(mat4.create(), Math.PI / 2);
+		let rotateMatrixY = mat4.fromYRotation(mat4.create(), Math.PI / 2);
+		const rotateMatrix = mat4_matmul_many(mat4.create(), rotateMatrixX, rotateMatrixY);
+	
+		// Store the combined transform in this.mat_model_to_world
+		mat4_matmul_many(this.mat_model_to_world, sizeMat, rotateMatrix, placingMatrix);</code>
+	</pre>
+	<h4>Tiles set to render</h4>
+	<p>Updating then the <code>actors_list</code> variable was just done by iterating over a given <code>tiles</code>
+		list giving tiles by their id (the prefix name of their object, material and texture files). This list also
+		contains the desired coordinates for the tile to ease its placement.</p>
+	<p>To add realism, we decided to adapt the shininess and ambient factor to the type of tile. The <code>grass</code>
+		tiles were less shiny than our other tiles and more ambiently brillant to compensate the shining loss:</p>
+	<pre class="prettyprint lang-js">
+		<code>function create_actor_list() {
+			// ...
+			const shine = tiles[i].id === 'grass' ? 1 : 14;
+			const amb = tiles[i].id === 'grass' ? 0.9 : 0.5;
+			// ..
+		}</code>
+	</pre>
+	<p>The last added point was the rendering of empty tiles. Those are identified by and id <code>air</code>. We used
+		the already implemented <code>pipeline_without_mesh</code> implented in the <code>MeshTileActor</code> class to
+		render actors without mesh. In the actor creation, an <code>air</code> tile were assigned no mesh nor texture
+		while every other tile has its mesh and texture loaded synchronously (with <code>await</code>) and passed as
+		arguments to the constructor.</p>
+	<p>The remaining parts of the rendering pipeline are similar to the one used in the Exercice 5, using the
+		<code>draw</code> function of each tile to render it in the REGL canvas.
+	</p>
+	<p style="text-align: center;"><img src="media/tiles_rendering.png" width="50%"><br>
+		Example of tiles placed vertically in our world
+	</p>
 
 	<h3>Wave Function Collapse in Java</h3>
 	<h4>Java model</h4>
 	<h4>Sockets matching</h4>
 	<h4>Client Server Architecture</h4>
 	<h4>Constrained computation</h4>
-
-	<h3>Tiles design</h3>
-
-	<h3>Tiles rendering</h3>
 
 	<h3>Bézier curves camera paths</h3>
 
