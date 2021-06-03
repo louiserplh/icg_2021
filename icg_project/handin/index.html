@@ -87,6 +87,13 @@
 	<h4>Java model</h4>
 	<h4>Sockets matching</h4>
 	<h4>Client Server Architecture</h4>
+	<p>One of the main issues in our project was dealing with both the WebGL displaying using Web coding and the algorithm computation. Indeed, we tried to implement the WFC algorithm in JavaScript, but seing the toughness og the computation, we prefered to keep our initial working Java version. We then had to initiate a link between both applications, and following the ICG team advices, we implemented a client server architecture.</p>
+	<h5>Java Server</h5>
+	<h5>JavaScript Client</h5>
+	<p>To query a new tiles set, we set on <strong class="keyboard">g</strong> key the call of a <code>query_new_tileset</code> function. To deal with asynchronicity of our requests, we set boolean flags <code>received_new_tiles</code>,<code>querying_new_tiles</code> and <code>error_on_receive</code> to indicate the state of the query to the rendering pipeline. Indeed, we did not wanted to take the risk to display tiles from a list being modified by 2 parts of the program. We then added <code>if</code> conditions in the frame computation to avoid manipulating <code>actors_list</code> when the query is not fully complete.</p>
+	<p>Another issue we struggled with was the CORS of <code>fetch</code> queries. Indeed, we couldn't get without authentification the GET RESULT of our query to the Java Server. To handle it, we made the the Java Server write its output tiles' layout to <code>tiles.json</code> file. After that, we could load the JSON file and get the tiles to display</p>
+	<p>Finally, we had to adapt our <code>actors_list</code> but also <code>actors_by_name</code>. To do so, we created the <code>create_actor_list</code> and <code>create_actor_corner_by_name</code> that was called in the rendering pipeline by putting the <code>draw_list = actors_list.slice()</code> line inside the frame computation.</p>
+	<p>With this whole process, we were able to, and with no concurrence major issue, call our Java server for updating our tiles set to place in world and adquatly render it on the <strong class="keyboard">g</strong> key pressing.</p>
 	<h4>Constrained computation</h4>
 
 	<h3>Bézier curves camera paths</h3>
