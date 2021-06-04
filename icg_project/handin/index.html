@@ -27,7 +27,7 @@
 		Generator. We based our GLSL and JavaScript implementations of the Exercice 5: Solar Shading.</p>
 
 	<h3>Tiles design</h3>
-	<p>For the rendering of the tiles, we used MagicaVoxel, which was provided to us by the TAs.
+	<p>For the rendering of the tiles, we used MagicaVoxel [3], which was provided to us by the TAs.
 		It was really fun and easy to use and it allowed us to create tiles in 3D for our project. All the tiles and the
 		floor were made
 		by us and so we had to pay attention when creating a new tile to how it was going to fit the others.
@@ -118,7 +118,7 @@
 		from a list being modified by 2 parts of the program. We then added <code>if</code> conditions in the frame
 		computation to avoid manipulating <code>actors_list</code> when the query is not fully complete.
 	</p>
-	<p>Another issue we struggled with was the CORS of <code>fetch</code> queries. Indeed, we couldn't get without
+	<p>We decided to wrap our query in a GET request, bu the issue we struggled with was the CORS of <code>fetch</code>[1] queries. Indeed, we couldn't get without
 		authentification the GET RESULT of our query to the Java Server. To handle it, we made the the Java Server write
 		its output tiles' layout to <code>tiles.json</code> file. After that, we could load the JSON file and get the
 		tiles to display</p>
@@ -128,6 +128,7 @@
 	<p>With this whole process, we were able to, and with no concurrence major issue, call our Java server for updating
 		our tiles set to place in world and adquatly render it on the <strong class="keyboard">g</strong> key pressing.
 	</p>
+	<p>Finally, the user receives feedback on the tiles computation in the debug overlay </p>
 	<h4>Constrained computation</h4>
 
 	<h3>Bézier curves camera paths</h3>
@@ -172,11 +173,12 @@
 	<p style="text-align: center;">Some examples of Bézier camera paths</p>
 
 	<h3>User Interface</h3>
-	To create the user interface used when setting constraints (pressing w), we used html and css. We wanted it to be
+	<p>To create the user interface used when setting constraints (pressing w), we used html and css. We wanted it to be
 	as easy as possible for the user to set constraints, so we implemented checkboxes which allow to choose a position
 	on the grid
-	and the tile you want to see at this position.
+	and the tile you want to see at this position.</p>
 	<h4>Tile selection</h4>
+	<p>For the user interface, we wanted the user to be able to select the tiles. </p>
 	<h4>Constraints setting</h4>
 
 
@@ -330,9 +332,10 @@
 	</p>
 
 	<h2>References</h2>
-	[1] <a href="https://www.epfl.ch">TODO</a><br />
+	[1] <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch method documentation</a><br />
 	[2] <a
 		href="https://lgg.epfl.ch/teaching/ICG20/icg_lectures/Online11-Bezier-Curves.html#/de-casteljau-leftrightarrow-bernstein-basis">Bézier
 		interpolation formula</a> <br />
+	[3] <a href="https://ephtracy.github.io/">MagicaVoxel</a><br />
 
 </body>
