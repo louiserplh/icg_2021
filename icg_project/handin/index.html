@@ -1,7 +1,7 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="style.css">
-	<link href='https://fonts.googleapis.com/css?family=Titillium Web' rel='stylesheet'>
+	<link href='https://fonts.googleapis.com/css?family=Istok Web' rel='stylesheet'>
 </head>
 
 <body>
@@ -97,6 +97,19 @@
 	<h4>Constrained computation</h4>
 
 	<h3>Bézier curves camera paths</h3>
+	<p>Seeing our visual result getting closer to what we expected, we decided that the extension of the camera to follow Bézier curve's path was perfectly adapted to add the smoothness we wanted.</p>
+	<p>To do so, we added many parameters with prefix <code>old_</code> and <code>new_</code>. Those ones helped us to specify the beginning and end values to be interpolated for the <code>cam_distance_factor</code>, <code>cam_angle_z</code> and <code>cam_angle_y</code>. Those ones were not necessary for our pure Bézier curve but we decided it would be smooth to also linearly lerp those values with the same time parameter as the Bézier's. The visual result is that the camera rotates and goes back/forward whenever we change its position and recenters on a nice position/rotation/distance.</p>
+	<video class="vid" loop autoplay muted src="media/camera_rotation.mp4" width="50%"></video>
+	<p style="text-align: center;">Example of rotating and placing camera in linear interpolation</p>
+	<p>The key of the Bézier interpolation is the <code>bezier_param</code> that represents the time parameter \(t\) that evolves from \(0\) to \(1\). Whenever the user asks for a new position to be selected, the <code>bezier_param</code> value is set back to \(0\) and the new <code>cam_distance_factor</code>, <code>cam_angle_z</code> and <code>cam_angle_y</code> are put in the <code>new_</code> variables. When this value gets back to \(1\), we know our update is done and we just apply the same transformation as before in the previous Exercice 5 where camera just centers on a selected Actor.</p>
+	<p>We decided to put three control point in our Bézier paths as we were very satisfied with the result. Having those 3 meant that we had to take a starting point, <code>old_selected_corner_position</code>, and ending point <code>new_selected_corner_position</code> and a middle point <code>third_point_position</code>. To have a simetrical curve and create a curvy effect, we placed this point on the perpendicular bisector of the straight line between start and end point. The shape aspect of our curve is displayed below.</p>
+	<p style="text-align: center;"><img src="media/bezier_curve.png" width="30%"><br>
+		The shape of our created Bézier curve (from the course's web slides) [2]
+	</p>
+	<p>Once those points were computed, we could solve the quadratic equation using the de Castlejau algorithm [2]: $$\textbf{x}(t)=(1-t)^2\textbf{b}_0+2(1-t)t\textbf{b}_1+t^2\textbf{b}_2$$ Where <strong>b</strong> points are the controle points. Observing the <code>vec3</code> class, we saw a method computing exactly the desired result <code>vec3.bezier(out, a, b, c, d, t)</code>. Observing that putting our third point in place of <code>b</code> and <code>c</code> intermediary paramaters results in the same as having one middle paramater, we used it to output the desired camera translation at every intermediary points between the old and new camera positions and modify accordingly the <code>mat_view</code> matrix in the frame computation. We finally update our time to simulate a time effect and make our paramter grow to \(1\).</p>
+	<p>The visual result looked very nice to us and we liked to move around our houses following thos curves.</p>
+	<video class="vid" loop autoplay muted src="media/bezier_paths.mp4" width="60%"></video>
+	<p style="text-align: center;">Some examples of Bézier camera paths</p>
 
 	<h3>User Interface</h3>
 	<h4>Tile selection</h4>
@@ -237,6 +250,7 @@
 	<p>TODO</p>
 
 	<h2>References</h2>
-	[1] <a href="https://www.epfl.ch">TODO</a><br />
+	[1] <a href="https://www.epfl.ch">TODO</a><br/>
+	[2] <a href="https://lgg.epfl.ch/teaching/ICG20/icg_lectures/Online11-Bezier-Curves.html#/de-casteljau-leftrightarrow-bernstein-basis">Bézier interpolation formula</a> <br/>
 
 </body>

@@ -9,3 +9,4 @@ icg_2021.iml
 
 # tiles file (as it's generated at each run)
 icg_project/WaveCollapse_classes/tiles.json
+icg_project/handin/WaveCollapse_classes/tiles.json
