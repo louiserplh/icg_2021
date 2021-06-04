@@ -101,15 +101,23 @@
 		Example of tiles placed vertically in our world
 	</p>
 
-	<h3>Wave Function Collapse in Java</h3>
+	<h3>Wave Collapse Function in Java</h3>
 	<h4>Java model</h4>
+	<p>Because it is a language that we are quite familiar with, we decided to implement the wave collapse function in Java. We then found a youtube video explaining the structure of the code of this function, which we adapted to our project. 
+
+	<p>The principle of the wave collapse is that for every cell in the world, there is an array of possible tiles for this cell. At the beginning, this array contains all tiles that we created. First, the arrays are restricted to only contain tiles compatible with their z-position (i.e. cells at z = 0 can only contain tiles that can be placed on the floor, and vice-versa for cells at z > 0). Then, a function finds the cell with the lowest entropy, hence with the smallest possible tiles array, and calls the <code>collapse</code> function on it. This function sets the tile of this cell to a random one within the array of possible tiles. This change is then propagated, meaning that this cell’s neighbors adapt their own possible tiles list taking into consideration the newly placed tile, and then notify their own neighbors to adapt their possible tiles array (i.e. the cell above an “air” tile will also be an “air” tile since buildings cannot float, and that change will be propagated to its own neighbors). This process is repeated until all cells have only one tile in their possible tiles array.</p>
+
+	<p>In order for the algorithm to know what other tiles a tile is compatible with, we used the principle of sockets (more details on that below). We then create, at the launching of our function, a list of <code>TileCorrespondences</code>. These store, for every one of our tiles (stored in the <code>TilesDB</code> class), the list of tiles compatible with each side of the tile. This makes it a lot easier to access the tiles that can be put in a certain cell depending on the cell’s neighboring tiles.</p>
 	<h4>Sockets matching</h4>
+	<p>Every side of a tile has an associated socket, and two sides are compatible if and only if they have the same socket AND are corresponding sides (i.e. the left side of a tile can only be compatible with the right side of a tile, not with the top or bottom for example). The sockets were determined manually for every one of our tiles, and we currently have 20 different sockets.</p>
+	<p>We also introduced the concept of a <code>door_side</code> for tiles. This stores, as the name suggests, the side on which there is a door (if any) for a given tile. When creating TileCorrespondences for tiles that have a door, the only compatible tile with the door side is the “air” tile. This is because it seemed illogical to us to be able to place tiles in front of doors, making the door inaccessible.</p>
 	<h4>Client Server Architecture</h4>
 	<p>One of the main issues in our project was dealing with both the WebGL displaying using Web coding and the
 		algorithm computation. Indeed, we tried to implement the WFC algorithm in JavaScript, but seing the toughness og
 		the computation, we prefered to keep our initial working Java version. We then had to initiate a link between
 		both applications, and following the ICG team advices, we implemented a client server architecture.</p>
 	<h5>Java Server</h5>
+	The difficulty of implementing the java server was figuring out which Java library we would use. After some trial and error, we settled on HttpServer, which worked the best. We also had some issues linked to security of http requests. At first, we wanted the Java server to call the wave collapse function and then send the computed tile array to the python server in JSON form. However, with the way HTTP requests are implemented in JavaScript, there is a security measure called <code>cors</code> which masks the http request content. This seemed quite complicated to override, so we settled on using the http requests only to notify the python server that the tiles are computed and can be displayed. The Java takes care of writing the corresponding tile array in JSON form to a specific file that the JavaScript then reads.
 	<h5>JavaScript Client</h5>
 	<p>To query a new tiles set, we set on <strong class="keyboard">g</strong> key the call of a
 		<code>query_new_tileset</code> function. To deal with asynchronicity of our requests, we set boolean flags
@@ -192,6 +200,7 @@
 
 	<h2>Results</h2>
 	<h3>Optimization possibilities</h3>
+	Sadly, the computation of tiles can be quite slow. This is due to the randomization process : sometimes, cells are collapsed in a way that makes it impossible to fill the entire grid correctly, so the algorithm has to re-run quite a few times (this number completely depends on the randomization) in order to find a valid array of tiles that can fill the whole grid. An optimization that we had in mind but did not have time to implement was to write the initial array of possible tiles taking into consideration the tiles that could and couldn't be on the z = 0 plane into a local file that can be read, instead of recomputing this array at every iteration of the algorithm. 
 	<h3>How to launch the project</h3>
 	<p>As described above, our project requires Java Server to run to compute new tiles sets. To launch the project,
 		please be at the root of the project folder and run:</p>
