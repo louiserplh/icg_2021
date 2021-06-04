@@ -89,8 +89,8 @@
 			// ..
 		}</code>
 	</pre>
-	<p>The last added point was the rendering of empty tiles. Those are identified by and id <code>air</code>. We used
-		the already implemented <code>pipeline_without_mesh</code> implented in the <code>MeshTileActor</code> class to
+	<p>The last added point was the rendering of empty tiles. Those are identified by an id <code>air</code>. We used
+		the already implemented <code>pipeline_without_mesh</code> in the <code>MeshTileActor</code> class to
 		render actors without mesh. In the actor creation, an <code>air</code> tile were assigned no mesh nor texture
 		while every other tile has its mesh and texture loaded synchronously (with <code>await</code>) and passed as
 		arguments to the constructor.</p>
@@ -141,7 +141,7 @@
 		both applications, and following the ICG team advices, we implemented a client server architecture.</p>
 	<h5>Java Server</h5>
 	The difficulty of implementing the java server was figuring out which Java library we would use. After some trial
-	and error, we settled on HttpServer, which worked the best. We also had some issues linked to security of http
+	and error, we settled on HttpServer [5], which worked the best. We also had some issues linked to security of http
 	requests. At first, we wanted the Java server to call the wave collapse function and then send the computed tile
 	array to the python server in JSON form. However, with the way HTTP requests are implemented in JavaScript, there is
 	a security measure called <code>cors</code> which masks the http request content. This seemed quite complicated to
@@ -156,14 +156,14 @@
 		from a list being modified by 2 parts of the program. We then added <code>if</code> conditions in the frame
 		computation to avoid manipulating <code>actors_list</code> when the query is not fully complete.
 	</p>
-	<p>We decided to wrap our query in a GET request, bu the issue we struggled with was the CORS of
+	<p>We decided to wrap our query in a GET request, bt the issue we struggled with was the CORS of
 		<code>fetch</code>[1] queries. Indeed, we couldn't get without
 		authentification the GET RESULT of our query to the Java Server. To handle it, we made the the Java Server write
 		its output tiles' layout to <code>tiles.json</code> file. After that, we could load the JSON file and get the
 		tiles to display
 	</p>
 	<p>Finally, we had to adapt our <code>actors_list</code> but also <code>actors_by_name</code>. To do so, we created
-		the <code>create_actor_list</code> and <code>create_actor_corner_by_name</code> that was called in the rendering
+		the <code>create_actor_list()</code> and <code>create_actor_corner_by_name()</code> functions that was called in the rendering
 		pipeline by putting the <code>draw_list = actors_list.slice()</code> line inside the frame computation.</p>
 	<p>With this whole process, we were able to, and with no concurrence major issue, call our Java server for updating
 		our tiles set to place in world and adquatly render it on the <strong class="keyboard">g</strong> key pressing.
@@ -179,14 +179,16 @@
 	<h4>Constrained computation</h4>
 	<p>Finally, we adapted our code to be able to handle and read GET requests where constrainted are specified by
 		<code>index</code> (a wrapper for the 3D coordinates of a tile) and an <code>id</code>, the file name of the
-		tile we want to set. These constraints were handled easily in computation by setting the desired tile at desired position and propagating the constraints update.</p>
+		tile we want to set. These constraints were handled easily in computation by setting the desired tile at desired
+		position and propagating the constraints update. The user interface to specify those constraints is described below.
+	</p>
 
 	<h3>Bézier curves camera paths</h3>
 	<p>Seeing our visual result getting closer to what we expected, we decided that the extension of the camera to
 		follow Bézier curve's path was perfectly adapted to add the smoothness we wanted.</p>
-	<p>To do so, we added many parameters with prefix <code>old_</code> and <code>new_</code>. Those ones helped us to
+	<p>To do so, we added many parameters with prefix <code>old_</code> and <code>new_</code>. Those helped us to
 		specify the beginning and end values to be interpolated for the <code>cam_distance_factor</code>,
-		<code>cam_angle_z</code> and <code>cam_angle_y</code>. Those ones were not necessary for our pure Bézier curve
+		<code>cam_angle_z</code> and <code>cam_angle_y</code>. They were not necessary for our pure Bézier curve
 		but we decided it would be smooth to also linearly lerp those values with the same time parameter as the
 		Bézier's. The visual result is that the camera rotates and goes back/forward whenever we change its position and
 		recenters on a nice position/rotation/distance.
@@ -234,11 +236,26 @@
 		bottom and top of \(Z\) axis. Similarly to the Exercice 5's <code>actors_by_name</code> list, pressing the
 		buttons sets the viewed corner as the selected one with an adapted camera rotation and distance. The Bézier
 		lerping could then start on next frames updates.</p>
-	<p style="text-align: center;"><img src="media/tile_selection.png" width="60%"><br>
+	<p style="text-align: center;"><img src="media/tile_selection.png" width="70%"><br>
 		Tile selection interface
 	</p>
 	<h4>Constraints setting</h4>
-	<p>Our final amelioration of the project was setting a tile constraint by the user. We wanted this process to be interactive and intuitive. We created 2 sets of buttons for selecting the tile</p>
+	<p>Our final amelioration of the project was setting a tile constraint by the user. We wanted this process to be
+		interactive and intuitive. A new layout appears when the users presses <strong class="keyboard">W</strong>,
+		containing an HTML form composed of input selections that'll be read by our program.</p>
+	<p>We created 2 sets of buttons for selecting the tile position to set (in 2D on the face facing the user when
+		pressing a <code>middle_</code> button) and the type of tile desired. On pressing the
+		<code>Generate new tiles with constraints</code> button, the values are read in the <code>main.js</code>. If the
+		user selected a bad combination of tile and position, an alert will be sent to indicate the user to make another
+		choice and nothing will be queried. Otherwise, we'll call the JavaServer with the specified constraints and the
+		window automatically closes. We also made sure that only one query is made at a time to avoid loading too much
+		computation.</p>
+	<p style="text-align: center;"><img src="media/constraints_menu.png" width="60%"><br>
+		Tile constraints menu
+	</p>
+	<p style="text-align: center;"><img src="media/tile_alert.png" width="30%"><br>
+		The alert on bad tile/position selection
+	</p>
 
 	<h2>Results</h2>
 	<h3>Optimization possibilities</h3>
@@ -399,5 +416,8 @@
 		interpolation formula</a> <br />
 	[3] <a href="https://ephtracy.github.io/">MagicaVoxel</a><br />
 	[4] <a href="https://www.youtube.com/watch?v=2SuvO4Gi7uY">WFC computation tutorial</a><br />
+	[5] <a
+		href="https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpServer.html">HTTP
+		Server Library</a><br />
 
 </body>
