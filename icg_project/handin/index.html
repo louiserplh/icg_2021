@@ -103,21 +103,51 @@
 
 	<h3>Wave Collapse Function in Java</h3>
 	<h4>Java model</h4>
-	<p>Because it is a language that we are quite familiar with, we decided to implement the wave collapse function in Java. We then found a youtube video explaining the structure of the code of this function, which we adapted to our project. 
+	<p>Because it is a language that we are quite familiar with, we decided to implement the wave collapse function in
+		Java. We then found a youtube video [4] explaining the structure of the code of this function, which we adapted
+		to
+		our project.</p>
 
-	<p>The principle of the wave collapse is that for every cell in the world, there is an array of possible tiles for this cell. At the beginning, this array contains all tiles that we created. First, the arrays are restricted to only contain tiles compatible with their z-position (i.e. cells at z = 0 can only contain tiles that can be placed on the floor, and vice-versa for cells at z > 0). Then, a function finds the cell with the lowest entropy, hence with the smallest possible tiles array, and calls the <code>collapse</code> function on it. This function sets the tile of this cell to a random one within the array of possible tiles. This change is then propagated, meaning that this cell’s neighbors adapt their own possible tiles list taking into consideration the newly placed tile, and then notify their own neighbors to adapt their possible tiles array (i.e. the cell above an “air” tile will also be an “air” tile since buildings cannot float, and that change will be propagated to its own neighbors). This process is repeated until all cells have only one tile in their possible tiles array.</p>
+	<p>The principle of the wave collapse is that for every cell in the world, there is an array of possible tiles for
+		this cell. At the beginning, this array contains all tiles that we created. First, the arrays are restricted to
+		only contain tiles compatible with their z-position (i.e. cells at z = 0 can only contain tiles that can be
+		placed on the floor, and vice-versa for cells at z > 0). Then, a function finds the cell with the lowest
+		entropy, hence with the smallest possible tiles array, and calls the <code>collapse</code> function on it. This
+		function sets the tile of this cell to a random one within the array of possible tiles. This change is then
+		propagated, meaning that this cell’s neighbors adapt their own possible tiles list taking into consideration the
+		newly placed tile, and then notify their own neighbors to adapt their possible tiles array (i.e. the cell above
+		an “air” tile will also be an “air” tile since buildings cannot float, and that change will be propagated to its
+		own neighbors). This process is repeated until all cells have only one tile in their possible tiles array.</p>
 
-	<p>In order for the algorithm to know what other tiles a tile is compatible with, we used the principle of sockets (more details on that below). We then create, at the launching of our function, a list of <code>TileCorrespondences</code>. These store, for every one of our tiles (stored in the <code>TilesDB</code> class), the list of tiles compatible with each side of the tile. This makes it a lot easier to access the tiles that can be put in a certain cell depending on the cell’s neighboring tiles.</p>
+	<p>In order for the algorithm to know what other tiles a tile is compatible with, we used the principle of sockets
+		(more details on that below). We then create, at the launching of our function, a list of
+		<code>TileCorrespondences</code>. These store, for every one of our tiles (stored in the <code>TilesDB</code>
+		class), the list of tiles compatible with each side of the tile. This makes it a lot easier to access the tiles
+		that can be put in a certain cell depending on the cell’s neighboring tiles.
+	</p>
 	<h4>Sockets matching</h4>
-	<p>Every side of a tile has an associated socket, and two sides are compatible if and only if they have the same socket AND are corresponding sides (i.e. the left side of a tile can only be compatible with the right side of a tile, not with the top or bottom for example). The sockets were determined manually for every one of our tiles, and we currently have 20 different sockets.</p>
-	<p>We also introduced the concept of a <code>door_side</code> for tiles. This stores, as the name suggests, the side on which there is a door (if any) for a given tile. When creating TileCorrespondences for tiles that have a door, the only compatible tile with the door side is the “air” tile. This is because it seemed illogical to us to be able to place tiles in front of doors, making the door inaccessible.</p>
+	<p>Every side of a tile has an associated socket, and two sides are compatible if and only if they have the same
+		socket AND are corresponding sides (i.e. the left side of a tile can only be compatible with the right side of a
+		tile, not with the top or bottom for example). The sockets were determined manually for every one of our tiles,
+		and we currently have 20 different sockets.</p>
+	<p>We also introduced the concept of a <code>door_side</code> for tiles. This stores, as the name suggests, the side
+		on which there is a door (if any) for a given tile. When creating TileCorrespondences for tiles that have a
+		door, the only compatible tile with the door side is the “air” tile. This is because it seemed illogical to us
+		to be able to place tiles in front of doors, making the door inaccessible.</p>
 	<h4>Client Server Architecture</h4>
 	<p>One of the main issues in our project was dealing with both the WebGL displaying using Web coding and the
 		algorithm computation. Indeed, we tried to implement the WFC algorithm in JavaScript, but seing the toughness og
 		the computation, we prefered to keep our initial working Java version. We then had to initiate a link between
 		both applications, and following the ICG team advices, we implemented a client server architecture.</p>
 	<h5>Java Server</h5>
-	The difficulty of implementing the java server was figuring out which Java library we would use. After some trial and error, we settled on HttpServer, which worked the best. We also had some issues linked to security of http requests. At first, we wanted the Java server to call the wave collapse function and then send the computed tile array to the python server in JSON form. However, with the way HTTP requests are implemented in JavaScript, there is a security measure called <code>cors</code> which masks the http request content. This seemed quite complicated to override, so we settled on using the http requests only to notify the python server that the tiles are computed and can be displayed. The Java takes care of writing the corresponding tile array in JSON form to a specific file that the JavaScript then reads.
+	The difficulty of implementing the java server was figuring out which Java library we would use. After some trial
+	and error, we settled on HttpServer, which worked the best. We also had some issues linked to security of http
+	requests. At first, we wanted the Java server to call the wave collapse function and then send the computed tile
+	array to the python server in JSON form. However, with the way HTTP requests are implemented in JavaScript, there is
+	a security measure called <code>cors</code> which masks the http request content. This seemed quite complicated to
+	override, so we settled on using the http requests only to notify the python server that the tiles are computed and
+	can be displayed. The Java takes care of writing the corresponding tile array in JSON form to a specific file that
+	the JavaScript then reads.
 	<h5>JavaScript Client</h5>
 	<p>To query a new tiles set, we set on <strong class="keyboard">g</strong> key the call of a
 		<code>query_new_tileset</code> function. To deal with asynchronicity of our requests, we set boolean flags
@@ -126,18 +156,30 @@
 		from a list being modified by 2 parts of the program. We then added <code>if</code> conditions in the frame
 		computation to avoid manipulating <code>actors_list</code> when the query is not fully complete.
 	</p>
-	<p>We decided to wrap our query in a GET request, bu the issue we struggled with was the CORS of <code>fetch</code>[1] queries. Indeed, we couldn't get without
+	<p>We decided to wrap our query in a GET request, bu the issue we struggled with was the CORS of
+		<code>fetch</code>[1] queries. Indeed, we couldn't get without
 		authentification the GET RESULT of our query to the Java Server. To handle it, we made the the Java Server write
 		its output tiles' layout to <code>tiles.json</code> file. After that, we could load the JSON file and get the
-		tiles to display</p>
+		tiles to display
+	</p>
 	<p>Finally, we had to adapt our <code>actors_list</code> but also <code>actors_by_name</code>. To do so, we created
 		the <code>create_actor_list</code> and <code>create_actor_corner_by_name</code> that was called in the rendering
 		pipeline by putting the <code>draw_list = actors_list.slice()</code> line inside the frame computation.</p>
 	<p>With this whole process, we were able to, and with no concurrence major issue, call our Java server for updating
 		our tiles set to place in world and adquatly render it on the <strong class="keyboard">g</strong> key pressing.
 	</p>
-	<p>Finally, the user receives feedback on the tiles computation in the debug overlay </p>
+	<p>Finally, the user receives feedback on the tiles computation in the debug overlay to be informed if something
+		failed or is still being computed, displayed using our flags
+		<code>received_new_tiles</code>,<code>querying_new_tiles</code> and <code>error_on_receive</code>.
+	</p>
+	<p style="text-align: center;"><img src="media/tiles_feedback.png" width="60%"><br>
+		The feedback messages during the WFC query processing
+	</p>
+
 	<h4>Constrained computation</h4>
+	<p>Finally, we adapted our code to be able to handle and read GET requests where constrainted are specified by
+		<code>index</code> (a wrapper for the 3D coordinates of a tile) and an <code>id</code>, the file name of the
+		tile we want to set. These constraints were handled easily in computation by setting the desired tile at desired position and propagating the constraints update.</p>
 
 	<h3>Bézier curves camera paths</h3>
 	<p>Seeing our visual result getting closer to what we expected, we decided that the extension of the camera to
@@ -181,26 +223,35 @@
 	<p style="text-align: center;">Some examples of Bézier camera paths</p>
 
 	<h3>User Interface</h3>
-	<p>To create the user interface used when setting constraints (pressing w), we used html and css. We wanted it to be
-	as easy as possible for the user to set constraints, so we implemented checkboxes which allow to choose a position
-	on the grid
-	and the tile you want to see at this position.</p>
+	<p>We created to part for our user interface: the part for the user to navigate in our world by selecting tiles and
+		the part to set constraints on WFC computation.</p>
 	<h4>Tile selection</h4>
-	<p>For the user interface, we wanted the user to be able to select the tiles. </p>
+	<p>For the user interface, we wanted the user to be able to select the tiles to focus on. However, allow her to
+		select any tile as there were 75 of them were probably not good for the readibility of our interface. We then
+		created the <code>corners_by_name</code> and its sorted version <code>sorted_corners_by_name</code> to be able
+		to display the list of corners in the debug overlay. The "corners" are the tiles actors in corner coordinates
+		(all the maximized/minimized coordinates combinations) plus the tiles in the middle of the layout on middle,
+		bottom and top of \(Z\) axis. Similarly to the Exercice 5's <code>actors_by_name</code> list, pressing the
+		buttons sets the viewed corner as the selected one with an adapted camera rotation and distance. The Bézier
+		lerping could then start on next frames updates.</p>
+	<p style="text-align: center;"><img src="media/tile_selection.png" width="60%"><br>
+		Tile selection interface
+	</p>
 	<h4>Constraints setting</h4>
-
-
-	<code>Useful to write code</code>
-	<video class="vid" loop autoplay muted src="media/magicavoxel_test.mp4" width="60%"></video>
-
-	<pre class="prettyprint lang-js">
-	<code>function test_fun(arg):
-	  return isCool() ? 'cool yes' : 'not cool';</code>
-	</pre>
+	<p>Our final amelioration of the project was setting a tile constraint by the user. We wanted this process to be interactive and intuitive. We created 2 sets of buttons for selecting the tile</p>
 
 	<h2>Results</h2>
 	<h3>Optimization possibilities</h3>
-	Sadly, the computation of tiles can be quite slow. This is due to the randomization process : sometimes, cells are collapsed in a way that makes it impossible to fill the entire grid correctly, so the algorithm has to re-run quite a few times (this number completely depends on the randomization) in order to find a valid array of tiles that can fill the whole grid. An optimization that we had in mind but did not have time to implement was to write the initial array of possible tiles taking into consideration the tiles that could and couldn't be on the z = 0 plane into a local file that can be read, instead of recomputing this array at every iteration of the algorithm. 
+	<p>Sadly, the computation of tiles can be quite slow. This is due to the randomization process : sometimes, cells
+		are
+		collapsed in a way that makes it impossible to fill the entire grid correctly, so the algorithm has to re-run
+		quite
+		a few times (this number completely depends on the randomization) in order to find a valid array of tiles that
+		can
+		fill the whole grid. An optimization that we had in mind but did not have time to implement was to write the
+		initial
+		array of possible tiles taking into consideration the tiles that could and couldn't be on the z = 0 plane into a
+		local file that can be read, instead of recomputing this array at every iteration of the algorithm.</p>
 	<h3>How to launch the project</h3>
 	<p>As described above, our project requires Java Server to run to compute new tiles sets. To launch the project,
 		please be at the root of the project folder and run:</p>
@@ -341,10 +392,12 @@
 	</p>
 
 	<h2>References</h2>
-	[1] <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch method documentation</a><br />
+	[1] <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch method
+		documentation</a><br />
 	[2] <a
 		href="https://lgg.epfl.ch/teaching/ICG20/icg_lectures/Online11-Bezier-Curves.html#/de-casteljau-leftrightarrow-bernstein-basis">Bézier
 		interpolation formula</a> <br />
 	[3] <a href="https://ephtracy.github.io/">MagicaVoxel</a><br />
+	[4] <a href="https://www.youtube.com/watch?v=2SuvO4Gi7uY">WFC computation tutorial</a><br />
 
 </body>
