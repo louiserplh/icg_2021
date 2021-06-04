@@ -12,8 +12,8 @@ figure {
   padding: 50px;
   margin: 0;
   border: 70px;
-  background-color: rgb(21, 21, 23);
-  font-family: 'Titillium Web';
+  background-color: rgb(1, 12, 1);
+  font-family: 'Istok Web';
   color: white;
 }
 
@@ -46,7 +46,7 @@ h5 {
 .group17 {
   text-align: center;
   color: rgb(189, 189, 189);
-  font-size: small;
+  font-size: large;
 }
 
 .vid {
